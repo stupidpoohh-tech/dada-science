@@ -146,7 +146,7 @@ export default function Scene09Tides({ step, mode, setMode }: SceneProps) {
         </g>
       )}
       {step >= 2 && (aligned || quad) && (
-        <text x={EX} y={462} fontSize={15} fontWeight={700} textAnchor="middle" fill="#c9d3e0">
+        <text x={14} y={50} fontSize={14} fontWeight={700} textAnchor="start" fill="#e6edf5">
           {aligned ? '태양·지구·달이 일직선 → 두 기조력의 방향 일치' : '태양과 달이 지구에서 직각 → 기조력이 서로 일부 상쇄'}
         </text>
       )}
