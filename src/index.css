@@ -26,7 +26,7 @@
   --color-coriolis: #e8384f; /* 전향력 */
   --color-motion: #00a865;   /* 실제 운동 방향 */
   --color-ekman: #ff8a00;    /* 에크만 수송 */
-  --color-paper: #f6f8fb;
+  --color-paper: #ffffff;
 }
 
 html, body, #root { height: 100%; }
@@ -64,7 +64,15 @@ svg text { font-family: var(--font-sans); }
 .shake { animation: shake .45s linear 2; }
 
 /* 교재 */
+.sheet { font-family: 'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', sans-serif; }
+.sheet svg text { font-family: 'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', sans-serif; }
 .term { font-weight: 800; background: linear-gradient(transparent 62%, rgba(0, 183, 255, .22) 62%); padding: 0 1px; }
 .reflow .ms-row { grid-template-columns: minmax(0, 1fr) !important; }
 @keyframes focus-flash { 0%, 100% { box-shadow: 0 0 0 0 rgba(40,112,255,0); background-color: transparent; } 15%, 70% { box-shadow: 0 0 0 6px rgba(40,112,255,.25); background-color: rgba(40,112,255,.06); } }
 .focus-flash { animation: focus-flash 3.2s ease both; border-radius: 10px; }
+
+/* 학습지 */
+.sheet-hot .sheet-hot-bg { fill: transparent; stroke: transparent; transition: fill .15s, stroke .15s; }
+.sheet-hot:hover .sheet-hot-bg, .sheet-hot:focus-visible .sheet-hot-bg { fill: rgba(31, 95, 214, .05); stroke: rgba(31, 95, 214, .45); stroke-dasharray: 4 3; }
+.sheet-hot:focus { outline: none; }
+.sheet-row text { user-select: text; -webkit-user-select: text; }

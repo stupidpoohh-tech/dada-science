@@ -1,6 +1,7 @@
 import type { Block } from '../../lib/manuscript'
 import { InlineText, PopupChip } from './Inline'
 import InteractiveFigure from './InteractiveFigure'
+import { SheetRow } from '../../sheets'
 
 /** 원문 블록 하나. data-block-id는 필기 연결 기준이므로 바꾸지 마세요. */
 export default function ConceptBlock({ b }: { b: Block }) {
@@ -59,6 +60,8 @@ export default function ConceptBlock({ b }: { b: Block }) {
       return <div {...common} className="rounded-xl border-2 border-dashed border-ink/20 px-4 py-6 text-center text-[15px] text-ink/55">원문 입력 대기 — <InlineText text={b.text} /></div>
     case 'demo':
       return <div {...common} className="rounded-xl bg-[#fff6db] px-4 py-2.5 text-[14px] font-semibold text-[#7a5b00]">데모 원문: <InlineText text={b.text} /></div>
+    case 'sheet':
+      return <SheetRow id={b.id} />
     case 'row':
       return (
         <div className="ms-row grid items-start gap-x-6 gap-y-3" style={{ gridTemplateColumns: (b.widths ?? b.cols.map(() => 1)).map((w) => `minmax(0,${w}fr)`).join(' ') }}>

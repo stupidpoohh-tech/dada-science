@@ -69,10 +69,10 @@ export default function UnitPage({ unit, focus, back, concept }: { unit: UnitMet
   const conceptObj = focusBar?.concept ? conceptById(focusBar.concept) : undefined
 
   return (
-    <div className="mx-auto flex w-full max-w-[1320px] gap-6 px-3 sm:px-5 lg:px-6">
+    <div className="mx-auto flex w-full max-w-[1400px] gap-5 px-3 sm:px-5 lg:px-6">
       {/* 가로형: 왼쪽 목차 */}
       {sideOpen && (
-        <aside className="sticky top-0 hidden h-dvh w-[268px] shrink-0 overflow-y-auto py-5 lg:block">
+        <aside className="sticky top-0 hidden h-dvh w-[248px] shrink-0 overflow-y-auto border-r border-ink/8 py-5 pr-4 lg:block">
           <div className="mb-4 flex items-center justify-between">
             <a href="#/" className="text-[15px] font-extrabold">움직이는 지구과학</a>
             <button type="button" onClick={() => setSideOpen(false)} className="rounded-lg px-2 py-1 text-[13px] font-bold text-ink/50 hover:bg-ink/5" aria-label="목차 접기">접기 ‹</button>
@@ -82,7 +82,7 @@ export default function UnitPage({ unit, focus, back, concept }: { unit: UnitMet
       )}
       <main className="min-w-0 flex-1">
         {/* 세로형·휴대폰: 위쪽 바 */}
-        <div className={`sticky top-0 z-30 -mx-3 border-b border-ink/8 bg-paper/95 px-3 py-2 backdrop-blur sm:-mx-5 sm:px-5 ${sideOpen ? 'lg:hidden' : ''}`}>
+        <div className={`sticky top-0 z-30 -mx-3 border-b border-ink/8 bg-white/95 px-3 py-2 backdrop-blur sm:-mx-5 sm:px-5 ${sideOpen ? 'lg:hidden' : ''}`}>
           <div className="flex items-center gap-2">
             {!sideOpen && <button type="button" onClick={() => setSideOpen(true)} className="hidden h-10 rounded-lg border border-ink/12 px-3 text-[14px] font-bold lg:block">› 목차</button>}
             <button type="button" onClick={() => setTocOpen((v) => !v)} aria-expanded={tocOpen}
@@ -102,18 +102,16 @@ export default function UnitPage({ unit, focus, back, concept }: { unit: UnitMet
           )}
         </div>
 
-        <div className="mx-auto max-w-[860px] py-6">
+        <div className="py-4">
           {unit.status !== 'original' && (
             <p className="mb-4 rounded-xl bg-[#fff6db] px-4 py-2.5 text-[14px] font-semibold text-[#7a5b00]">
               {unit.status === 'demo' ? '이 단원의 본문은 데모 원문입니다.' : '이 단원의 원문은 아직 입력되지 않았습니다.'}
             </p>
           )}
           <PageScaler>
-            {() => (
-              <AnnotationSurface scopeId={unit.id}>
-                <ContinuousTextbook unit={unit} />
-              </AnnotationSurface>
-            )}
+            <AnnotationSurface scopeId={unit.id}>
+              <ContinuousTextbook unit={unit} />
+            </AnnotationSurface>
           </PageScaler>
         </div>
       </main>

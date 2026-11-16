@@ -21,9 +21,9 @@ export const ATMOSPHERE_ANSWERS: Record<string, AnswerKey> = {
   Q10: { answer: [['10']], display: '10' },
   Q11: { answer: [['5']], display: '5', explanation: '학습 자료에서는 습윤 단열 감률을 약 5℃/km로 가정한다. 실제 값은 온도와 수증기량에 따라 달라질 수 있다.' },
   Q12: { answer: 2, display: '②', explanation: '포화된 공기가 상승할 때 수증기가 응결하면서 잠열이 방출되므로 기온이 낮아지는 정도가 작아진다.' },
-  Q13: { answer: [['3']], display: '3' },
+  Q13: { answer: [['2']], display: '2' },
   Q14: { answer: [['상승 응결 고도']], display: '상승 응결 고도', explanation: '불포화 공기가 상승하면서 기온이 이슬점에 도달하면 포화 상태가 되고, 응결이 시작될 수 있다.' },
-  Q15: { answer: [['1km']], display: '1km', explanation: '처음 기온과 이슬점 차이는 7℃이다. 상승할 때 두 값의 차이는 1km당 10−3=7℃씩 감소한다. 따라서 상승 응결 고도는 7÷7=1km이다.' },
+  Q15: { answer: [['1km']], display: '1km', explanation: '처음 기온과 이슬점 차이는 8℃이다. 상승할 때 두 값의 차이는 1km당 10−2=8℃씩 감소한다. 따라서 상승 응결 고도는 8÷8=1km이다.' },
   Q16: { answer: 'X', display: 'X', explanation: '절대 안정 상태에서는 상승한 공기가 주변보다 차가워지므로 원래 높이로 돌아가려는 경향을 보인다.' },
   Q17: { answer: [['조건부 불안정']], display: '조건부 불안정' },
   Q18: { answer: [['푄 현상', '푄']], display: '푄 현상' },
@@ -44,7 +44,7 @@ export const ATMOSPHERE_ANSWERS: Record<string, AnswerKey> = {
   E02: { answer: 3, display: '③', explanation: '오존은 자외선을, 수증기와 이산화 탄소는 적외선을 주로 흡수한다. 태양에서 방출된 가시광선의 상당 부분은 대기를 통과해 지표에 도달한다.' },
   E03: { answer: 5, display: '⑤', explanation: '복사 평형 상태에서도 지구는 지속적으로 에너지를 흡수하고 방출한다.' },
   E04: { answer: 5, display: '⑤' },
-  E05: { answer: 3, display: '③', explanation: '처음 기온과 이슬점의 차이는 7℃이다. 두 값의 차이가 1km당 7℃ 감소하므로 상승 응결 고도는 1km이다.' },
+  E05: { answer: 3, display: '③', explanation: '처음 기온과 이슬점의 차이는 8℃이다. 두 값의 차이가 1km당 8℃(10−2) 감소하므로 상승 응결 고도는 1km이다.' },
   E06: { answer: 2, display: '②', explanation: '0~1km: 25−10=15℃\n1~3km: 15−5×2=5℃' },
   E07: { answer: 4, display: '④' },
   E08: { answer: 2, display: '②', explanation: '환경 기온 감률이 습윤 단열 감률보다 작으면 절대 안정이다. 두 단열 감률 사이이면 조건부 불안정이다. 건조 단열 감률보다 크면 절대 불안정이다.' },
@@ -63,7 +63,7 @@ export const ATMOSPHERE_ANSWERS: Record<string, AnswerKey> = {
 
   E21: {
     manual: true, answer: '', display: '(1) 2km (2) 3℃',
-    modelAnswer: '(1) 2km\n(2) 3℃\n(3) 처음 기온과 이슬점의 차이는 14℃이다. 상승하면서 두 값의 차이는 1km당 7℃씩 감소하므로 2km에서 포화된다. 고도 2km의 기온은 28−20=8℃이다. 그 후 1km를 더 상승하며 기온이 5℃ 낮아지므로 고도 3km의 기온은 3℃이다.',
+    modelAnswer: '(1) 2km\n(2) 3℃\n(3) 처음 기온과 이슬점의 차이는 16℃이다. 상승하면서 두 값의 차이는 1km당 8℃(10−2)씩 감소하므로 2km에서 포화된다. 고도 2km의 기온은 28−20=8℃이다. 그 후 1km를 더 상승하며 기온이 5℃ 낮아지므로 고도 3km의 기온은 3℃이다.',
     rubric: [{ text: '상승 응결 고도 계산', points: 1 }, { text: '고도 3km 기온 계산', points: 1 }, { text: '계산 과정 설명', points: 1 }],
   },
   E22: {
@@ -73,7 +73,7 @@ export const ATMOSPHERE_ANSWERS: Record<string, AnswerKey> = {
   },
   E23: {
     manual: true, answer: '', display: '(1) 2km (2) 0℃ (3) 30℃',
-    modelAnswer: '(1) 2km\n(2) 0℃\n(3) 30℃\n(4) 공기가 풍상측에서 상승할 때 응결이 발생하면 잠열이 방출되어 냉각되는 정도가 작아진다. 이후 풍하측으로 내려올 때에는 건조 단열 감률로 압축 가열되므로 처음보다 기온이 높아진다.\n[계산 과정] 상승 응결 고도: (25−11)÷(10−3)=2km / 정상 기온: 25−10×2−5×1=0℃ / 풍하측 기온: 0+10×3=30℃',
+    modelAnswer: '(1) 2km\n(2) 0℃\n(3) 30℃\n(4) 공기가 풍상측에서 상승할 때 응결이 발생하면 잠열이 방출되어 냉각되는 정도가 작아진다. 이후 풍하측으로 내려올 때에는 건조 단열 감률로 압축 가열되므로 처음보다 기온이 높아진다.\n[계산 과정] 상승 응결 고도: (25−9)÷(10−2)=2km / 정상 기온: 25−10×2−5×1=0℃ / 풍하측 기온: 0+10×3=30℃',
     rubric: [{ text: '상승 응결 고도', points: 1 }, { text: '산 정상 기온', points: 1 }, { text: '풍하측 기온', points: 1 }, { text: '잠열과 단열 변화 설명', points: 1 }],
   },
   E24: {

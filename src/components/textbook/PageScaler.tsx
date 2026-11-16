@@ -1,19 +1,23 @@
-import { useLayoutEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 
 /**
- * 교재 판형 고정: 본문을 고정 폭(720 논리 px)으로 배치한 뒤 화면 폭에 맞게 확대·축소합니다.
- * → 화면 크기가 달라져도 줄바꿈이 바뀌지 않아 필기 위치가 본문과 정확히 맞습니다.
- * 폭이 매우 좁은 휴대폰(600px 미만)에서는 읽기 편하도록 줄바꿈을 다시 하며, 이때 필기는 블록 비율로 맞춰 표시됩니다.
+ * A4 학습지 판형: 본문을 고정 폭(A4 너비 794 논리 px)으로 배치한 뒤 확대·축소합니다.
+ * - 화면 크기가 달라도 배치와 줄바꿈이 원본과 같고, 필기 좌표도 어긋나지 않습니다.
+ * - 기본은 화면 폭에 맞춤. 휴대폰처럼 좁은 화면에서는 확대 후 가로로 스크롤해 볼 수 있습니다.
  */
-export const PAGE_WIDTH = 720
-const MIN_FIXED = 600
-const MAX_SCALE = 1.18
+export const PAGE_WIDTH = 794
+const KEY = 'moving-earth-science:zoom'
+const STEPS = [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.25, 1.4, 1.6, 1.8, 2]
 
-export default function PageScaler({ children }: { children: (reflow: boolean) => ReactNode }) {
+export default function PageScaler({ children }: { children: ReactNode }) {
   const outer = useRef<HTMLDivElement>(null)
   const inner = useRef<HTMLDivElement>(null)
   const [w, setW] = useState(0)
   const [h, setH] = useState(0)
+  const [zoom, setZoom] = useState<number | 'fit'>(() => {
+    try { const v = localStorage.getItem(KEY); return v && v !== 'fit' ? Number(v) : 'fit' } catch { return 'fit' }
+  })
+  useEffect(() => { try { localStorage.setItem(KEY, String(zoom)) } catch { /* 무시 */ } }, [zoom])
   useLayoutEffect(() => {
     const o = outer.current, i = inner.current
     if (!o || !i) return
@@ -22,14 +26,28 @@ export default function PageScaler({ children }: { children: (reflow: boolean) =
     setW(o.clientWidth); setH(i.offsetHeight)
     return () => ro.disconnect()
   }, [])
-  const reflow = w > 0 && w < MIN_FIXED
-  const scale = reflow || !w ? 1 : Math.min(MAX_SCALE, w / PAGE_WIDTH)
+  const fit = w ? Math.min(1.3, w / PAGE_WIDTH) : 1
+  const scale = zoom === 'fit' ? fit : zoom
+  const cur = zoom === 'fit' ? fit : zoom
+  const step = (dir: 1 | -1) => {
+    const next = dir > 0 ? STEPS.find((s) => s > cur + 0.001) : [...STEPS].reverse().find((s) => s < cur - 0.001)
+    if (next) setZoom(next)
+  }
   return (
-    <div ref={outer} className="w-full" style={{ height: reflow ? undefined : h * scale || undefined }}>
-      <div ref={inner} className={reflow ? 'reflow' : ''}
-        style={reflow ? undefined : { width: PAGE_WIDTH, transform: `scale(${scale})`, transformOrigin: 'top left' }}>
-        {children(reflow)}
+    <>
+      <div ref={outer} className="w-full overflow-x-auto overscroll-x-contain">
+        <div className="mx-auto" style={{ width: PAGE_WIDTH * scale, height: h * scale || undefined }}>
+          <div ref={inner} style={{ width: PAGE_WIDTH, transform: `scale(${scale})`, transformOrigin: 'top left' }}>
+            {children}
+          </div>
+        </div>
       </div>
-    </div>
+      <div className="fixed bottom-3 left-3 z-40 flex items-center gap-0.5 rounded-full border border-ink/12 bg-white px-1 py-1 text-[13px] font-bold shadow-sm" role="group" aria-label="학습지 크기">
+        <button type="button" onClick={() => step(-1)} className="no-tap h-9 w-9 rounded-full hover:bg-ink/5" aria-label="축소">−</button>
+        <span className="w-12 text-center tabular-nums text-ink/70">{Math.round(scale * 100)}%</span>
+        <button type="button" onClick={() => step(1)} className="no-tap h-9 w-9 rounded-full hover:bg-ink/5" aria-label="확대">＋</button>
+        <button type="button" onClick={() => setZoom('fit')} className={`no-tap h-9 rounded-full px-2.5 ${zoom === 'fit' ? 'text-brand' : 'text-ink/60 hover:bg-ink/5'}`}>맞춤</button>
+      </div>
+    </>
   )
 }

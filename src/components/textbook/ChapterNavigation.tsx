@@ -2,6 +2,7 @@ import type { UnitMeta } from '../../content/types'
 import { chapterDone, unitStats, UNITS } from '../../lib/content'
 import { href } from '../../lib/router'
 import { useProgress } from '../../lib/store'
+import { ChapterFooter } from './ContinuousTextbook'
 
 /** 대단원 목차 + 학습 진행률 + 문제 풀이 진입 */
 export default function ChapterNavigation({ unit, current, onJump, onSource, compact }: {
@@ -34,6 +35,7 @@ export default function ChapterNavigation({ unit, current, onJump, onSource, com
                 <span className={`min-w-0 flex-1 leading-snug ${active ? 'font-extrabold' : 'font-semibold'}`}>{c.title}</span>
                 {done && <span className="text-[#00a865]" aria-label="학습 완료">✓</span>}
               </button>
+              {active && <div className="mb-2 ml-9 mt-0.5"><ChapterFooter unit={unit} chapterId={c.id} /></div>}
             </li>
           )
         })}

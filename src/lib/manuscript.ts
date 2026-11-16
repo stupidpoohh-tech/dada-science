@@ -16,6 +16,8 @@ export type Block =
   | { kind: 'list'; id: string; items: { text: string; depth: number; id?: string }[] }
   /** 좌우 배치(원문 노트의 배치를 따름) */
   | { kind: 'row'; id: string; cols: Block[][]; widths?: number[] }
+  /** 원본 학습지 배치를 재현한 행(src/sheets) */
+  | { kind: 'sheet'; id: string }
   /** 관련 팝업 바로가기 줄 */
   | { kind: 'popups'; id: string; popups: { id: string; step?: number }[] }
 
@@ -109,6 +111,11 @@ export function parseManuscript(src: string): ParsedManuscript {
     if (line === '@end') {
       const row = rowStack.pop()
       if (row) push(row)
+      i++; continue
+    }
+    if (line.startsWith('@sheet')) {
+      const a = parseAttrs(line)
+      push({ kind: 'sheet', id: a.id ?? autoId('sheet') })
       i++; continue
     }
     if (line.startsWith('@popups')) {
