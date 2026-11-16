@@ -291,7 +291,7 @@ const Precipitation = () => (
   <>
     <rect x={10} y={20} width={140} height={150} rx={10} fill="#eef5ff" />
     <T x={80} y={36} s={12}>빙정설 (고위도)</T>
-    <T x={80} y={56} s={10} c={C.muted}>구름 상층 −40℃</T>
+    <T x={80} y={56} s={10} c={C.muted}>영하의 구름</T>
     <text x={45} y={92} fontSize={22} textAnchor="middle">❄</text>
     {[95, 110, 120].map((x, i) => <circle key={x} cx={x} cy={84 + i * 6} r={4} fill={C.current} opacity={0.6} />)}
     <Arrow x1={88} y1={96} x2={58} y2={92} color={C.current} width={1.5} head={6} />

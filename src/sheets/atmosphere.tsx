@@ -169,7 +169,7 @@ export const ATMOSPHERE_ROWS: Record<string, { h: number; label: string; render:
     h: 176, label: '대기 안정도',
     render: () => (
       <>
-        <Txt x={190} y={20} size={13}>(안정한 공기!) = 역전층 (높이↑ → 기온↑)</Txt>
+        <Txt x={190} y={20} size={13}>역전층 → 매우 안정 (높이↑ → 기온↑)</Txt>
         <L x={14} y={46}>[대기안정도]</L>
         <Txt x={112} y={46} size={13.5}>: 공기 덩어리가 원래 높이로 되돌아가려고 하는 정도</Txt>
         <Txt x={160} y={78} size={13.5}>→ 절대안정</Txt>
@@ -215,10 +215,10 @@ export const ATMOSPHERE_ROWS: Record<string, { h: number; label: string; render:
         <Txt x={460} y={34} size={11.5}>↗ 0℃ 아래에서도 얼지않고 물방울로 존재.</Txt>
         <Txt x={156} y={66} size={13.5}>고위도</Txt>
         <Boxed x={202} y={66} size={13.5}>빙정설</Boxed>
-        <Txt x={254} y={66} size={13}>구름 상층 : −40℃ → 빙정(얼음) +</Txt>
-        <Txt x={460} y={66} size={13} u="wavy">과냉각물방울</Txt>
-        <Txt x={450} y={88} size={12.5}>⇒ 과냉각물방울이 증발해 수증기 되어</Txt>
-        <Txt x={560} y={108} size={12.5}>빙정에 달라붙음 ⇒ 눈, 비</Txt>
+        <Txt x={254} y={66} size={13}>영하의 구름 : 빙정(얼음) +</Txt>
+        <Txt x={394} y={66} size={13} u="wavy">과냉각물방울</Txt>
+        <Txt x={450} y={88} size={12.5}>⇒ 물방울 증발 → 수증기 → 빙정 성장 ⇒ 눈, 비</Txt>
+        <Txt x={520} y={108} size={11}>* 포화수증기압: 물방울 &gt; 얼음 (같은 온도)</Txt>
         <Txt x={156} y={126} size={13.5}>저위도</Txt>
         <Boxed x={202} y={126} size={13.5}>병합설</Boxed>
         <Txt x={254} y={126} size={13}>구름 0℃ 이상 → 물방울 충돌, 병합 ⇒ 비</Txt>
@@ -345,8 +345,8 @@ export const ATMOSPHERE_ROWS: Record<string, { h: number; label: string; render:
           <Txt x={454} y={24} size={12.5}>: 지상풍이 등압선과 이루는 각 (마찰력 클수록 경각도↑)</Txt>
         </Hot>
         <L x={14} y={70}>[일기도]</L>
-        <Txt x={90} y={70} size={13}>- '지상일기도'의 기압 = 등압선 (등고도면에서 기압이 같은 점을 연결)</Txt>
-        <Txt x={90} y={94} size={13}>- '상층일기도'의 기압 = 등고선 (등압면의 고도가 같은 곳을 연결) 고도 높으면</Txt>
+        <Txt x={90} y={70} size={13}>- 지상일기도: 등압선 (해면기압이 같은 점 연결)</Txt>
+        <Txt x={90} y={94} size={13}>- 상층 등압면일기도: 등고선 (같은 기압면의 높이 연결) 고도 높으면</Txt>
         <Circled x={522} y={94} size={12}>고</Circled>
         <Txt x={536} y={94} size={13}>기압. 고도</Txt>
         <Circled x={614} y={94} size={12}>저</Circled>
@@ -365,7 +365,7 @@ export const ATMOSPHERE_ROWS: Record<string, { h: number; label: string; render:
         <Txt x={250} y={20} size={12}>위도↑ 올라갈수록 급격히 기압↓</Txt>
         <Arw x1={488} y1={18} x2={440} y2={18} color={RED} w={1.8} />
         <Txt x={448} y={8} size={11.5} color={RED} weight={700}>기압경도력</Txt>
-        <Txt x={232} y={44} size={13} color={RED} weight={700}>* 같은 고도일 때 고위도 기압 &lt; 저위도 기압</Txt>
+        <Txt x={232} y={44} size={13} color={RED} weight={700}>* 중위도 상층(일반적): 고위도 쪽 기압↓</Txt>
         <Txt x={516} y={44} size={14}>⇒</Txt>
         <Circled x={562} y={44} size={13}>편서풍</Circled>
         <Txt x={594} y={44} size={12}>서쪽에서 불어오는 바람~</Txt>
@@ -373,7 +373,7 @@ export const ATMOSPHERE_ROWS: Record<string, { h: number; label: string; render:
         <Txt x={146} y={76} size={12.5}>: 중위도 상공에서 발생하는 행성파 (고위도와 저위도의 기온차 & 전향력 때문)</Txt>
         <Txt x={20} y={102} size={12.5}>(= 행성파 : 회전하는 행성의 대기에 형성되는 거대한 파동)</Txt>
         <Txt x={520} y={100} size={11}>* 제트류 : 편서풍에서 속도가 가장 빠른 영역</Txt>
-        <Txt x={540} y={118} size={11}>– 한대전선제트류 &gt; 아열대제트류</Txt>
+        <Txt x={500} y={118} size={10.5}>– 한대전선·아열대 제트류: 풍속은 조건에 따라 다름</Txt>
       </>
     ),
   },
@@ -388,7 +388,7 @@ export const ATMOSPHERE_ROWS: Record<string, { h: number; label: string; render:
         <Arw x1={182} y1={74} x2={182} y2={50} w={1.2} head={5} />
         <Txt x={170} y={92} size={12} color={RED} weight={700}>Hot</Txt>
         <Txt x={14} y={66} size={13} color={RED} weight={700}>태양상수</Txt>
-        <Txt x={14} y={88} size={13} color={RED} weight={700}>=1367W</Txt>
+        <Txt x={14} y={90} size={12} color={RED} weight={700}>≈1367W/m²</Txt>
         <Txt x={30} y={132} size={12}>↳ 지구가 받는 평균 태양복사에너지</Txt>
         <Txt x={60} y={150} size={12}>= 태양상수 × 1/4</Txt>
         <Curve x1={236} y1={72} cx={250} cy={52} x2={238} y2={44} head={5} />

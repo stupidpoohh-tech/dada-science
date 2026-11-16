@@ -255,8 +255,8 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
           {/* 왼쪽 그림 */}
           <path d="M52 230 L52 196 Q72 194 84 172 Q100 142 132 140 L196 140 L196 230 Z" fill="none" stroke={INK} strokeWidth={1.5} />
           <Arw x1={136} y1={216} x2={60} y2={216} w={1.5} />
-          <Arw x1={134} y1={214} x2={168} y2={176} color={RED} w={2.2} />
-          <Txt x={150} y={168} size={13} color={RED} weight={700}>지형류</Txt>
+          <Arw x1={137} y1={213} x2={137} y2={168} color={RED} w={2.2} />
+          <Txt x={145} y={176} size={13} color={RED} weight={700}>지형류</Txt>
           <Arw x1={138} y1={216} x2={196} y2={216} color={RED} w={1.6} />
           <Txt x={202} y={220} size={13} color={RED} weight={700}>전향력</Txt>
           <Txt x={70} y={252} size={13} weight={600}>수압경도력</Txt>
@@ -343,10 +343,10 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
           </Hot>
           <Curve x1={532} y1={28} cx={530} cy={12} x2={556} y2={12} head={5} />
           <Txt x={562} y={16} size={12.5} weight={600}>풍역대</Txt>
-          <Txt x={350} y={40} size={13.5}>- 풍랑 : 마루가 뾰족 (바람부는 해역) 방향 일정</Txt>
-          <Txt x={350} y={74} size={13.5}>- 너울 : 마루가 둥글, 긴 파장</Txt>
-          <Txt x={350} y={108} size={13.5}>- 연안쇄파 : (수심 얕아져) 느린속도, 짧은 파장,</Txt>
-          <Txt x={448} y={130} size={13.5}>높은 파고 → 부서짐.</Txt>
+          <Txt x={350} y={40} size={13.5}>- 풍랑 : 마루 뾰족 / 방향 불규칙 (바람 부는 해역)</Txt>
+          <Txt x={350} y={74} size={13.5}>- 너울 : 마루 둥글 / 긴 파장 / 방향 비교적 일정</Txt>
+          <Txt x={350} y={108} size={13.5}>- 연안쇄파 : 느린 속도 / 짧은 파장 /</Txt>
+          <Txt x={448} y={130} size={13.5}>높은 파고 → 부서짐</Txt>
         </>
       )
     },
@@ -429,7 +429,9 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
           <Arw x1={214} y1={80} x2={214} y2={94} w={1.4} head={6} />
           <path d="M110 112 Q132 122 160 112 Q206 90 250 106" fill="none" stroke={INK} strokeWidth={1.6} />
         </g>
-        <Txt x={112} y={156} size={13.5}>해면기압 1hPa 낮아지면 해수면 1cm 높아짐</Txt>
+        <Txt x={292} y={92} size={12.5}>강풍 → 해수 집적 /</Txt>
+        <Txt x={292} y={112} size={12.5}>저기압 → 해수면 상승</Txt>
+        <Txt x={112} y={156} size={13.5}>기압 1hPa↓ → 해수면 약 1cm↑ (기압 효과)</Txt>
         <g>
           <Txt x={482} y={30} size={14} weight={700}>- 지진해일 = 쓰나미</Txt>
           <line x1={494} x2={556} y1={36} y2={36} stroke={INK} strokeWidth={1.3} />
