@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b",
-    "build:single": "tsc -b && vite build --mode single && node scripts/make-artifact.mjs"
+    "build:single": "tsc -b && vite build --mode single && node scripts/make-artifact.mjs",
+    "check:bank": "tsx scripts/check-bank.ts"
   },
   "dependencies": {
     "perfect-freehand": "^1.2.3",
@@ -22,6 +23,7 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.3.0",
     "tailwindcss": "^4.3.5",
+    "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vite": "^8.3.8",
     "vite-plugin-singlefile": "^2.3.4"

@@ -381,7 +381,23 @@ const WesterlyWave = () => (
   </>
 )
 
+/** 문제용: 지균풍 방향 판단(바람 방향 화살표는 그리지 않음) */
+const QuizGeoWind = () => (
+  <>
+    {[50, 100, 150].map((y) => <line key={y} x1={40} x2={290} y1={y} y2={y} stroke={C.muted} strokeWidth={1.6} />)}
+    <T x={30} y={22} s={12} a="start">북쪽 · 저기압</T>
+    <T x={30} y={182} s={12} a="start">남쪽 · 고기압</T>
+    <circle cx={165} cy={100} r={9} fill="white" stroke={C.ink} strokeWidth={2} />
+    <Arrow x1={165} y1={90} x2={165} y2={56} color={C.pgf} width={3} />
+    <Arrow x1={165} y1={110} x2={165} y2={144} color={RED} width={3} />
+    <T x={175} y={66} s={11} a="start" c={C.pgf}>기압 경도력</T>
+    <T x={175} y={136} s={11} a="start" c={RED}>전향력</T>
+    <T x={290} y={42} s={10} a="end" c={C.muted}>등압선</T>
+  </>
+)
+
 export const FIGURES: Record<string, ComponentType> = {
+  'quiz-geo-wind': QuizGeoWind,
   hydrostatic: Hydrostatic,
   slope: Slope,
   density: Density,

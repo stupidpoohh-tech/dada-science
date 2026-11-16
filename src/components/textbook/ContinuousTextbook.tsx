@@ -3,6 +3,8 @@ import { chapterDone, manuscriptOf, popupById, requiredPopups } from '../../lib/
 import { updateProgress, useProgress } from '../../lib/store'
 import ConceptBlock from './ConceptBlock'
 import { PopupChip } from './Inline'
+import { bankOf, TOPICS } from '../../content/bank'
+import { href } from '../../lib/router'
 
 /** 대단원 전체를 하나의 연속 문서로 렌더링(소챕터는 제목·구분선·여백으로만 구분) */
 export default function ContinuousTextbook({ unit }: { unit: UnitMeta }) {
@@ -35,6 +37,18 @@ function ChapterSection({ unit, chapterId, no, title, blocks }: { unit: UnitMeta
       <div className="mt-5 flex flex-col gap-4">
         {blocks.map((b) => <ConceptBlock key={b.id} b={b} />)}
       </div>
+      {/* 이 소챕터와 관련된 문제(문제은행 소주제 연결) */}
+      {(TOPICS[unit.id] ?? []).filter((t) => t.chapterIds.includes(chapterId)).map((t) => {
+        const n = bankOf(unit.id, 'concept').filter((q) => q.topic === t.id).length
+        const m = bankOf(unit.id, 'exam').filter((q) => q.topic === t.id).length
+        return (n + m > 0) && (
+          <div key={t.id} data-block-id={`${chapterId}-quiz-${t.id}`} className="mt-4 flex flex-wrap items-center gap-2 text-[14px]">
+            <span className="font-bold text-ink/55">관련 문제 · {t.label}</span>
+            {n > 0 && <a href={href({ name: 'concept', unitId: unit.id, topic: t.id })} className="inline-flex min-h-9 items-center rounded-full border border-ink/15 bg-white px-3 font-bold hover:border-brand/50">개념 확인 {n}문항 →</a>}
+            {m > 0 && <a href={href({ name: 'exam', unitId: unit.id })} className="inline-flex min-h-9 items-center rounded-full border border-ink/15 bg-white px-3 font-bold hover:border-brand/50">내신 대비 {m}문항 →</a>}
+          </div>
+        )
+      })}
       {/* 소챕터 학습 완료 조건 */}
       <div data-block-id={`${chapterId}-check`} className="mt-6 flex flex-wrap items-center gap-2 rounded-xl border border-ink/10 bg-[#f7f9fc] px-3.5 py-2.5 text-[14px]">
         {req ? (

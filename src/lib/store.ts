@@ -5,7 +5,7 @@ import { useSyncExternalStore } from 'react'
  * 형식을 바꿀 때는 VERSION을 올리고 migrate()에 변환을 추가하세요.
  */
 const KEY = 'moving-earth-science:progress'
-const VERSION = 2
+const VERSION = 3
 
 export interface PopupRecord { done: boolean; attempts: number; correctAttempts: number; firstTry?: boolean; doneAt?: number }
 export interface AnswerRecord { answer: unknown; correct: boolean | null; at: number }
@@ -23,13 +23,29 @@ export interface ExamRecord {
 export interface WrongRecord {
   questionId: string
   unitId: string
-  set: 'practice' | 'exam'
+  set: string
   lastAnswer: unknown
   wrongCount: number
   lastAt: number
   retries: { at: number; correct: boolean }[]
   resolved: boolean
 }
+/** 문제은행 풀이 상태(단원·세트별) */
+export interface BankSetState {
+  answers: Record<string, unknown>
+  /** 정답·해설이 공개된 문항(정답 확인 또는 채점 후) */
+  revealed: Record<string, boolean>
+  submittedAt?: number
+  /** 교사 확인으로 정답 인정 */
+  overrides: Record<string, boolean>
+  /** 서술형·설명형 채점(채점 기준 체크, 맞음/틀림, 확정 여부) */
+  manual: Record<string, { rubric?: boolean[]; correct?: boolean; confirmed?: boolean }>
+  /** 오답만 다시 풀기 중인 문항 */
+  retry?: string[]
+  history: { at: number; score: number; max: number; correct: number; wrong: number; unanswered: number; pending: number }[]
+}
+export const emptyBankSet = (): BankSetState => ({ answers: {}, revealed: {}, overrides: {}, manual: {}, history: [] })
+
 export interface ProgressState {
   version: number
   popups: Record<string, PopupRecord>
@@ -37,9 +53,10 @@ export interface ProgressState {
   practice: Record<string, AnswerRecord>
   exams: Record<string, ExamRecord>
   wrong: Record<string, WrongRecord>
+  bank: Record<string, BankSetState>
 }
 
-const empty = (): ProgressState => ({ version: VERSION, popups: {}, chapters: {}, practice: {}, exams: {}, wrong: {} })
+const empty = (): ProgressState => ({ version: VERSION, popups: {}, chapters: {}, practice: {}, exams: {}, wrong: {}, bank: {} })
 
 /** 1차 버전(개념 번호 배열) → 팝업 ID 기록 */
 const V1_IDS = ['pressure', 'pgf', 'geostrophic', 'ekman', 'upwelling', 'waves', 'shoaling', 'tsunami', 'tides', 'tide-day']
@@ -50,6 +67,8 @@ function migrate(): ProgressState {
     if (raw) {
       const p = JSON.parse(raw)
       if (p && p.version === VERSION) return { ...s, ...p }
+      // v2 → v3: 문제은행 추가. 데모 문항 기록은 문항이 없어져 표시되지 않음
+      if (p && p.version === 2) return { ...s, ...p, version: VERSION, bank: {} }
     }
     const old = localStorage.getItem('moving-earth-science:ocean:v1')
     if (old) {
@@ -96,7 +115,7 @@ export function recordPopupAnswer(popupId: string, correct: boolean) {
   })
 }
 
-export function recordWrong(questionId: string, unitId: string, set: 'practice' | 'exam', answer: unknown) {
+export function recordWrong(questionId: string, unitId: string, set: string, answer: unknown) {
   updateProgress((s) => {
     const w = s.wrong[questionId] ?? { questionId, unitId, set, lastAnswer: answer, wrongCount: 0, lastAt: 0, retries: [], resolved: false }
     w.wrongCount++

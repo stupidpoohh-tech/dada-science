@@ -7,14 +7,14 @@
 - 대단원마다 **한 장의 연속된 교재**: 소챕터는 제목·번호·구분선으로만 나뉘고 스크롤로 이어집니다. 왼쪽 목차(가로 화면) 또는 위쪽 접이식 목차(세로·휴대폰)가 현재 읽는 소챕터를 자동 강조합니다.
 - 원문의 그림·용어 중 **재생 표시가 있는 것만** 누르면 단계별 움직이는 그림이 열리고, 닫으면 읽던 위치로 돌아옵니다. 마지막 단계의 확인 문제를 맞히면 그 개념이 학습 완료됩니다.
 - **필기**: 펜·형광펜·레이저 포인터·지우개, 실행 취소·다시 실행, 색·굵기, 표시/숨기기, 백업 내보내기·가져오기. 자동 저장(IndexedDB).
-- **문제**: 기본 예제(문항별 즉시 채점), 내신 대비(시험 모드 → 제출 후 총점·정오표·해설·틀린 개념), 오답 노트(자동 등록·다시 풀기·재풀이 기록). 해설과 결과의 개념 링크는 원문의 정확한 위치로 이동해 강조하고, 관련 팝업 다시 보기와 ‘문제로 돌아가기’를 제공합니다.
+- **문제은행**: 개념 확인 문제(문항별 정답 확인·전체 채점), 내신 대비(시험 모드 → 제출 후 일괄 채점, 서술형은 교사 채점 확정 후 점수 반영), 오답 노트(자동 등록·다시 풀기·재풀이 기록). 진행률, 문항별 응답 상태, 정답·해설 펼치기/접기, 오답·미응답 다시 풀기, 개념별 정답률을 제공합니다. 해설의 개념 링크는 원문의 정확한 위치로 이동해 강조하고, 관련 움직이는 그림과 ‘문제로 돌아가기’를 제공합니다.
 
 ## 현재 콘텐츠 상태
 
-| 대단원 | 원문 | 움직이는 그림 | 문제 |
-|---|---|---|---|
-| Ⅱ. 해수의 운동과 순환 | 손글씨 노트에서 옮김(5개 소챕터) | 11개 | 데모 문항 12개(교체 필요) |
-| Ⅲ. 강수 과정과 대기의 운동 | 손글씨 노트에서 옮김(6개 소챕터) | 4개 | 입력 대기 |
+| 대단원 | 원문 | 움직이는 그림 | 개념 확인 문제 | 내신 대비 |
+|---|---|---|---|---|
+| Ⅱ. 해수의 운동과 순환 | 손글씨 노트에서 옮김(5개 소챕터) | 11개 | C01~C25 (25문항, 100점) | E01~E25 (객관식 20 + 서술형 5, 100점) |
+| Ⅲ. 강수 과정과 대기의 운동 | 손글씨 노트에서 옮김(6개 소챕터) | 4개 | Q01~Q30 (30문항, 정답률) | 1~25번 (객관식 20 + 서술형 5, 100점) |
 
 손글씨 판독이 불확실한 곳과 확인이 필요한 내용은 [`docs/REVIEW.md`](docs/REVIEW.md)에 정리했습니다. 원본 자료는 `source/`에 있습니다.
 
@@ -54,36 +54,34 @@ npm run build
 | 팝업 그림 추가 | `src/scenes/`에 컴포넌트를 만들고 `src/scenes/index.ts`에 등록 |
 | 원문 정적 그림 | `src/figures/index.tsx` (`@figure fig=키`) |
 
-### 문제 입력 예
+### 문제은행
+
+- 문제: `src/content/bank/<단원>.questions.ts` (문제·선택지·소주제·난이도·배점·관련 개념)
+- 정답·해설: `src/content/bank/<단원>.answers.ts` (원본 코드 C01·E01·Q01로 연결, 화면은 채점 후에만 읽음)
+- 소주제(개념 분류)와 연결 소챕터: 각 questions 파일의 `*_TOPICS`
+- 문항 식별자(`code`)와 `id`는 바꾸지 마세요(학습 기록·오답 노트가 연결됨).
+- 무결성 검사: `npm run check:bank` (문항 수·배점 합·정답 번호·빈칸 수·채점 기준 합)
 
 ```ts
-{
-  id: 'ocean-e-07',           // 한 번 정하면 바꾸지 않기(오답 기록 연결)
-  unitId: 'ocean', set: 'exam', number: 7,
-  type: 'tf-set',             // choice | ox | tf-set(ㄱ·ㄴ·ㄷ) | short | essay
-  stem: '그림은 … 옳은 것만을 <보기>에서 있는 대로 고른 것은?',
-  figure: { src: 'questions/ocean-07.png', caption: '…' },   // public/ 기준 이미지
-  statements: ['…', '…', '…'],
-  choices: ['ㄱ', 'ㄴ', 'ㄱ, ㄷ', 'ㄴ, ㄷ', 'ㄱ, ㄴ, ㄷ'],
-  answer: 2,                  // 0부터 센 선택지 번호 / OX는 'O'·'X' / 단답형은 정답 문자열
-  accept: ['…'],              // 단답형에서 인정할 답
-  modelAnswer: '…', rubric: ['…'],   // 서술형(자동 채점하지 않음)
-  explanation: '…', points: 4,
-  conceptIds: ['ocean.ekman', 'ocean.upwelling'],
-}
+// 문제
+{ code: 'C26', topic: 'waves', type: 'blank', difficulty: '하', question: '…(      )…', conceptIds: ['ocean.wave-structure'] }
+// 정답(칸마다 [정답, 허용 답…])
+C26: { answer: [['파장', '파장 길이']], display: '파장', explanation: '…' }
+// 서술형
+E26: { manual: true, answer: '', display: '모범답안 참고', modelAnswer: '…', rubric: [{ text: '…', points: 2 }, { text: '…', points: 2 }] }
 ```
 
 ## 구조
 
 ```
 src/
-├─ content/            단원·원문·개념·팝업·문제 데이터
+├─ content/            단원·원문·개념·팝업 데이터, bank/(문제은행: 문제와 정답 분리)
 ├─ lib/                원문 파서, 진도 저장(localStorage, 버전·이전 기록 변환), 필기 저장(IndexedDB), 라우터
 ├─ components/
 │  ├─ textbook/        UnitPage(AppShell), ChapterNavigation, ContinuousTextbook, ConceptBlock, InteractiveFigure, PageScaler
 │  ├─ popup/           ConceptPopup (SceneViewer, StepControls, ConceptQuiz 재사용)
 │  ├─ annotation/      AnnotationSurface(필기 레이어·펜·형광펜·레이저·지우개), AnnotationToolbar
-│  └─ assessment/      PracticePage, ExamPage(결과 보고서), QuestionRenderer, WrongAnswerNotebook
+│  └─ assessment/      QuestionSetPage(개념 확인·내신 대비·결과), BankQuestionCard(유형별 입력), WrongAnswerNotebook
 ├─ scenes/             움직이는 그림(SVG) 15종
 └─ figures/            원문 정적 그림(SVG)
 ```

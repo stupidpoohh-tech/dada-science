@@ -1,7 +1,6 @@
 import { UNITS, unitStats, POPUPS } from '../lib/content'
 import { href } from '../lib/router'
 import { useProgress } from '../lib/store'
-import { questionsOf } from '../content/questions'
 import { openPopup } from '../lib/popupState'
 
 const STATUS: Record<string, string> = { original: '', demo: '데모 원문', pending: '원문 입력 대기' }
@@ -14,13 +13,13 @@ export default function Home() {
         <p className="mb-2 text-[15px] font-bold text-brand">고등학교 지구과학 · 인터랙티브 디지털 교과서</p>
         <h1 className="text-[36px] font-extrabold leading-tight tracking-tight sm:text-[46px]">움직이는 지구과학</h1>
         <p className="mt-2 max-w-[620px] text-[17px] leading-relaxed text-ink/65">
-          원문을 읽고, 중요한 곳에 필기하고, 이해되지 않는 그림을 누르면 움직이는 설명이 열립니다. 학습을 마치면 기본 예제와 내신 대비 문제로 이어집니다.
+          원문을 읽고, 중요한 곳에 필기하고, 이해되지 않는 그림을 누르면 움직이는 설명이 열립니다. 학습을 마치면 개념 확인 문제와 내신 대비 문제로 이어집니다.
         </p>
       </header>
 
       <ol className="flex flex-col gap-4">
         {UNITS.map((u) => {
-          const st = unitStats(p, u, questionsOf(u.id, 'practice').map((q) => q.id))
+          const st = unitStats(p, u)
           const pct = st.chapters ? Math.round((st.chaptersDone / st.chapters) * 100) : 0
           return (
             <li key={u.id} className="rounded-2xl border border-ink/10 bg-white p-5 sm:p-6">
@@ -38,7 +37,7 @@ export default function Home() {
               </div>
               <div className="mt-4 flex flex-wrap gap-2">
                 <a href={href({ name: 'unit', unitId: u.id })} className="inline-flex h-12 items-center rounded-xl bg-ink px-5 text-[16px] font-bold text-white">교재 펼치기</a>
-                <a href={href({ name: 'practice', unitId: u.id })} className="inline-flex h-12 items-center rounded-xl border border-ink/15 px-4 text-[15px] font-bold">기본 예제</a>
+                <a href={href({ name: 'concept', unitId: u.id })} className="inline-flex h-12 items-center rounded-xl border border-ink/15 px-4 text-[15px] font-bold">개념 확인 문제</a>
                 <a href={href({ name: 'exam', unitId: u.id })} className="inline-flex h-12 items-center rounded-xl border border-ink/15 px-4 text-[15px] font-bold">내신 대비</a>
                 <a href={href({ name: 'wrong', unitId: u.id })} className="inline-flex h-12 items-center rounded-xl border border-ink/15 px-4 text-[15px] font-bold">오답 노트</a>
               </div>

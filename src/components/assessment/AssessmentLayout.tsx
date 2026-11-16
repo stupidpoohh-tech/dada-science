@@ -3,14 +3,13 @@ import type { UnitMeta } from '../../content/types'
 import { href } from '../../lib/router'
 import { unitStats } from '../../lib/content'
 import { useProgress } from '../../lib/store'
-import { questionsOf } from '../../content/questions'
 
 /** 문제 풀이 영역 공통 틀(개념 확인 → 기본 예제 → 내신 대비 → 오답 복습) */
-export default function AssessmentLayout({ unit, tab, children }: { unit: UnitMeta; tab: 'practice' | 'exam' | 'wrong'; children: ReactNode }) {
+export default function AssessmentLayout({ unit, tab, children }: { unit: UnitMeta; tab: 'concept' | 'exam' | 'wrong'; children: ReactNode }) {
   const p = useProgress()
-  const st = unitStats(p, unit, questionsOf(unit.id, 'practice').map((q) => q.id))
+  const st = unitStats(p, unit)
   const tabs = [
-    { key: 'practice', label: '기본 예제' },
+    { key: 'concept', label: '개념 확인 문제' },
     { key: 'exam', label: '내신 대비' },
     { key: 'wrong', label: `오답 노트${st.wrongOpen ? ` ${st.wrongOpen}` : ''}` },
   ] as const
@@ -30,19 +29,10 @@ export default function AssessmentLayout({ unit, tab, children }: { unit: UnitMe
       </div>
       {st.conceptsDone < st.concepts && tab !== 'wrong' && (
         <p className="mt-3 rounded-xl bg-brand/[.06] px-4 py-2.5 text-[14px] font-semibold text-ink/75">
-          권장 학습 순서: 원문 학습과 개념 확인을 먼저 마치세요. 현재 개념 {st.conceptsDone} / {st.concepts} 완료.
+          권장 학습 순서: 원문을 읽고 움직이는 그림으로 원리를 확인한 뒤 문제를 푸세요. 현재 움직이는 그림 개념 확인 {st.conceptsDone} / {st.concepts} 완료.
         </p>
       )}
       <div className="mt-4">{children}</div>
-    </div>
-  )
-}
-
-export function EmptyQuestions({ unit }: { unit: UnitMeta }) {
-  return (
-    <div className="rounded-2xl border-2 border-dashed border-ink/15 p-8 text-center text-[15px] leading-relaxed text-ink/60">
-      아직 이 대단원의 문제 자료가 입력되지 않았습니다.<br />
-      <code className="text-[13px]">src/content/questions/{unit.id}.ts</code>에 준비한 문항을 입력하면 이곳에 표시됩니다.
     </div>
   )
 }

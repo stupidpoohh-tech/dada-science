@@ -4,6 +4,8 @@ import { CONCEPTS } from '../content/concepts'
 import { parseManuscript, parseInline, parseTarget, type ParsedManuscript, type Inline } from './manuscript'
 import type { ProgressState } from './store'
 import type { ChapterMeta, UnitMeta } from '../content/types'
+import { bankOf } from '../content/bank'
+import { summarize } from './bankSummary'
 
 const cache = new Map<string, ParsedManuscript>()
 export function manuscriptOf(unitId: string): ParsedManuscript {
@@ -60,28 +62,28 @@ export interface UnitStats {
   chaptersDone: number; chapters: number
   conceptsDone: number; concepts: number
   firstTryRate: number | null
-  practiceDone: number; practiceCorrect: number
-  examScore?: number; examMax?: number; examAt?: number
+  conceptAnswered: number; conceptCorrect: number; conceptTotal: number; conceptGraded: number
+  examScore?: number; examMax?: number; examPending?: number
   wrongOpen: number
 }
 
-export function unitStats(p: ProgressState, unit: UnitMeta, practiceIds: string[]): UnitStats {
+export function unitStats(p: ProgressState, unit: UnitMeta): UnitStats {
   const pops = POPUPS.filter((x) => x.unitId === unit.id)
   const tried = pops.filter((x) => p.popups[x.id]?.attempts)
   const first = tried.filter((x) => p.popups[x.id]?.firstTry).length
-  const pr = practiceIds.map((id) => p.practice[id]).filter(Boolean)
-  const ex = p.exams[unit.id]
+  const cq = bankOf(unit.id, 'concept'), eq = bankOf(unit.id, 'exam')
+  const cs = p.bank[`${unit.id}:concept`], es = p.bank[`${unit.id}:exam`]
+  const csum = cs ? summarize(cq, cs) : undefined
+  const esum = es?.submittedAt ? summarize(eq, es) : undefined
   return {
     chaptersDone: unit.chapters.filter((c) => chapterDone(p, unit.id, c)).length,
     chapters: unit.chapters.length,
     conceptsDone: pops.filter((x) => p.popups[x.id]?.done).length,
     concepts: pops.length,
     firstTryRate: tried.length ? first / tried.length : null,
-    practiceDone: pr.length,
-    practiceCorrect: pr.filter((r) => r.correct).length,
-    examScore: ex?.submittedAt ? ex.score : undefined,
-    examMax: ex?.submittedAt ? ex.maxScore : undefined,
-    examAt: ex?.submittedAt,
+    conceptAnswered: cs ? Object.keys(cs.answers).length : 0,
+    conceptCorrect: csum?.correct ?? 0, conceptGraded: csum?.graded ?? 0, conceptTotal: cq.length,
+    examScore: esum?.score, examMax: esum?.max, examPending: esum?.pending,
     wrongOpen: Object.values(p.wrong).filter((w) => w.unitId === unit.id && !w.resolved).length,
   }
 }

@@ -1,0 +1,80 @@
+import type { AnswerKey } from './types'
+
+/**
+ * Ⅱ. 해수의 운동과 순환 — 정답·해설(학생이 제출한 뒤에만 화면에 표시)
+ * 빈칸 정답의 [ ] 안 두 번째 이후 값은 '허용 정답(동의어)'입니다. 원본에 없던 동의어는 docs/REVIEW.md에 기록했습니다.
+ */
+export const OCEAN_ANSWERS: Record<string, AnswerKey> = {
+  C01: { answer: [['증가한다', '증가', '증가함', '커진다', '커짐', '높아진다']], display: '증가한다', explanation: '깊어질수록 위에 놓인 해수의 무게가 커지기 때문에 수압이 증가한다.' },
+  C02: { answer: [['중력']], display: '중력', explanation: '연직 수압 경도력은 위쪽, 중력은 아래쪽을 향한다.' },
+  C03: { answer: [['높이'], ['밀도']], display: '첫 번째: 높이 / 두 번째: 밀도', explanation: '해수면 높이 차이와 해수 밀도 차이가 수평 방향의 압력 차이를 만든다.' },
+  C04: { answer: 'O', display: 'O', explanation: '회전하는 지구에서 움직이는 물체의 진행 방향이 편향되는 것처럼 관찰된다.' },
+  C05: { answer: 2, display: '②', explanation: '북반구에서는 진행 방향의 오른쪽, 남반구에서는 왼쪽으로 편향된다.' },
+  C06: { answer: 2, display: '②', explanation: '북반구의 이상화된 에크만 모형에서 표층 해수는 풍향의 오른쪽 약 45° 방향으로 이동한다.' },
+  C07: { answer: [['90']], display: '90', explanation: '표층 해수의 이동 방향 약 45°와 전체 에크만 수송 방향 90°를 구분해야 한다.' },
+  C08: { answer: 'O', display: 'O', explanation: '마찰과 전향력의 영향으로 에크만 나선이 형성된다.' },
+  C09: { answer: [['지형류']], display: '지형류', explanation: '지형류를 설명하는 핵심은 수평 수압 경도력과 전향력의 평형이다.' },
+  C10: { answer: 'X', display: 'X', explanation: '두 힘은 서로 반대 방향으로 작용하여 평형을 이룬다.' },
+  C11: { answer: [['파장']], display: '파장', explanation: '파장은 연속한 마루와 마루 또는 골과 골 사이의 수평거리이다.' },
+  C12: { answer: [['파고']], display: '파고', explanation: '파고와 파장을 구분해야 한다.' },
+  C13: { answer: 2, display: '②', explanation: '파랑의 속력 = 파장 / 주기' },
+  C14: { answer: [['풍랑'], ['너울']], display: '첫 번째: 풍랑 / 두 번째: 너울', explanation: '풍랑은 발생 지역의 바람과 관련되고, 너울은 발생 해역을 벗어나 멀리 전파될 수 있다.' },
+  C15: { answer: 2, display: '②', explanation: '천해파의 속력은 주로 수심에 따라 달라진다.' },
+  C16: { answer: [['폭풍 해일', '폭풍해일']], display: '폭풍 해일 (허용: 폭풍해일)', explanation: '태풍에 따른 강한 바람과 기압 변화가 폭풍 해일의 주요 원인이다.' },
+  C17: { answer: 'O', display: 'O', explanation: '기압이 낮아지면 해수면을 누르는 대기압이 감소한다.' },
+  C18: { answer: [['지진 해일', '지진해일', '쓰나미']], display: '지진 해일 (허용: 지진해일, 쓰나미)', explanation: '지진 해일은 매우 긴 파장을 가지며 먼 거리까지 전파된다.' },
+  C19: { answer: 'X', display: 'X', explanation: '얕은 곳에서는 속력이 감소하고 파고가 높아질 수 있다.' },
+  C20: { answer: 3, display: '③', explanation: '지진 해일의 대표적인 특징은 매우 긴 파장이다.' },
+  C21: { answer: [['조석']], display: '조석', explanation: '조석은 해수면 높이의 주기적인 변화이다.' },
+  C22: { answer: [['조차']], display: '조차', explanation: '조차는 고조위와 저조위의 차이이다.' },
+  C23: { answer: 1, display: '①', explanation: '삭과 망 무렵에 사리가 나타나는 경향이 있다.' },
+  C24: { answer: [['기조력']], display: '기조력', explanation: '기조력은 달과 태양의 차등적인 중력 효과와 관련된다.' },
+  C25: { answer: 'O', display: 'O', explanation: '반일주조에서 연속한 만조 간격은 평균 약 12시간 25분이다.' },
+
+  E01: { answer: 3, display: '③', explanation: '수압은 깊이에 따라 증가한다. 위쪽으로 작용하는 연직 수압 경도력과 아래쪽으로 작용하는 중력이 평형을 이루면 연직 방향의 가속도가 발생하지 않는다.' },
+  E02: { answer: 3, display: '③', explanation: '해수면 높이와 해수 밀도의 차이는 수평 방향 압력 차이를 만든다. 자전은 전향력의 원인이며 수압 경도력을 직접 발생시키는 원인은 아니다.' },
+  E03: { answer: 4, display: '④', explanation: '전향력의 수평 성분은 적도에서 0이며, 다른 조건이 같다면 위도가 높아질수록 커진다.' },
+  E04: { answer: 1, display: '①', explanation: '북반구에서는 진행 방향 오른쪽으로 전향력이 작용한다. 북쪽을 향해 이동하면 오른쪽은 동쪽이다.' },
+  E05: { answer: 5, display: '⑤', explanation: '표층에서 전달된 운동량이 아래쪽으로 전달되면서 마찰과 전향력의 영향을 받아 유속은 감소하고 흐름의 방향이 달라진다.' },
+  E06: { answer: 3, display: '③', explanation: '북반구의 이상화된 모형에서 표층 해수는 풍향의 오른쪽 약 45°, 전체 에크만 수송은 오른쪽 90° 방향이다.' },
+  E07: { answer: 4, display: '④', explanation: '지형류는 수평 수압 경도력과 전향력이 평형을 이루면서 흐르는 해류이다.' },
+  E08: { answer: 2, display: '②', explanation: '북쪽으로 흐르는 해수에는 동쪽으로 전향력이 작용한다. 이를 상쇄하려면 수압 경도력이 서쪽을 향해야 하므로 동쪽 해수면이 더 높다.' },
+  E09: { answer: 5, display: '⑤', explanation: '파장은 연속된 마루 사이의 수평거리, 파고는 마루와 골 사이의 연직거리이다. 파랑은 주로 에너지를 전달한다.' },
+  E10: { answer: 3, display: '③', explanation: '파랑의 속력 = 파장 ÷ 주기 = 120 ÷ 8 = 15m/s' },
+  E11: { answer: 5, display: '⑤', explanation: '연안으로 접근하여 수심의 영향을 받으면 속력과 파장이 감소하고, 상황에 따라 파고가 증가하여 쇄파할 수 있다.' },
+  E12: { answer: 2, display: '②', explanation: '천해파의 속력은 대략 √(gh)로 나타내며 수심의 영향을 크게 받는다. 심해파는 주로 파장 또는 주기에 따라 속력이 달라진다.' },
+  E13: { answer: 1, display: '①', explanation: '얕은 곳에 먼저 도달한 파랑 부분이 느려지면서 파봉선이 굽어진다. 이를 파랑의 굴절이라고 한다.' },
+  E14: { answer: 3, display: '③', explanation: '지진 해일은 파장이 매우 길어 심해에서도 천해파로 거동할 수 있다. 연안에 접근하면 속력은 감소하고 파고가 증가할 수 있다.' },
+  E15: { answer: 4, display: '④', explanation: '기조력은 달과 태양의 차등적인 중력 효과와 지구-달 계의 공전으로 인한 관성 효과를 함께 고려하여 설명한다.' },
+  E16: { answer: 2, display: '②', explanation: '태양·지구·달이 거의 일직선에 놓이는 삭·망 무렵에 사리가 나타나고, 상현·하현 무렵에는 조금이 나타난다.' },
+  E17: { answer: 4, display: '④', explanation: '반일주조에서 연속한 두 만조의 간격은 약 12시간 25분이고, 비슷한 시각대의 만조는 다음 날 약 50분 늦게 나타난다. 실제 시각은 지역별로 달라질 수 있다.' },
+  E18: { answer: 3, display: '③', explanation: '북반구의 에크만 수송은 풍향의 오른쪽 90°이다. 바람이 남쪽으로 불면 표층 해수는 서쪽으로 수송된다. 해안의 표층수가 먼바다로 이동하면 깊은 해수가 상승하는 연안 용승이 나타날 수 있다.' },
+  E19: { answer: 5, display: '⑤', explanation: 'ㄱ, ㄴ, ㄹ은 옳다. 에크만 수송은 바람 응력, 난류 마찰, 전향력의 상호 작용으로 발생한다.' },
+  E20: { answer: 2, display: '②', explanation: '수심이 100m에서 25m로 1/4이 되므로 속력은 √(1/4) = 1/2배이다.' },
+
+  E21: {
+    manual: true, answer: '', display: '모범답안 참고',
+    modelAnswer: '해수면 높이 차이와 해수 밀도 차이로 수평 압력 차이가 발생한다. 수평 수압 경도력은 압력 차이에 의한 힘이고, 전향력은 자전하는 지구에서 움직이는 물체의 진행 방향이 편향되는 것처럼 나타나는 가상의 힘이다.',
+    rubric: [{ text: '해수면 높이 차이', points: 1 }, { text: '해수 밀도 차이', points: 1 }, { text: '수압 경도력 설명', points: 1 }, { text: '전향력 설명', points: 1 }],
+  },
+  E22: {
+    manual: true, answer: '', display: '모범답안 참고',
+    modelAnswer: '표층 해수는 북동쪽(풍향의 오른쪽 약 45°), 에크만 수송은 동쪽(오른쪽 90°)이다. 에크만 수송은 바람 응력·마찰·전향력의 영향으로 발생하며, 지형류는 수평 수압 경도력과 전향력의 평형으로 형성된다.',
+    rubric: [{ text: '표층 해수 북동쪽', points: 1 }, { text: '에크만 수송 동쪽', points: 1 }, { text: '에크만 수송의 발생 원리', points: 1 }, { text: '지형류의 힘의 평형', points: 1 }],
+  },
+  E23: {
+    manual: true, answer: '', display: '모범답안 참고',
+    modelAnswer: '지진 해일은 파장이 매우 길어 깊은 바다에서도 빠르게 이동한다. 연안으로 접근하여 수심이 감소하면 속력이 느려지고 파장이 짧아지며, 에너지가 집중되어 파고가 크게 증가할 수 있다.',
+    rubric: [{ text: '지진 해일의 긴 파장', points: 1 }, { text: '수심 감소에 따른 속력 감소', points: 1 }, { text: '파장 감소', points: 1 }, { text: '파고 증가', points: 1 }],
+  },
+  E24: {
+    manual: true, answer: '', display: '모범답안 참고',
+    modelAnswer: '달에 가까운 쪽은 지구 중심보다 달의 중력에 의한 가속도가 커서 상대적으로 달 쪽으로 해수가 부풀어 오른다. 반대쪽은 달의 중력에 의한 가속도가 지구 중심보다 작아 상대적으로 달 반대쪽으로 부풀어 오른다. 지구-달 계의 운동에 따른 관성 효과와 중력의 차이가 기조력을 형성한다.',
+    rubric: [{ text: '가까운 쪽의 중력 차이 설명', points: 1 }, { text: '달 쪽 해수면 상승 설명', points: 1 }, { text: '먼 쪽의 상대적인 중력 차이 설명', points: 1 }, { text: '반대쪽 해수면 상승 설명', points: 1 }],
+  },
+  E25: {
+    manual: true, answer: '', display: '모범답안 참고',
+    modelAnswer: '13일이 사리에 가깝다. 사리는 태양·지구·달이 거의 일직선으로 배열되는 삭 또는 망 무렵에 나타나며, 달과 태양의 기조력 효과가 강화되어 조차가 크게 나타나는 경향이 있다.',
+    rubric: [{ text: '13일 선택', points: 1 }, { text: '삭 또는 망과 연관', points: 1 }, { text: '천체의 일직선 배열', points: 1 }, { text: '기조력 효과와 조차 증가 설명', points: 1 }],
+  },
+}

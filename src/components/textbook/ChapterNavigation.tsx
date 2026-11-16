@@ -2,14 +2,13 @@ import type { UnitMeta } from '../../content/types'
 import { chapterDone, unitStats, UNITS } from '../../lib/content'
 import { href } from '../../lib/router'
 import { useProgress } from '../../lib/store'
-import { questionsOf } from '../../content/questions'
 
 /** 대단원 목차 + 학습 진행률 + 문제 풀이 진입 */
 export default function ChapterNavigation({ unit, current, onJump, onSource, compact }: {
   unit: UnitMeta; current: string; onJump: (chapterId: string) => void; onSource?: () => void; compact?: boolean
 }) {
   const p = useProgress()
-  const st = unitStats(p, unit, questionsOf(unit.id, 'practice').map((q) => q.id))
+  const st = unitStats(p, unit)
   const pct = st.chapters ? Math.round((st.chaptersDone / st.chapters) * 100) : 0
   return (
     <nav aria-label={`${unit.title} 목차`} className="flex flex-col gap-5 text-[15px]">
@@ -46,12 +45,12 @@ export default function ChapterNavigation({ unit, current, onJump, onSource, com
           <dt className="text-ink/55">완료한 개념</dt><dd className="text-right font-bold">{st.conceptsDone} / {st.concepts}</dd>
           <dt className="text-ink/55">남은 개념</dt><dd className="text-right font-bold">{st.concepts - st.conceptsDone}</dd>
           <dt className="text-ink/55">첫 시도 정답률</dt><dd className="text-right font-bold">{st.firstTryRate === null ? '–' : `${Math.round(st.firstTryRate * 100)}%`}</dd>
-          <dt className="text-ink/55">기본 예제</dt><dd className="text-right font-bold">{st.practiceDone} / {questionsOf(unit.id, 'practice').length}</dd>
-          <dt className="text-ink/55">내신 대비</dt><dd className="text-right font-bold">{st.examScore === undefined ? '미응시' : `${st.examScore} / ${st.examMax}점`}</dd>
+          <dt className="text-ink/55">개념 확인 문제</dt><dd className="text-right font-bold">{st.conceptGraded ? `${st.conceptCorrect} / ${st.conceptTotal} 정답` : `${st.conceptAnswered} / ${st.conceptTotal} 응답`}</dd>
+          <dt className="text-ink/55">내신 대비</dt><dd className="text-right font-bold">{st.examScore === undefined ? '미응시' : `${st.examScore} / ${st.examMax}점${st.examPending ? ' (미확정)' : ''}`}</dd>
         </dl>
       </div>
       <div className="flex flex-col gap-1.5">
-        <a href={href({ name: 'practice', unitId: unit.id })} className="flex min-h-11 items-center justify-between rounded-xl border border-ink/12 bg-white px-3 font-bold hover:border-brand/50">기본 예제 <span className="text-ink/40">→</span></a>
+        <a href={href({ name: 'concept', unitId: unit.id })} className="flex min-h-11 items-center justify-between rounded-xl border border-ink/12 bg-white px-3 font-bold hover:border-brand/50">개념 확인 문제 <span className="text-ink/40">→</span></a>
         <a href={href({ name: 'exam', unitId: unit.id })} className="flex min-h-11 items-center justify-between rounded-xl border border-ink/12 bg-white px-3 font-bold hover:border-brand/50">내신 대비 문제 <span className="text-ink/40">→</span></a>
         <a href={href({ name: 'wrong', unitId: unit.id })} className="flex min-h-11 items-center justify-between rounded-xl border border-ink/12 bg-white px-3 font-bold hover:border-brand/50">
           오답 노트 <span className={st.wrongOpen ? 'rounded-full bg-coriolis px-2 text-[12px] text-white' : 'text-ink/40'}>{st.wrongOpen || '→'}</span>
