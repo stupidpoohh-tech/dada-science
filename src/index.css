@@ -1,0 +1,64 @@
+@import "tailwindcss";
+@import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
+
+/* 회사 서체 Freesentation (눈누 CDN). 불러오지 못하면 Pretendard로 대체됩니다. */
+@font-face { font-family: 'Freesentation'; font-weight: 400; font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-4Regular.woff2') format('woff2'); }
+@font-face { font-family: 'Freesentation'; font-weight: 500; font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-5Medium.woff2') format('woff2'); }
+@font-face { font-family: 'Freesentation'; font-weight: 600; font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-6SemiBold.woff2') format('woff2'); }
+@font-face { font-family: 'Freesentation'; font-weight: 700; font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-7Bold.woff2') format('woff2'); }
+@font-face { font-family: 'Freesentation'; font-weight: 800; font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-8ExtraBold.woff2') format('woff2'); }
+
+@theme {
+  --font-sans: 'Freesentation', 'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  /* 회사 키컬러 */
+  --color-ink: #000a14;
+  --color-mint: #00dc84;
+  --color-sky: #00b7ff;
+  --color-brand: #2870ff;
+  --color-violet: #6f36ff;
+  /* 힘·운동 구분 색 */
+  --color-pgf: #6f36ff;      /* 수압경도력 */
+  --color-coriolis: #e8384f; /* 전향력 */
+  --color-motion: #00a865;   /* 실제 운동 방향 */
+  --color-ekman: #ff8a00;    /* 에크만 수송 */
+  --color-paper: #f6f8fb;
+}
+
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+}
+button { cursor: pointer; font-family: inherit; }
+button:disabled { cursor: not-allowed; }
+svg text { font-family: var(--font-sans); }
+
+/* 새로 등장하는 요소 강조 */
+@keyframes pop-in { 0% { opacity: 0; transform: scale(.6); } 70% { opacity: 1; transform: scale(1.06); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse-ring { 0% { opacity: .9; r: 10; } 100% { opacity: 0; r: 34; } }
+@keyframes dash-flow { to { stroke-dashoffset: -40; } }
+@keyframes glow { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
+.pop { animation: pop-in .55s cubic-bezier(.2,.8,.3,1.2) both; transform-box: fill-box; transform-origin: center; }
+.fade { animation: fade-in .5s ease both; }
+.rise { animation: rise .45s ease both; }
+.flow { stroke-dasharray: 14 26; animation: dash-flow 1.1s linear infinite; }
+.blink { animation: glow 1.4s ease-in-out infinite; }
+.pulse-ring { animation: pulse-ring 1.6s ease-out infinite; }
+.no-tap { -webkit-tap-highlight-color: transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pop, .fade, .rise { animation-duration: .01s; }
+}
+@keyframes shake { 0%,100% { transform: translate(0,0); } 20% { transform: translate(-5px,2px); } 40% { transform: translate(5px,-2px); } 60% { transform: translate(-4px,1px); } 80% { transform: translate(3px,-1px); } }
+.shake { animation: shake .45s linear 2; }
