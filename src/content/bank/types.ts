@@ -44,7 +44,10 @@ export interface BankQuestion {
   /** [자료] 내용(여러 줄) */
   material?: string[]
   /** 그림 키(src/figures) — 정답이 드러나지 않는 그림만 사용 */
-  diagram?: { fig: string; caption?: string; wide?: boolean }
+  /** fig: src/figures의 SVG 키, img: public/ 아래 그림 파일 경로(교과서 그림) */
+  diagram?: { fig?: string; img?: string; caption?: string; wide?: boolean }
+  /** 그림 여러 개(교과서 그림) */
+  images?: string[]
   /** 'text': 문장으로 답하는 설명형(여러 줄 입력, 교사·자기 채점) */
   format?: 'text'
   /** 단위 등 입력 안내 */
@@ -74,4 +77,6 @@ export interface AnswerKey {
   rubric?: RubricItem[]
   /** 키워드 채점: 칸마다 이 단어 중 하나가 들어 있으면 정답으로 봄(교사 확인 권장) */
   keywords?: string[][]
+  /** 정답이 아직 입력되지 않은 문항(채점 보류) */
+  pending?: boolean
 }

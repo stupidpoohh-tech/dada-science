@@ -7,7 +7,7 @@ import { href, type Route } from '../../lib/router'
 import { openPopup } from '../../lib/popupState'
 import type { BankSetState } from '../../lib/store'
 
-const CIRCLED = '①②③④⑤'
+const CIRCLED = '①②③④⑤⑥⑦'
 const STATUS_STYLE: Record<string, string> = {
   unanswered: 'bg-ink/6 text-ink/55', answered: 'bg-brand/10 text-brand',
   correct: 'bg-[#00a865] text-white', wrong: 'bg-coriolis text-white', pending: 'bg-[#f5b400] text-ink', partial: 'bg-[#ffb4a8] text-ink',
@@ -35,7 +35,8 @@ export default function BankQuestionCard({ q, value, onChange, revealed, result,
   const [open, setOpen] = useState(true)
   const answered = result ? result.status !== 'unanswered' : value !== undefined && (Array.isArray(value) ? value.some((x) => x?.trim()) : String(value).trim() !== '')
   const status = revealed && result ? (result.status === 'wrong' && result.score > 0 ? 'partial' : result.status) : answered ? 'answered' : 'unanswered'
-  const Fig = q.diagram ? FIGURES[q.diagram.fig] : undefined
+  const Fig = q.diagram?.fig ? FIGURES[q.diagram.fig] : undefined
+  const imgs = [...(q.diagram?.img ? [q.diagram.img] : []), ...(q.images ?? [])]
   const manual = state.manual[q.code] ?? {}
   const n = blankCount(q)
   const blanks = Array.isArray(value) ? value : Array.from({ length: n }, () => '')
@@ -63,7 +64,7 @@ export default function BankQuestionCard({ q, value, onChange, revealed, result,
           <span className="mr-1.5 font-extrabold tabular-nums">{q.no ?? q.number}.</span>{q.question}
         </p>
         {revealed && result && (
-          <span className={`mt-0.5 shrink-0 rounded-full px-2.5 py-0.5 text-[13px] font-bold ${STATUS_STYLE[status]}`}>{STATUS_LABEL[status]}{result.status !== 'unanswered' && q.points > 0 ? ` ${result.score}/${q.points}` : ''}</span>
+          <span className={`mt-0.5 shrink-0 rounded-full px-2.5 py-0.5 text-[13px] font-bold ${STATUS_STYLE[status]}`}>{answerKey?.pending ? '정답 준비 중' : STATUS_LABEL[status]}{result.status !== 'unanswered' && q.points > 0 ? ` ${result.score}/${q.points}` : ''}</span>
         )}
       </div>
       {q.material && (
@@ -77,6 +78,11 @@ export default function BankQuestionCard({ q, value, onChange, revealed, result,
           <svg viewBox={q.diagram?.wide ? '0 0 560 220' : '0 0 320 200'} className="w-full rounded-xl border border-ink/10 bg-white" role="img" aria-label={q.diagram?.caption}><Fig /></svg>
           {q.diagram?.caption && <figcaption className="mt-1 text-[13px] text-ink/55">{q.diagram.caption}</figcaption>}
         </figure>
+      )}
+      {imgs.length > 0 && (
+        <div className="mt-3 flex flex-wrap items-start gap-3">
+          {imgs.map((src) => <TextbookImage key={src} src={src} />)}
+        </div>
       )}
       {q.table && (
         <div className="mt-3 overflow-x-auto">
@@ -149,7 +155,8 @@ export default function BankQuestionCard({ q, value, onChange, revealed, result,
           </button>
           {open && (
             <div className="flex flex-col gap-2.5 px-4 pb-4 text-[15.5px] leading-relaxed">
-              {!answerKey.manual && <p><span className="font-extrabold text-[#00875a]">정답</span> {answerKey.display}</p>}
+              {answerKey.pending && <p className="font-bold text-ink/55">정답이 아직 입력되지 않았습니다.</p>}
+              {!answerKey.manual && !answerKey.pending && <p><span className="font-extrabold text-[#00875a]">정답</span> {answerKey.display}</p>}
               {answerKey.manual && answerKey.modelAnswer && (
                 <div><p className="font-extrabold text-[#00875a]">모범답안</p><p className="whitespace-pre-line">{answerKey.modelAnswer}</p></div>
               )}
@@ -181,7 +188,7 @@ export default function BankQuestionCard({ q, value, onChange, revealed, result,
                   </div>
                 </div>
               )}
-              {!answerKey.manual && result?.status === 'wrong' && (
+              {!answerKey.manual && !answerKey.pending && result?.status === 'wrong' && (
                 <label className="flex min-h-10 cursor-pointer items-center gap-2.5 text-[14px] text-ink/70">
                   <input type="checkbox" className="h-5 w-5 accent-[#2870ff]" checked={!!state.overrides[q.code]} onChange={(e) => onOverride(e.target.checked)} />
                   교사 확인: 과학적으로 같은 답이므로 정답으로 인정
@@ -215,4 +222,14 @@ export default function BankQuestionCard({ q, value, onChange, revealed, result,
 /** 서술형·설명형(긴 답) 문항: 입력 형태는 정답 데이터가 아니라 문항 정보로만 결정 */
 export function isLongAnswer(q: BankQuestion) {
   return q.type === 'essay' || (q.type === 'short_answer' && q.set === 'exam') || q.format === 'text'
+}
+
+/** 교과서 그림(원본 이미지). 원본 크기의 약 1.8배까지 키워 보여 줌 */
+function TextbookImage({ src }: { src: string }) {
+  const [w, setW] = useState(0)
+  return (
+    <img src={src} alt="교과서 그림" loading="lazy" onLoad={(e) => setW(e.currentTarget.naturalWidth)}
+      style={{ width: w ? Math.round(w * 1.8) : undefined }}
+      className="max-w-full rounded-lg border border-ink/10 bg-white" />
+  )
 }

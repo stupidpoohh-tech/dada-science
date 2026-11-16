@@ -15,7 +15,7 @@
 | 대단원 | 원문 | 움직이는 그림 | 개념 확인 문제 | 내신 대비 |
 |---|---|---|---|---|
 | Ⅱ. 해수의 운동과 순환 | 손글씨 노트에서 옮김(5개 소챕터) | 7개 | C01~C25 (25문항, 100점) | E01~E25 (객관식 25, 100점) · 교과서 문제 36문항 |
-| Ⅲ. 강수 과정과 대기의 운동 | 손글씨 노트에서 옮김(6개 소챕터) | 4개 | Q01~Q30 (30문항, 정답률) | 1~25번 (객관식 25, 100점) |
+| Ⅲ. 강수 과정과 대기의 운동 | 손글씨 노트에서 옮김(6개 소챕터) | 4개 | Q01~Q30 (30문항, 정답률) | 1~25번 (객관식 25, 100점) · 교과서 문제 38문항(정답 입력 전) |
 
 손글씨 판독이 불확실한 곳과 확인이 필요한 내용은 [`docs/REVIEW.md`](docs/REVIEW.md)에 정리했습니다. 원본 자료는 `source/`에 있습니다.
 
@@ -52,7 +52,7 @@ npm run build
 | 일반 원문(학습지 배치가 없는 단원) | 같은 원문 파일에 Markdown 문법(형식: 같은 폴더의 `README.md`) |
 | 대단원·소챕터 추가, 학습 완료 조건 | `src/content/units.ts` (`completion: { type: 'manual' }`이면 소챕터 끝의 체크로 완료) |
 | 개념(문제 ↔ 원문 ↔ 팝업 연결) | `src/content/concepts.ts` |
-| 문제 입력 | `src/content/bank/<단원>.questions.ts`, 교과서 문제는 `src/content/bank/<단원>.textbook.ts`(그림: `src/figures/textbook.tsx`) |
+| 문제 입력 | `src/content/bank/<단원>.questions.ts`, 교과서 문제는 `src/content/bank/<단원>.textbook.ts`(그림: `public/textbook/<단원>/`, 교과서 사진에서 잘라 냄) |
 | 팝업 단계 설명·확인 문제 | `src/content/popups.ts` |
 | 팝업 그림 추가 | `src/scenes/`에 컴포넌트를 만들고 `src/scenes/index.ts`에 등록 |
 | 원문 정적 그림 | `src/figures/index.tsx` (`@figure fig=키`) |

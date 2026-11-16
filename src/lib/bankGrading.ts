@@ -53,6 +53,7 @@ export const isAnswered = (q: BankQuestion, v: BankAnswer) => {
 
 /** 자동 채점(수동 채점 문항은 pending) */
 export function gradeItem(q: BankQuestion, key: AnswerKey, v: BankAnswer, opts: { override?: boolean; manual?: { rubric?: boolean[]; correct?: boolean; confirmed?: boolean } } = {}): ItemResult {
+  if (key.pending) return { status: 'pending', score: 0 }
   if (!isAnswered(q, v)) return { status: 'unanswered', score: 0 }
   if (key.manual) {
     const m = opts.manual

@@ -9,6 +9,14 @@ export const SELF_CHECK: Record<string, { group: string; text: string }[]> = {
     { group: '과정·기능', text: '실측 자료를 이용해 각 지역에서의 조석 양상을 분석하고 추론했는가?' },
     { group: '가치·태도', text: '해일의 피해 사례를 조사하고 대처 방안을 제안하며 재해 예방의 중요성을 인식했는가?' },
   ],
+  atmosphere: [
+    { group: '지식·이해', text: '대기의 선택적 흡수와 지구 생명체의 존재 조건을 설명할 수 있는가?' },
+    { group: '지식·이해', text: '대기 안정도와 정역학적 균형, 여러 바람과 편서풍의 발생 원리를 설명할 수 있는가?' },
+    { group: '과정·기능', text: '지표와 대기의 열 출입과 관련된 물리 과정과 전 지구 평균 열수지를 해석했는가?' },
+    { group: '과정·기능', text: '단열 변화를 통해 구름이 생성되는 과정 및 강수 과정을 분석했는가?' },
+    { group: '과정·기능', text: '지상 고·저기압 발달에서 편서풍 파동의 역할을 평가했는가?' },
+    { group: '가치·태도', text: '강수 과정과 대기의 운동에 흥미를 가지고 지구 대기의 가치를 인식했는가?' },
+  ],
 }
 
 export default function SelfCheck({ unitId, items }: { unitId: string; items: { group: string; text: string }[] }) {

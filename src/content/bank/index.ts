@@ -4,10 +4,11 @@ import { ATMOSPHERE_CONCEPT, ATMOSPHERE_EXAM, ATMOSPHERE_TOPICS } from './atmosp
 import { OCEAN_ANSWERS } from './ocean.answers'
 import { ATMOSPHERE_ANSWERS } from './atmosphere.answers'
 import { OCEAN_TEXTBOOK, OCEAN_TEXTBOOK_ANSWERS } from './ocean.textbook'
+import { ATMOSPHERE_TEXTBOOK, ATMOSPHERE_TEXTBOOK_ANSWERS } from './atmosphere.textbook'
 
-export const BANK: BankQuestion[] = [...OCEAN_CONCEPT, ...OCEAN_EXAM, ...OCEAN_TEXTBOOK, ...ATMOSPHERE_CONCEPT, ...ATMOSPHERE_EXAM]
+export const BANK: BankQuestion[] = [...OCEAN_CONCEPT, ...OCEAN_EXAM, ...OCEAN_TEXTBOOK, ...ATMOSPHERE_CONCEPT, ...ATMOSPHERE_EXAM, ...ATMOSPHERE_TEXTBOOK]
 export const TOPICS: Record<string, BankTopic[]> = { ocean: OCEAN_TOPICS, atmosphere: ATMOSPHERE_TOPICS }
-const ANSWERS: Record<string, Record<string, AnswerKey>> = { ocean: { ...OCEAN_ANSWERS, ...OCEAN_TEXTBOOK_ANSWERS }, atmosphere: ATMOSPHERE_ANSWERS }
+const ANSWERS: Record<string, Record<string, AnswerKey>> = { ocean: { ...OCEAN_ANSWERS, ...OCEAN_TEXTBOOK_ANSWERS }, atmosphere: { ...ATMOSPHERE_ANSWERS, ...ATMOSPHERE_TEXTBOOK_ANSWERS } }
 
 export const bankOf = (unitId: string, set: BankSet) => BANK.filter((q) => q.unitId === unitId && q.set === set)
 export const bankById = (id: string) => BANK.find((q) => q.id === id)
@@ -19,7 +20,7 @@ export const answerKeyOf = (q: BankQuestion): AnswerKey | undefined => ANSWERS[q
 /** 데이터 무결성 검사(개발 모드와 검증 스크립트에서 사용) */
 export function validateBank(): string[] {
   const errs: string[] = []
-  const expect: [string, BankSet, number, number][] = [['ocean', 'concept', 25, 100], ['ocean', 'exam', 25, 100], ['atmosphere', 'concept', 30, 0], ['atmosphere', 'exam', 25, 100], ['ocean', 'textbook', 36, 0]]
+  const expect: [string, BankSet, number, number][] = [['ocean', 'concept', 25, 100], ['ocean', 'exam', 25, 100], ['atmosphere', 'concept', 30, 0], ['atmosphere', 'exam', 25, 100], ['ocean', 'textbook', 36, 0], ['atmosphere', 'textbook', 38, 0]]
   for (const [u, s, n, pts] of expect) {
     const list = bankOf(u, s)
     if (list.length !== n) errs.push(`${u}/${s}: ${list.length}문항(기대 ${n})`)
@@ -33,9 +34,10 @@ export function validateBank(): string[] {
     const k = answerKeyOf(q)
     if (!k) { errs.push(`${q.id}: 정답 없음`); continue }
     if (!TOPICS[q.unitId].some((t) => t.id === q.topic)) errs.push(`${q.id}: 소주제 ${q.topic} 없음`)
+    if (k.pending) continue
     if (q.type === 'multiple_choice') {
       if (typeof k.answer !== 'number' || !q.options || k.answer < 1 || k.answer > q.options.length) errs.push(`${q.id}: 객관식 정답 번호 오류`)
-      if ('①②③④⑤'[Number(k.answer) - 1] !== k.display) errs.push(`${q.id}: 표시 정답(${k.display})과 번호(${k.answer}) 불일치`)
+      if ('①②③④⑤⑥⑦'[Number(k.answer) - 1] !== k.display) errs.push(`${q.id}: 표시 정답(${k.display})과 번호(${k.answer}) 불일치`)
     }
     if (q.type === 'ox' && k.answer !== 'O' && k.answer !== 'X') errs.push(`${q.id}: OX 정답 오류`)
     if (!k.manual && (q.type === 'blank' || q.type === 'short_answer' || q.type === 'calculation')) {
