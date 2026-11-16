@@ -5,12 +5,13 @@ import { unitStats } from '../../lib/content'
 import { useProgress } from '../../lib/store'
 
 /** 문제 풀이 영역 공통 틀(개념 확인 → 기본 예제 → 내신 대비 → 오답 복습) */
-export default function AssessmentLayout({ unit, tab, children }: { unit: UnitMeta; tab: 'concept' | 'exam' | 'wrong'; children: ReactNode }) {
+export default function AssessmentLayout({ unit, tab, children }: { unit: UnitMeta; tab: 'concept' | 'exam' | 'textbook' | 'wrong'; children: ReactNode }) {
   const p = useProgress()
   const st = unitStats(p, unit)
   const tabs = [
-    { key: 'concept', label: '개념 확인 문제' },
+    { key: 'concept', label: '개념 확인' },
     { key: 'exam', label: '내신 대비' },
+    { key: 'textbook', label: '교과서 문제' },
     { key: 'wrong', label: `오답 노트${st.wrongOpen ? ` ${st.wrongOpen}` : ''}` },
   ] as const
   return (
@@ -23,7 +24,7 @@ export default function AssessmentLayout({ unit, tab, children }: { unit: UnitMe
         <div className="mt-2 flex gap-1 rounded-2xl bg-ink/5 p-1" role="tablist">
           {tabs.map((t) => (
             <a key={t.key} href={href({ name: t.key, unitId: unit.id })} role="tab" aria-selected={tab === t.key}
-              className={`flex h-11 flex-1 items-center justify-center rounded-xl text-[15px] font-bold ${tab === t.key ? 'bg-white text-ink shadow-sm' : 'text-ink/55'}`}>{t.label}</a>
+              className={`flex h-11 flex-1 items-center justify-center whitespace-nowrap rounded-xl px-1 text-[14px] font-bold sm:text-[15px] ${tab === t.key ? 'bg-white text-ink shadow-sm' : 'text-ink/55'}`}>{t.label}</a>
           ))}
         </div>
       </div>

@@ -1,4 +1,5 @@
-import { useEffect, useMemo } from 'react'
+import { Fragment, useEffect, useMemo } from 'react'
+import SelfCheck, { SELF_CHECK } from './SelfCheck'
 import type { UnitMeta } from '../../content/types'
 import type { BankQuestion, BankSet } from '../../content/bank/types'
 import { answerKeyOf, bankOf } from '../../content/bank'
@@ -90,19 +91,24 @@ export default function QuestionSetPage({ unit, set, topic, q: focusQ }: { unit:
 
   return (
     <AssessmentLayout unit={unit} tab={set}>
-      <h1 className="mb-1 text-[24px] font-extrabold">{exam ? '내신 대비 문제' : '개념 확인 문제'}</h1>
+      <h1 className="mb-1 text-[24px] font-extrabold">{exam ? '내신 대비 문제' : set === 'textbook' ? '교과서 문제' : '개념 확인 문제'}</h1>
       <p className="mb-4 text-[15px] leading-relaxed text-ink/60">
         {exam ? '시험처럼 모두 풀고 제출하세요. 제출 전에는 정답과 해설이 공개되지 않습니다.' : '모든 문항을 푼 뒤 아래 ‘전체 채점’을 누르면 한꺼번에 정답과 해설이 공개됩니다.'}
+        {set === 'textbook' && ' 글로 쓰는 문항은 모범답안과 비교해 스스로 채점합니다.'}
       </p>
+      {all.length === 0 && <p className="rounded-xl bg-ink/[.04] px-4 py-6 text-center text-[15px] font-semibold text-ink/55">이 단원의 교과서 문제는 아직 입력되지 않았습니다.</p>}
 
       {anyRevealed && <ResultSummary unit={unit} set={set} sum={sum} allRevealed={allRevealed} />}
 
       {inRetry && <p className="mb-4 rounded-lg bg-coriolis/[.07] px-3 py-2 text-[14px] font-bold text-coriolis">오답 다시 풀기: {retry.length}문항만 표시합니다. 다 풀면 아래 ‘다시 푼 문항 채점’을 누르세요.</p>}
 
       <div className="flex flex-col gap-4">
-        {visible.map((q) => {
+        {visible.map((q, i) => {
           const revealed = !!st.revealed[q.code]
+          const head = q.section && q.section !== visible[i - 1]?.section ? q.section : undefined
           return (
+            <Fragment key={q.id}>
+            {head && <h2 className="mt-4 border-b-2 border-ink pb-1.5 text-[18px] font-extrabold first:mt-0">{head}</h2>}
             <BankQuestionCard key={q.id} q={q} value={st.answers[q.code] as BankAnswer}
               onChange={(v) => save((s) => { s.answers[q.code] = v })}
               revealed={revealed} result={results.get(q.code)} answerKey={revealed ? answerKeyOf(q) : undefined} state={st}
@@ -116,9 +122,11 @@ export default function QuestionSetPage({ unit, set, topic, q: focusQ }: { unit:
                 }
               }}
               backRoute={{ name: set, unitId: unit.id, q: q.id }} locked={revealed} />
+            </Fragment>
           )
         })}
       </div>
+      {set === 'textbook' && SELF_CHECK[unit.id] && <SelfCheck unitId={unit.id} items={SELF_CHECK[unit.id]} />}
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-ink/10 bg-white/95 px-4 py-3 backdrop-blur">
         <div className="mx-auto flex max-w-[920px] flex-wrap items-center gap-2">

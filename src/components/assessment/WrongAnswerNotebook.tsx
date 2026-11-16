@@ -9,7 +9,7 @@ import AssessmentLayout from './AssessmentLayout'
 import BankQuestionCard from './BankQuestionCard'
 
 const fmtDate = (t: number) => new Date(t).toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-const SET_LABEL: Record<string, string> = { concept: '개념 확인', exam: '내신 대비' }
+const SET_LABEL: Record<string, string> = { concept: '개념 확인', exam: '내신 대비', textbook: '교과서 문제' }
 
 /** 오답 노트: 틀린 문제 자동 저장 · 오답만 다시 풀기 · 재풀이 기록 */
 export default function WrongAnswerNotebook({ unit }: { unit: UnitMeta }) {
@@ -75,7 +75,7 @@ function WrongItem({ w, onRetry }: { w: WrongRecord; onRetry: () => void }) {
   return (
     <li className="rounded-2xl border border-ink/10 bg-white p-4">
       <div className="flex flex-wrap items-center gap-2 text-[13px] font-bold">
-        <span className="text-[16px] font-extrabold">{SET_LABEL[w.set] ?? w.set} {q.code}</span>
+        <span className="text-[16px] font-extrabold">{SET_LABEL[w.set] ?? w.set} {w.set === 'textbook' && q.no ? `${q.no}번` : q.code}</span>
         <span className="rounded-full bg-ink/6 px-2 py-0.5 text-ink/60">{typeLabel(q)}</span>
         <span className="rounded-full bg-ink/6 px-2 py-0.5 text-ink/60">{topicOf(q.unitId, q.topic)?.label}</span>
         <span className={`rounded-full px-2 py-0.5 ${w.resolved ? 'bg-[#00dc84]/15 text-[#00754e]' : 'bg-coriolis/10 text-coriolis'}`}>{w.resolved ? '재풀이 정답' : '복습 필요'}</span>

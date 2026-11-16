@@ -5,12 +5,12 @@ import { useEffect, useState } from 'react'
  *  #/                         첫 대단원 교재
  *  #/ocean                    대단원 교재(연속형)
  *  #/ocean?focus=<블록ID>&back=<돌아갈 해시>   관련 개념 위치로 이동
- *  #/ocean/concept | exam | wrong   개념 확인 문제 · 내신 대비 · 오답 노트 (?topic=소주제 필터, ?q=문항)
+ *  #/ocean/concept | exam | textbook | wrong   개념 확인 문제 · 내신 대비 · 교과서 문제 · 오답 노트 (?topic=소주제 필터, ?q=문항)
  */
 export type Route =
   | { name: 'home' }
   | { name: 'unit'; unitId: string; focus?: string; back?: string; concept?: string }
-  | { name: 'concept' | 'exam' | 'wrong'; unitId: string; q?: string; topic?: string }
+  | { name: 'concept' | 'exam' | 'textbook' | 'wrong'; unitId: string; q?: string; topic?: string }
 
 export function parseRoute(hash: string): Route {
   const [path, query = ''] = hash.replace(/^#/, '').split('?')
@@ -19,7 +19,7 @@ export function parseRoute(hash: string): Route {
   if (!parts.length) return { name: 'home' }
   const [unitId, sub] = parts
   if (sub === 'practice') return { name: 'concept', unitId }
-  if (sub === 'concept' || sub === 'exam' || sub === 'wrong') return { name: sub, unitId, q: params.get('q') ?? undefined, topic: params.get('topic') ?? undefined }
+  if (sub === 'concept' || sub === 'exam' || sub === 'textbook' || sub === 'wrong') return { name: sub, unitId, q: params.get('q') ?? undefined, topic: params.get('topic') ?? undefined }
   return { name: 'unit', unitId, focus: params.get('focus') ?? undefined, back: params.get('back') ?? undefined, concept: params.get('concept') ?? undefined }
 }
 

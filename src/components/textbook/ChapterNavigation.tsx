@@ -54,6 +54,7 @@ export default function ChapterNavigation({ unit, current, onJump, onSource, com
       <div className="flex flex-col gap-1.5">
         <a href={href({ name: 'concept', unitId: unit.id })} className="flex min-h-11 items-center justify-between rounded-xl border border-ink/12 bg-white px-3 font-bold hover:border-brand/50">개념 확인 문제 <span className="text-ink/40">→</span></a>
         <a href={href({ name: 'exam', unitId: unit.id })} className="flex min-h-11 items-center justify-between rounded-xl border border-ink/12 bg-white px-3 font-bold hover:border-brand/50">내신 대비 문제 <span className="text-ink/40">→</span></a>
+        <a href={href({ name: 'textbook', unitId: unit.id })} className="flex min-h-11 items-center justify-between rounded-xl border border-ink/12 bg-white px-3 font-bold hover:border-brand/50">교과서 문제 <span className="text-ink/40">→</span></a>
         <a href={href({ name: 'wrong', unitId: unit.id })} className="flex min-h-11 items-center justify-between rounded-xl border border-ink/12 bg-white px-3 font-bold hover:border-brand/50">
           오답 노트 <span className={st.wrongOpen ? 'rounded-full bg-coriolis px-2 text-[12px] text-white' : 'text-ink/40'}>{st.wrongOpen || '→'}</span>
         </a>

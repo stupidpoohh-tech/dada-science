@@ -5,7 +5,7 @@
  * - 문항 식별자(code: C01, E01, Q01 …)와 id는 바꾸지 마세요. 학습 기록·오답 노트가 id에 연결됩니다.
  */
 
-export type BankSet = 'concept' | 'exam'
+export type BankSet = 'concept' | 'exam' | 'textbook'
 export type BankType = 'blank' | 'ox' | 'multiple_choice' | 'short_answer' | 'calculation' | 'essay'
 export type Difficulty = '하' | '중' | '상'
 
@@ -21,6 +21,12 @@ export interface BankQuestion {
   set: BankSet
   /** 문항 번호(표시용) */
   number: number
+  /** 표시 번호(교과서 번호 그대로, 예: '2-(1)', '05'). 없으면 number */
+  no?: string
+  /** 묶음 제목(교과서 쪽·단계). 바뀔 때마다 목록에 제목 표시 */
+  section?: string
+  /** 표 자료 */
+  table?: { head: string[]; rows: string[][] }
   /** 소주제(BankTopic.id) */
   topic: string
   /** 문항 제목(원본의 소제목) */
@@ -38,7 +44,7 @@ export interface BankQuestion {
   /** [자료] 내용(여러 줄) */
   material?: string[]
   /** 그림 키(src/figures) — 정답이 드러나지 않는 그림만 사용 */
-  diagram?: { fig: string; caption?: string }
+  diagram?: { fig: string; caption?: string; wide?: boolean }
   /** 'text': 문장으로 답하는 설명형(여러 줄 입력, 교사·자기 채점) */
   format?: 'text'
   /** 단위 등 입력 안내 */

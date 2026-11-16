@@ -1,5 +1,6 @@
 import type { ComponentType, ReactNode } from 'react'
 import { Arrow, C } from '../components/svg'
+import { TEXTBOOK_FIGURES } from './textbook'
 
 /**
  * 원문 그림(정적 SVG). 손글씨 노트의 그림을 같은 구성으로 다시 그렸습니다.
@@ -397,6 +398,7 @@ const QuizGeoWind = () => (
 )
 
 export const FIGURES: Record<string, ComponentType> = {
+  ...TEXTBOOK_FIGURES,
   'quiz-geo-wind': QuizGeoWind,
   hydrostatic: Hydrostatic,
   slope: Slope,

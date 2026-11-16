@@ -60,7 +60,7 @@ export default function BankQuestionCard({ q, value, onChange, revealed, result,
       {/* 번호와 문제만 표시. 채점 후에만 결과(정답·오답·점수)를 붙입니다. */}
       <div className="flex items-start gap-2">
         <p className="min-w-0 flex-1 whitespace-pre-line text-[17px] font-semibold leading-relaxed">
-          <span className="mr-1.5 font-extrabold tabular-nums">{q.number}.</span>{q.question}
+          <span className="mr-1.5 font-extrabold tabular-nums">{q.no ?? q.number}.</span>{q.question}
         </p>
         {revealed && result && (
           <span className={`mt-0.5 shrink-0 rounded-full px-2.5 py-0.5 text-[13px] font-bold ${STATUS_STYLE[status]}`}>{STATUS_LABEL[status]}{result.status !== 'unanswered' && q.points > 0 ? ` ${result.score}/${q.points}` : ''}</span>
@@ -73,16 +73,24 @@ export default function BankQuestionCard({ q, value, onChange, revealed, result,
         </div>
       )}
       {Fig && (
-        <figure className="mt-3 max-w-[360px]">
-          <svg viewBox="0 0 320 200" className="w-full rounded-xl border border-ink/10 bg-white" role="img" aria-label={q.diagram?.caption}><Fig /></svg>
+        <figure className={`mt-3 ${q.diagram?.wide ? 'max-w-[560px]' : 'max-w-[360px]'}`}>
+          <svg viewBox={q.diagram?.wide ? '0 0 560 220' : '0 0 320 200'} className="w-full rounded-xl border border-ink/10 bg-white" role="img" aria-label={q.diagram?.caption}><Fig /></svg>
           {q.diagram?.caption && <figcaption className="mt-1 text-[13px] text-ink/55">{q.diagram.caption}</figcaption>}
         </figure>
+      )}
+      {q.table && (
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full min-w-[420px] border-collapse text-center text-[14.5px]">
+            <thead><tr>{q.table.head.map((h, i) => <th key={i} className="border border-ink/20 bg-ink/[.04] px-2 py-1.5 font-bold">{h}</th>)}</tr></thead>
+            <tbody>{q.table.rows.map((r, i) => <tr key={i}>{r.map((c, j) => <td key={j} className="border border-ink/20 px-2 py-1 tabular-nums">{c}</td>)}</tr>)}</tbody>
+          </table>
+        </div>
       )}
       {q.statements && (
         <div className="mt-3 rounded-xl border border-ink/20 px-4 py-3">
           <p className="mb-1.5 text-center text-[14px] font-bold">&lt;보기&gt;</p>
           <ol className="flex flex-col gap-1.5 text-[16px] leading-relaxed">
-            {q.statements.map((s, i) => <li key={i} className="flex gap-2"><span className="font-bold">{'ㄱㄴㄷㄹ'[i]}.</span><span>{s}</span></li>)}
+            {q.statements.map((s, i) => <li key={i} className="flex gap-2"><span className="font-bold">{'ㄱㄴㄷㄹㅁ'[i]}.</span><span>{s}</span></li>)}
           </ol>
         </div>
       )}
@@ -151,7 +159,7 @@ export default function BankQuestionCard({ q, value, onChange, revealed, result,
               {/* 서술형·설명형: 교사(또는 자기) 채점 */}
               {answerKey.manual && (
                 <div className="rounded-xl border border-[#f5b400]/50 bg-white p-3">
-                  <p className="mb-1.5 text-[14px] font-extrabold">교사 채점 <span className="font-semibold text-ink/50">(자동으로 채점하지 않습니다. 확정 전에는 점수에 넣지 않습니다)</span></p>
+                  <p className="mb-1.5 text-[14px] font-extrabold">{q.set === 'textbook' ? '스스로 채점' : '교사 채점'} <span className="font-semibold text-ink/50">({q.set === 'textbook' ? '모범답안과 비교해 스스로 판정하고 확정하세요' : '자동으로 채점하지 않습니다. 확정 전에는 점수에 넣지 않습니다'})</span></p>
                   {answerKey.rubric ? answerKey.rubric.map((r, i) => (
                     <label key={i} className="flex min-h-10 cursor-pointer items-center gap-2.5 text-[15px]">
                       <input type="checkbox" className="h-5 w-5 accent-[#00a865]" checked={!!manual.rubric?.[i]}
