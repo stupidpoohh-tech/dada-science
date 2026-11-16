@@ -96,4 +96,22 @@ const T10 = () => {
   )
 }
 
-export const THUMBS: Record<number, ComponentType> = { 1: T1, 2: T2, 3: T3, 4: T4, 5: T5, 6: T6, 7: T7, 8: T8, 9: T9, 10: T10 }
+const T11 = () => (
+  <>
+    <rect width={320} height={180} fill="#eef3f8" />
+    <path d="M0 110 Q150 104 200 92 Q240 84 250 80 L250 180 L0 180 Z" fill="#4fb4e8" />
+    <line x1={0} x2={250} y1={112} y2={112} stroke={C.ink} strokeDasharray="4 4" strokeOpacity={0.4} />
+    <path d="M0 170 L150 170 L250 80 L320 60 L320 180 Z" fill={C.sand} />
+    <circle cx={110} cy={40} r={26} fill="white" />
+    {[0, 120, 240].map((a) => <path key={a} d="M0 0 Q 14 -18 30 -6" fill="none" stroke={C.wind} strokeWidth={5} strokeLinecap="round" transform={`translate(110 40) rotate(${a})`} />)}
+    <circle cx={110} cy={40} r={7} fill={C.coriolis} />
+    <Arrow x1={130} y1={78} x2={200} y2={70} color={C.wind} width={4} />
+  </>
+)
+
+/** 그림 번호 → 썸네일(원문 임시 그림·문제 그림에 사용) */
+export const THUMBS: Record<number, ComponentType> = { 1: T1, 2: T2, 3: T3, 4: T4, 5: T5, 6: T6, 7: T7, 8: T8, 9: T9, 10: T10, 11: T11 }
+/** 팝업 ID → 썸네일 */
+export const THUMB_BY_POPUP: Record<string, ComponentType> = {
+  pressure: T1, pgf: T2, geostrophic: T3, ekman: T4, upwelling: T5, waves: T6, shoaling: T7, tsunami: T8, 'storm-surge': T11, tides: T9, 'tide-day': T10,
+}

@@ -1,13 +1,16 @@
-import type { Lesson } from './types'
+import type { PopupDef } from '../data/types'
 
 /**
- * 10개 팝업북 페이지의 설명·문제 데이터입니다.
- * 문장을 고칠 때는 이 파일만 수정하면 됩니다.
- * steps[i]는 그림의 i번째 단계와 연결되며, 마지막에 확인 문제가 자동으로 붙습니다.
+ * 인터랙티브 팝업(움직이는 그림)의 단계 설명·확인 문제 데이터입니다.
+ * - id: 원문에서 [[용어|popup:id]] 또는 @figure popup=id 로 연결합니다.
+ * - scene: src/scenes/index.ts 에 등록한 그림 컴포넌트 키(생략 시 id와 같음)
+ * - steps[i]는 그림의 i번째 단계와 연결되며, 마지막에 확인 문제가 자동으로 붙습니다.
  */
-export const LESSONS: Lesson[] = [
+export const POPUPS: PopupDef[] = [
   {
-    id: 1,
+    id: 'pressure',
+    unitId: 'ocean',
+    chapterId: 'ocean-01',
     title: '깊이 내려갈수록 수압은?',
     goal: '해수의 수압이 수심 및 밀도와 어떤 관계가 있는지 이해합니다.',
     keyPoints: ['수심이 깊어질수록 수압 증가', '같은 깊이에서는 밀도가 클수록 수압 증가', '수압은 모든 방향에서 작용'],
@@ -30,7 +33,9 @@ export const LESSONS: Lesson[] = [
     },
   },
   {
-    id: 2,
+    id: 'pgf',
+    unitId: 'ocean',
+    chapterId: 'ocean-01',
     title: '해수면이 기울어지면?',
     goal: '수평 수압 차이와 수압경도력의 발생 원리를 이해합니다.',
     keyPoints: ['수평 방향의 수압 차이가 수압경도력을 만듦', '수압경도력은 수압이 높은 곳 → 낮은 곳', '해수면의 기울기가 해수 운동의 원인'],
@@ -54,7 +59,9 @@ export const LESSONS: Lesson[] = [
     },
   },
   {
-    id: 3,
+    id: 'geostrophic',
+    unitId: 'ocean',
+    chapterId: 'ocean-02',
     title: '해류는 왜 옆으로 흐를까?',
     goal: '전향력과 수압경도력의 평형으로 지형류가 형성되는 원리를 이해합니다.',
     keyPoints: ['전향력: 북반구는 운동 방향의 오른쪽, 남반구는 왼쪽', '수압경도력 = 전향력이면 지형류', '지형류는 수압경도력과 수직으로 흐름'],
@@ -94,7 +101,9 @@ export const LESSONS: Lesson[] = [
     },
   },
   {
-    id: 4,
+    id: 'ekman',
+    unitId: 'ocean',
+    chapterId: 'ocean-02',
     title: '바람이 불면 해수는 어디로?',
     goal: '에크만 나선과 에크만 수송을 이해합니다.',
     keyPoints: ['에크만 나선: 깊어질수록 해류 방향이 돌고 약해짐', '에크만 수송: 북반구 바람의 오른쪽 90°, 남반구 왼쪽 90°', '표층 해류 방향 ≠ 에크만 수송 방향'],
@@ -137,7 +146,9 @@ export const LESSONS: Lesson[] = [
     },
   },
   {
-    id: 5,
+    id: 'upwelling',
+    unitId: 'ocean',
+    chapterId: 'ocean-02',
     title: '바닷물이 올라오고 내려가는 이유',
     goal: '해안에서 발생하는 용승과 침강의 원리를 이해합니다.',
     keyPoints: ['표층수가 발산하면 용승', '표층수가 수렴하면 침강', '용승: 차갑고 영양염류가 풍부한 심층수 공급'],
@@ -185,7 +196,9 @@ export const LESSONS: Lesson[] = [
     },
   },
   {
-    id: 6,
+    id: 'waves',
+    unitId: 'ocean',
+    chapterId: 'ocean-03',
     title: '파도는 물이 앞으로 가는 걸까?',
     goal: '해파의 기본 구조와 물 입자의 운동을 이해합니다.',
     keyPoints: ['해파는 파동(에너지)이 전파되는 현상', '심해파의 물 입자는 원운동', '마루·골·파고·파장', '파도의 진행 ≠ 물 입자의 이동'],
@@ -208,7 +221,9 @@ export const LESSONS: Lesson[] = [
     },
   },
   {
-    id: 7,
+    id: 'shoaling',
+    unitId: 'ocean',
+    chapterId: 'ocean-03',
     title: '파도는 왜 해안에서 부서질까?',
     goal: '수심 변화에 따른 파속, 파장, 파고의 변화를 이해합니다.',
     keyPoints: ['천해파의 속력은 수심이 얕을수록 느림', '해안에 가까울수록 파속·파장 감소', '파고가 커지고 가팔라져 쇄파 발생'],
@@ -230,7 +245,33 @@ export const LESSONS: Lesson[] = [
     },
   },
   {
-    id: 8,
+    id: 'storm-surge',
+    unitId: 'ocean',
+    chapterId: 'ocean-04',
+    title: '태풍이 오면 해수면은?',
+    goal: '폭풍해일이 발생하는 원인과 과정을 이해합니다.',
+    keyPoints: ['저기압: 누르는 압력이 줄어 해수면 상승', '강한 바람: 해수를 해안으로 밀어 쌓음', '만조와 겹치면 피해 증가', '지진해일과 원인이 다름'],
+    steps: [
+      { title: '태풍 접근', text: '태풍은 중심 기압이 매우 낮은 열대 저기압입니다. 태풍이 해안으로 다가오는 모습을 단면으로 보겠습니다.' },
+      { title: '낮은 기압', text: '기압이 낮은 태풍 중심 부근은 해수면을 누르는 공기의 압력이 약해 해수면이 부풀어 오릅니다. 기압이 1 hPa 낮아질 때 해수면은 약 1 cm 높아집니다.' },
+      { title: '강한 바람', text: '해안 쪽으로 부는 강한 바람이 해수를 해안으로 밀어 쌓아 해수면이 더 높아집니다. 수심이 얕고 넓은 해안일수록 크게 나타납니다.' },
+      { title: '만조와 겹칠 때', text: '폭풍해일이 만조 시각과 겹치면 해수면이 매우 높아져 해안 저지대가 침수될 수 있습니다.' },
+    ],
+    quiz: {
+      question: '폭풍해일이 발생하는 원인으로 옳은 것은 무엇일까요?',
+      options: [
+        { text: '태풍의 낮은 기압과 강한 바람', correct: true, feedback: '낮은 기압으로 해수면이 부풀고, 강한 바람이 해수를 해안으로 밀어 쌓습니다.' },
+        { text: '해저 지진에 의한 해저면의 급격한 변위', feedback: '해저면의 급격한 변위로 생기는 것은 지진해일입니다. 폭풍해일은 기상 현상(태풍 등)이 원인입니다.' },
+        { text: '달과 태양의 기조력', feedback: '기조력은 조석의 원인입니다. 다만 만조와 겹치면 폭풍해일의 피해가 커질 수 있습니다.' },
+      ],
+      summary: '폭풍해일은 태풍 같은 저기압의 낮은 기압과 강한 바람 때문에 해수면이 비정상적으로 높아지는 현상입니다.',
+      reviewStep: 1,
+    },
+  },
+  {
+    id: 'tsunami',
+    unitId: 'ocean',
+    chapterId: 'ocean-04',
     title: '지진해일은 왜 높아질까?',
     goal: '지진해일의 발생과 해안 접근 시 변화를 이해합니다.',
     keyPoints: ['해저 지진 등으로 해수 전체가 급격히 변위', '파장이 매우 길어 천해파로 행동', '얕아질수록 속력 감소, 파고 증가', '폭풍해일과 발생 원인이 다름'],
@@ -253,7 +294,9 @@ export const LESSONS: Lesson[] = [
     },
   },
   {
-    id: 9,
+    id: 'tides',
+    unitId: 'ocean',
+    chapterId: 'ocean-05',
     title: '달과 태양이 일렬로 서면?',
     goal: '달과 태양의 상대적인 위치가 조차에 미치는 영향을 이해합니다.',
     keyPoints: ['기조력: 달·태양의 인력과 지구-달 계의 운동이 만드는 차이의 힘', '달의 기조력이 태양보다 약 2배 큼', '삭·망: 사리(조차 큼)', '상현·하현: 조금(조차 작음)'],
@@ -293,7 +336,9 @@ export const LESSONS: Lesson[] = [
     },
   },
   {
-    id: 10,
+    id: 'tide-day',
+    unitId: 'ocean',
+    chapterId: 'ocean-05',
     title: '하루 동안 바닷물 높이는?',
     goal: '조석 주기, 만조·간조, 조차 및 조류를 이해합니다.',
     keyPoints: ['만조: 해수면이 가장 높을 때', '간조: 해수면이 가장 낮을 때', '조차 = 만조 높이 − 간조 높이', '조석(높이 변화)과 조류(수평 흐름)', '반일주조 주기 약 12시간 25분'],

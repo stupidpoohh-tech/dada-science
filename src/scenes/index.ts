@@ -10,17 +10,19 @@ import Scene07Shoaling from './Scene07Shoaling'
 import Scene08Tsunami from './Scene08Tsunami'
 import Scene09Tides from './Scene09Tides'
 import Scene10TideDay from './Scene10TideDay'
+import Scene11StormSurge from './Scene11StormSurge'
 
-/** 개념 번호 → 인터랙티브 그림 컴포넌트 */
-export const SCENES: Record<number, ComponentType<SceneProps>> = {
-  1: Scene01Pressure,
-  2: Scene02Gradient,
-  3: Scene03Geostrophic,
-  4: Scene04Ekman,
-  5: Scene05Upwelling,
-  6: Scene06Waves,
-  7: Scene07Shoaling,
-  8: Scene08Tsunami,
-  9: Scene09Tides,
-  10: Scene10TideDay,
+/** 팝업 그림 키 → 인터랙티브 그림 컴포넌트. 새 팝업 그림은 여기에 등록합니다. */
+export const SCENES: Record<string, ComponentType<SceneProps>> = {
+  pressure: Scene01Pressure,
+  pgf: Scene02Gradient,
+  geostrophic: Scene03Geostrophic,
+  ekman: Scene04Ekman,
+  upwelling: Scene05Upwelling,
+  waves: Scene06Waves,
+  shoaling: Scene07Shoaling,
+  tsunami: Scene08Tsunami,
+  'storm-surge': Scene11StormSurge,
+  tides: Scene09Tides,
+  'tide-day': Scene10TideDay,
 }

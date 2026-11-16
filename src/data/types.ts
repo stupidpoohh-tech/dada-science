@@ -26,8 +26,12 @@ export interface Quiz {
   reviewMode?: string
 }
 
-export interface Lesson {
-  id: number
+export interface PopupDef {
+  id: string
+  unitId: string
+  chapterId: string
+  /** 그림 컴포넌트 키(생략 시 id) */
+  scene?: string
   title: string
   goal: string
   keyPoints: string[]
