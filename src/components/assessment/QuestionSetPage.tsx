@@ -43,18 +43,12 @@ export default function QuestionSetPage({ unit, set, topic, q: focusQ }: { unit:
     else if (r.status === 'wrong') recordWrong(q.id, unit.id, set, v)
   }
 
-  const checkOne = (q: BankQuestion) => {
-    const r = gradeItem(q, answerKeyOf(q)!, st.answers[q.code] as BankAnswer, { override: st.overrides[q.code], manual: st.manual[q.code] })
-    save((s) => { s.revealed[q.code] = true })
-    onWrongOrRetry(q, r)
-  }
-
   const gradeAll = async () => {
     const targets = inRetry ? all.filter((q) => retry.includes(q.code)) : all
     const empty = targets.filter((q) => !isAnswered(q, st.answers[q.code] as BankAnswer)).length
     const ok = await askConfirm({
       title: exam ? '답안을 제출할까요?' : (inRetry ? '다시 푼 문항을 채점할까요?' : '전체 채점할까요?'),
-      message: `${empty ? `미응답 ${empty}문항은 오답으로 처리됩니다. ` : ''}채점하면 정답과 해설이 공개됩니다.${exam ? ' 서술형은 교사 채점을 확정한 뒤 점수에 반영됩니다.' : ''}`,
+      message: `${empty ? `미응답 ${empty}문항은 오답으로 처리됩니다. ` : ''}채점하면 정답과 해설이 공개됩니다.${targets.some((q) => answerKeyOf(q)?.manual) ? ' 서술형은 교사 채점을 확정한 뒤 점수에 반영됩니다.' : ''}`,
       confirmLabel: exam ? '제출' : '채점',
     })
     if (!ok) return
@@ -98,7 +92,7 @@ export default function QuestionSetPage({ unit, set, topic, q: focusQ }: { unit:
     <AssessmentLayout unit={unit} tab={set}>
       <h1 className="mb-1 text-[24px] font-extrabold">{exam ? '내신 대비 문제' : '개념 확인 문제'}</h1>
       <p className="mb-4 text-[15px] leading-relaxed text-ink/60">
-        {exam ? '시험처럼 모두 풀고 제출하세요. 제출 전에는 정답과 해설이 공개되지 않습니다.' : '문항마다 답을 입력하고 정답을 확인하거나, 모두 푼 뒤 전체 채점하세요. 정답은 확인 전까지 공개되지 않습니다.'}
+        {exam ? '시험처럼 모두 풀고 제출하세요. 제출 전에는 정답과 해설이 공개되지 않습니다.' : '모든 문항을 푼 뒤 아래 ‘전체 채점’을 누르면 한꺼번에 정답과 해설이 공개됩니다.'}
       </p>
 
       {anyRevealed && <ResultSummary unit={unit} set={set} sum={sum} allRevealed={allRevealed} />}
@@ -121,7 +115,6 @@ export default function QuestionSetPage({ unit, set, topic, q: focusQ }: { unit:
                   else if (retry.includes(q.code)) recordRetry(q.id, st.answers[q.code], true)
                 }
               }}
-              onCheck={!exam ? () => checkOne(q) : undefined}
               backRoute={{ name: set, unitId: unit.id, q: q.id }} locked={revealed} />
           )
         })}
@@ -159,12 +152,12 @@ function ResultSummary({ sum, allRevealed, set }: { unit: UnitMeta; set: BankSet
           </p>
         </div>
         <dl className="flex gap-4 text-center">
-          {[['정답', sum.correct, 'text-[#00875a]'], ['오답', sum.wrong, 'text-coriolis'], ['미응답', sum.unanswered, 'text-ink/60'], ...(set === 'exam' || sum.pending ? [['채점 대기', sum.pending, 'text-[#a37800]'] as const] : [])].map(([l, v, c]) => (
+          {[['정답', sum.correct, 'text-[#00875a]'], ['오답', sum.wrong, 'text-coriolis'], ['미응답', sum.unanswered, 'text-ink/60'], ...(sum.pending ? [['채점 대기', sum.pending, 'text-[#a37800]'] as const] : [])].map(([l, v, c]) => (
             <div key={l as string}><dt className="text-[12.5px] font-bold text-ink/50">{l}</dt><dd className={`text-[22px] font-extrabold tabular-nums ${c}`}>{v}</dd></div>
           ))}
         </dl>
       </div>
-      {set === 'exam' && (
+      {set === 'exam' && sum.manualMax > 0 && (
         <p className="mt-3 text-[14px] text-ink/65">
           객관식 {sum.autoScore} / {sum.autoMax}점 · 서술형 {sum.manualScore} / {sum.manualMax}점
           {sum.pending > 0 && <span className="font-bold text-[#a37800]"> — 서술형 {sum.pending}문항은 교사 채점을 확정해야 최종 점수가 정해집니다.</span>}

@@ -42,8 +42,10 @@ function judgeBlank(input: string, accepted: string[], keywords?: string[]): boo
   return false
 }
 
-export const isAnswered = (_q: BankQuestion, v: BankAnswer) => {
+export const isAnswered = (q: BankQuestion, v: BankAnswer) => {
   if (v === undefined || v === null) return false
+  // 객관식은 번호만 답으로 인정(서술형에서 바뀐 문항의 예전 글 답안은 미응답 처리)
+  if (q.type === 'multiple_choice') return typeof v === 'number'
   if (Array.isArray(v)) return v.some((x) => x?.trim())
   if (typeof v === 'string') return v.trim().length > 0
   return true
