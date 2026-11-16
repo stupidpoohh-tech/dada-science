@@ -133,8 +133,10 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
         <Curve x1={214} y1={112} cx={222} cy={132} x2={206} y2={142} head={6} />
         <Hot x={244} y={62} w={360} h={142} popup="geostrophic" step={2} label="북반구·남반구의 전향력 방향">
           <circle cx={342} cy={130} r={42} fill="none" stroke={INK} strokeWidth={1.6} />
-          <Curve x1={322} y1={84} cx={342} cy={74} x2={360} y2={84} head={6} />
-          <Txt x={341} y={78} size={11.5} anchor="middle">자전</Txt>
+          {/* 자전: 북극 위에서 본 회전(시계 반대 방향) — '자전' 글자를 감싸는 고리 화살표 */}
+          <path d="M334.5 67 A19 8.5 0 1 0 357.5 70.8" fill="none" stroke={INK} strokeWidth={1.4} strokeLinecap="round" />
+          <path d="M359.4 75.4 L357.5 70.8 L362.4 71.4" fill="none" stroke={INK} strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round" />
+          <Txt x={341} y={79} size={11.5} anchor="middle">자전</Txt>
           <Circled x={342} y={110} size={12}>북</Circled>
           <Txt x={334} y={136} size={12}>지구</Txt>
           <Circled x={342} y={166} size={12}>남</Circled>
