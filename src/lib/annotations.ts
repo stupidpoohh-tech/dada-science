@@ -142,6 +142,8 @@ export interface ToolSettings {
   fingerDraw: boolean
   collapsed: boolean
   barY: number
+  /** 화면 오른쪽 끝에서 도구 모음까지의 거리(px). 끌어서 옮길 수 있습니다. */
+  barX: number
   /** 현재 필기 대상(툴바의 실행 취소 등이 적용되는 범위) */
   activeScope: string
   activeRegion: { label: string; blockIds: () => string[] } | null
@@ -149,7 +151,7 @@ export interface ToolSettings {
 const SKEY = 'moving-earth-science:tools'
 let settings: ToolSettings = {
   tool: 'none', penColor: PEN_COLORS[0].value, penSize: PEN_SIZES[1], hlColor: HL_COLORS[0].value, hlSize: HL_SIZES[1],
-  visible: true, fingerDraw: false, collapsed: false, barY: 0.3, activeScope: '', activeRegion: null,
+  visible: true, fingerDraw: false, collapsed: false, barY: 0.3, barX: 8, activeScope: '', activeRegion: null,
 }
 if (typeof window !== 'undefined' && window.innerWidth < 768) settings.collapsed = true
 try {

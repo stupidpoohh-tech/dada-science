@@ -70,7 +70,7 @@ export const ATMOSPHERE_ROWS: Record<string, { h: number; label: string; render:
     render: () => (
       <>
         <H x={2} y={48}>02. 지구열수지</H>
-        <Txt x={168} y={26} size={11.5}>돈벌림 생각!</Txt>
+        <Txt x={160} y={26} size={11.5}>(돈처럼 생각!)</Txt>
         <Txt x={160} y={48} size={13.5}>(수지타산!)</Txt>
         <Txt x={242} y={48} size={13.5}>: 지구가 태양으로부터</Txt>
         <Txt x={396} y={28} size={12}>⊕</Txt>
@@ -124,9 +124,10 @@ export const ATMOSPHERE_ROWS: Record<string, { h: number; label: string; render:
           <Txt x={350} y={50} size={13}>5℃ 낮아짐 (수증기가 응결하면서 응결열이 방출되어 기온 덜 내려감)</Txt>
           <Txt x={520} y={72} size={12}>* 수증기 → 물 (응결)</Txt>
           <Txt x={520} y={92} size={12}>* 손난로 액체 → 고체 따뜻!</Txt>
-          <Txt x={130} y={118} size={13}>〃</Txt>
-          <Txt x={170} y={118} size={13.5} weight={700} u="line" uColor={RED}>* 이슬점 감률</Txt>
-          <Txt x={270} y={118} size={13.5}>: 〃 이슬점이 2℃ 낮아짐. (기온이 낮아지며 수증기압이 낮아지기 때문)</Txt>
+          {/* 이슬점 감률: 불포화 2℃/km, 포화 5℃/km(포화 상태에서는 기온 = 이슬점) */}
+          <Txt x={116} y={110} size={13.5} weight={700} u="line" uColor={RED}>* 이슬점 감률</Txt>
+          <Txt x={212} y={110} size={13}>(불포화상태) : 1km 상승할때 이슬점 2℃ 낮아짐 (수증기압이 낮아지기 때문)</Txt>
+          <Txt x={212} y={130} size={13}>(포화상태) : 〃 이슬점 5℃ 낮아짐 (기온 = 이슬점 → 습윤단열감률과 같음)</Txt>
         </Hot>
         <Txt x={104} y={148} size={12.5}>상대습도가 100%에 도달해 수증기가 응결하기 시작할때의</Txt>
         <Circled x={438} y={148} size={12.5}>기온</Circled>

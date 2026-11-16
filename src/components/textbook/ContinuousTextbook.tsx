@@ -14,14 +14,19 @@ import type { Block } from '../../lib/manuscript'
 export default function ContinuousTextbook({ unit }: { unit: UnitMeta }) {
   const ms = manuscriptOf(unit.id)
   return (
-    <article className="sheet flex flex-col bg-white px-[21px] pb-16 pt-6 text-ink">
-      <header data-block-id={`${unit.id}-title`} id={`${unit.id}-title`}>
-        <h1 className="text-[30px] font-extrabold leading-tight tracking-tight">{unit.numeral}. {unit.title}</h1>
-      </header>
+    <article className="sheet flex flex-col bg-white px-[21px] pb-16 pt-5 text-ink">
+      {/* 대단원 제목은 위쪽 바에 늘 보이므로 본문에서는 화면 읽기용으로만 둠 */}
+      <h1 className="sr-only">{unit.numeral}. {unit.title}</h1>
       {unit.chapters.map((ch) => {
         const parsed = ms.chapters.find((c) => c.chapterId === ch.id)
         return <ChapterSection key={ch.id} unit={unit} chapterId={ch.id} no={ch.no} title={ch.title} blocks={parsed?.blocks ?? []} />
       })}
+      <div className="mt-10 flex justify-center">
+        <a href={href({ name: 'concept', unitId: unit.id })}
+          className="no-tap inline-flex h-10 items-center gap-1.5 rounded-full bg-ink px-5 text-[14px] font-bold text-white hover:bg-ink/85">
+          문제 학습하기 →
+        </a>
+      </div>
     </article>
   )
 }

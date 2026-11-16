@@ -68,6 +68,14 @@ export default function UnitPage({ unit, focus, back, concept }: { unit: UnitMet
   const uIdx = UNITS.findIndex((u) => u.id === unit.id)
   const prevUnit = UNITS[uIdx - 1]
   const nextUnit = UNITS[uIdx + 1]
+  // 본문은 소챕터 강조가 바뀔 때마다 다시 그리지 않음(스크롤 중 끊김 방지)
+  const page = useMemo(() => (
+    <PageScaler>
+      <AnnotationSurface scopeId={unit.id}>
+        <ContinuousTextbook unit={unit} />
+      </AnnotationSurface>
+    </PageScaler>
+  ), [unit])
   const conceptObj = focusBar?.concept ? conceptById(focusBar.concept) : undefined
 
   return (
@@ -109,11 +117,7 @@ export default function UnitPage({ unit, focus, back, concept }: { unit: UnitMet
               {unit.status === 'demo' ? '이 단원의 본문은 데모 원문입니다.' : '이 단원의 원문은 아직 입력되지 않았습니다.'}
             </p>
           )}
-          <PageScaler>
-            <AnnotationSurface scopeId={unit.id}>
-              <ContinuousTextbook unit={unit} />
-            </AnnotationSurface>
-          </PageScaler>
+          {page}
         </div>
       </main>
 

@@ -26,7 +26,8 @@ export default function PageScaler({ children }: { children: ReactNode }) {
     setW(o.clientWidth); setH(i.offsetHeight)
     return () => ro.disconnect()
   }, [])
-  const fit = w ? Math.min(1.3, w / PAGE_WIDTH) : 1
+  // 소수점 오차로 가로 넘침이 생기지 않도록 내림
+  const fit = w ? Math.min(1.3, Math.floor((w / PAGE_WIDTH) * 1000) / 1000) : 1
   const scale = zoom === 'fit' ? fit : zoom
   const cur = zoom === 'fit' ? fit : zoom
   const step = (dir: 1 | -1) => {
@@ -35,7 +36,8 @@ export default function PageScaler({ children }: { children: ReactNode }) {
   }
   return (
     <>
-      <div ref={outer} className="w-full overflow-x-auto overscroll-x-contain">
+      {/* 화면 폭에 맞을 때는 가로 스크롤 영역을 만들지 않음: iOS에서 세로 스크롤이 안쪽 영역에 걸려 되돌아가는 현상 방지 */}
+      <div ref={outer} className={`w-full ${PAGE_WIDTH * scale > w + 1 ? 'overflow-x-auto overscroll-x-contain' : 'overflow-x-clip'}`}>
         <div className="mx-auto" style={{ width: PAGE_WIDTH * scale, height: h * scale || undefined }}>
           <div ref={inner} style={{ width: PAGE_WIDTH, transform: `scale(${scale})`, transformOrigin: 'top left' }}>
             {children}

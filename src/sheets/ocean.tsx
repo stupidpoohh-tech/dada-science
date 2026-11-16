@@ -138,10 +138,11 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
           <Circled x={342} y={110} size={12}>북</Circled>
           <Txt x={334} y={136} size={12}>지구</Txt>
           <Circled x={342} y={166} size={12}>남</Circled>
-          <Txt x={300} y={96} size={12} color={RED}>×</Txt>
-          <Txt x={302} y={174} size={12} color={RED}>×</Txt>
-          <circle cx={270} cy={130} r={8} fill="none" stroke={RED} strokeWidth={1.5} />
-          <circle cx={270} cy={130} r={2.5} fill={RED} />
+          {/* 전향력 크기: 고위도(북·남)에서 大, 적도에서 0 */}
+          <Txt x={296} y={98} size={13} weight={700} color={RED}>大</Txt>
+          <Txt x={298} y={176} size={13} weight={700} color={RED}>大</Txt>
+          <circle cx={270} cy={130} r={9} fill="none" stroke={RED} strokeWidth={1.5} />
+          <Txt x={270} y={134.5} size={12} weight={700} anchor="middle">0</Txt>
           <Arw x1={298} y1={130} x2={282} y2={130} />
           <Arw x1={356} y1={106} x2={386} y2={106} w={1.3} head={6} />
           <Txt x={392} y={104} size={13}>물체 운동방향의</Txt>
@@ -203,14 +204,27 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
         <Boxed x={560} y={292} size={11.5}>동쪽방향</Boxed>
         <Txt x={340} y={316} size={12} color={GRAY}>(대기대순환)</Txt>
         <Txt x={622} y={284} size={12}>지형류</Txt>
-        {/* 쿠로시오 메모 */}
-        <Txt x={600} y={234} size={13} color={RED} weight={700}>高 흑조 강하다</Txt>
-        <Txt x={694} y={234} size={11}>(쿠로시오 해류)</Txt>
-        <Arw x1={686} y1={292} x2={686} y2={244} color={RED} w={1.4} head={6} />
-        <Txt x={694} y={256} size={11}>시계방향</Txt>
-        <Circled x={716} y={282} size={11}>순환</Circled>
-        <Txt x={584} y={312} size={10.5}>(바람이 서쪽에서 불어야 ~ 편서풍)</Txt>
-        <Txt x={640} y={330} size={11.5} weight={600}>표류하면 미국 가!</Txt>
+        {/* 쿠로시오 메모: 북태평양 시계방향 순환. 순환 중심이 서쪽으로 치우쳐 서쪽 해수면이 높고(高) 경사가 커서 서쪽 경계의 쿠로시오(흑조)가 강하다 */}
+        <Txt x={600} y={226} size={13} color={RED} weight={700}>高 흑조 강하다</Txt>
+        <Txt x={694} y={226} size={11}>(쿠로시오 해류)</Txt>
+        <g fill="none" strokeLinecap="round">
+          {/* 위: 편서풍 → 동쪽 */}
+          <path d="M680 250 Q712 238 742 252" stroke={INK} strokeWidth={1.4} />
+          <path d="M736 246 L743 252 L734 255" stroke={INK} strokeWidth={1.4} />
+          {/* 동쪽: 남쪽으로 */}
+          <path d="M745 258 Q750 270 742 282" stroke={INK} strokeWidth={1.2} />
+          {/* 아래: 무역풍 → 서쪽 */}
+          <path d="M738 288 Q712 298 684 290" stroke={INK} strokeWidth={1.4} />
+          <path d="M690 286 L683 290 L691 294" stroke={INK} strokeWidth={1.4} />
+          {/* 서쪽 경계: 쿠로시오(북쪽으로, 강함) */}
+          <path d="M676 288 L676 252" stroke={RED} strokeWidth={2.6} />
+          <path d="M671 259 L676 250 L681 259" stroke={RED} strokeWidth={2.2} />
+        </g>
+        <Txt x={694} y={273} size={12} weight={700} color={RED} anchor="middle">高</Txt>
+        <Txt x={722} y={273} size={10} anchor="middle">시계방향</Txt>
+        <Txt x={720} y={286} size={10} weight={700} anchor="middle">순환</Txt>
+        <Txt x={584} y={314} size={10.5}>(바람이 서쪽에서 불어야 ~ 편서풍)</Txt>
+        <Txt x={640} y={331} size={11.5} weight={600}>표류하면 미국 가!</Txt>
       </>
     ),
   },

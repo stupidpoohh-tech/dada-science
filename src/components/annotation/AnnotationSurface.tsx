@@ -232,6 +232,28 @@ export default function AnnotationSurface({ scopeId, children, className = '', s
     const onClick = (e: MouseEvent) => {
       if (performance.now() < suppressUntil) { e.preventDefault(); e.stopPropagation() }
     }
+    root.addEventListener('pointerdown', onDown, { capture: true })
+    root.addEventListener('pointermove', onMove, { capture: true })
+    root.addEventListener('pointerup', onUp, { capture: true })
+    root.addEventListener('pointercancel', onUp, { capture: true })
+    root.addEventListener('click', onClick, { capture: true })
+    return () => {
+      root.removeEventListener('pointerdown', onDown, { capture: true })
+      root.removeEventListener('pointermove', onMove, { capture: true })
+      root.removeEventListener('pointerup', onUp, { capture: true })
+      root.removeEventListener('pointercancel', onUp, { capture: true })
+      root.removeEventListener('click', onClick, { capture: true })
+      cancelAnimationFrame(laserRaf)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scopeId, captureTouch])
+
+  const active = enabled && tools.tool !== 'none' && tools.visible
+
+  // 비수동(passive: false) 터치 리스너는 스크롤을 늦추므로 필기 도구를 켠 동안에만 붙입니다.
+  useEffect(() => {
+    const root = rootRef.current
+    if (!root || !active) return
     // iPadOS Safari: Apple Pencil 터치만 기본 동작(스크롤)을 막아 손가락 스크롤과 공존
     const onTouch = (e: TouchEvent) => {
       const t = getTools()
@@ -241,27 +263,10 @@ export default function AnnotationSurface({ scopeId, children, className = '', s
         if ((touch as Touch & { touchType?: string }).touchType === 'stylus') { e.preventDefault(); return }
       }
     }
-    root.addEventListener('pointerdown', onDown, { capture: true })
-    root.addEventListener('pointermove', onMove, { capture: true })
-    root.addEventListener('pointerup', onUp, { capture: true })
-    root.addEventListener('pointercancel', onUp, { capture: true })
-    root.addEventListener('click', onClick, { capture: true })
     root.addEventListener('touchstart', onTouch, { passive: false })
     root.addEventListener('touchmove', onTouch, { passive: false })
-    return () => {
-      root.removeEventListener('pointerdown', onDown, { capture: true })
-      root.removeEventListener('pointermove', onMove, { capture: true })
-      root.removeEventListener('pointerup', onUp, { capture: true })
-      root.removeEventListener('pointercancel', onUp, { capture: true })
-      root.removeEventListener('click', onClick, { capture: true })
-      root.removeEventListener('touchstart', onTouch)
-      root.removeEventListener('touchmove', onTouch)
-      cancelAnimationFrame(laserRaf)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scopeId, captureTouch])
-
-  const active = enabled && tools.tool !== 'none' && tools.visible
+    return () => { root.removeEventListener('touchstart', onTouch); root.removeEventListener('touchmove', onTouch) }
+  }, [active, captureTouch])
   // 손가락 필기 / 그림 필기 모드: 터치 스크롤을 끔. 비 iOS 기기에서 펜을 쓰면 펜 스크롤을 막기 위해 끔.
   const touchAction = active && (tools.fingerDraw || captureTouch || (penSeen && !isIOS)) ? 'none' : undefined
   const hlByColor = new Map<string, typeof rendered>()

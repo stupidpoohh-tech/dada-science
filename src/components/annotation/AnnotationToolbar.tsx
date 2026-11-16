@@ -4,7 +4,7 @@ import { ANNOTATION_FORMAT } from '../../lib/annotationDB'
 import { askConfirm, notify } from '../../lib/dialog'
 import { usePopupState } from '../../lib/popupState'
 
-/** 필기 도구 모음(화면 오른쪽, 위아래로 옮기기·접기 가능) */
+/** 필기 도구 모음(끌어서 위치 옮기기·접기 가능) */
 const Icon = ({ d, children }: { d?: string; children?: ReactNode }) => (
   <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
     {d ? <path d={d} /> : children}
@@ -34,7 +34,8 @@ export default function AnnotationToolbar() {
   const { canUndo, canRedo, saving } = useScopeStrokes(scope || '_none')
   const [menu, setMenu] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
-  const dragRef = useRef<{ y0: number; b0: number } | null>(null)
+  const dragRef = useRef<{ x0: number; y0: number; bx: number; by: number; moved: boolean } | null>(null)
+  const movedRef = useRef(false)
   const popup = usePopupState()
   if (!scope) return null
   // 팝업이 열려 있을 때는 '그림에 필기'를 켠 경우에만 도구 표시(팝업 조작과 충돌 방지)
@@ -42,6 +43,12 @@ export default function AnnotationToolbar() {
 
   const choose = (tool: Tool) => setTools({ tool, collapsed: false })
   const top = `calc(${Math.round(t.barY * 100)}vh)`
+  // 펼친 도구 모음은 아래가 잘리지 않도록 화면 안으로 끌어올림
+  const openTop = `clamp(8px, ${Math.round(t.barY * 100)}vh, calc(100dvh - 500px))`
+  const vw = typeof window !== 'undefined' ? window.innerWidth : 400
+  const right = Math.max(4, Math.min(t.barX, vw - 60))
+  // 도구 모음이 화면 왼쪽 절반에 있으면 메뉴를 오른쪽으로 펼침
+  const onLeft = right > vw / 2
 
   const clearRegion = async () => {
     setMenu(false)
@@ -76,21 +83,33 @@ export default function AnnotationToolbar() {
     }
   }
 
+  // 끌어서 옮기기: 위아래(barY, 화면 높이 비율)·좌우(barX, 오른쪽 끝에서의 거리)
   const onGrip = (e: React.PointerEvent) => {
-    dragRef.current = { y0: e.clientY, b0: t.barY }
-    ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
+    dragRef.current = { x0: e.clientX, y0: e.clientY, bx: right, by: t.barY, moved: false }
+    movedRef.current = false
+    ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
   }
   const onGripMove = (e: React.PointerEvent) => {
-    if (!dragRef.current) return
-    const y = dragRef.current.b0 + (e.clientY - dragRef.current.y0) / window.innerHeight
-    setTools({ barY: Math.max(0.06, Math.min(0.62, y)) })
+    const d = dragRef.current
+    if (!d) return
+    const dx = e.clientX - d.x0, dy = e.clientY - d.y0
+    if (!d.moved && Math.hypot(dx, dy) < 6) return
+    d.moved = true; movedRef.current = true
+    const maxY = t.collapsed ? 0.9 : 0.62
+    setTools({
+      barY: Math.max(0.06, Math.min(maxY, d.by + dy / window.innerHeight)),
+      barX: Math.max(4, Math.min(window.innerWidth - 60, d.bx - dx)),
+    })
   }
+  const onGripUp = () => { dragRef.current = null }
 
   if (t.collapsed) {
     return (
-      <div className="fixed right-2 z-[70] sm:right-3" style={{ top }}>
-        <button type="button" onClick={() => setTools({ collapsed: false })} aria-label="필기 도구 열기"
-          className={`no-tap flex h-12 w-12 items-center justify-center rounded-2xl border border-ink/10 shadow-lg ${t.tool === 'none' ? 'bg-white text-ink' : 'bg-brand text-white'}`}>
+      <div className="fixed z-[70]" style={{ top, right }}>
+        <button type="button" aria-label="필기 도구 열기(끌어서 옮기기)" title="누르면 열기, 끌면 옮기기"
+          onPointerDown={onGrip} onPointerMove={onGripMove} onPointerUp={onGripUp} onPointerCancel={onGripUp}
+          onClick={() => { if (movedRef.current) { movedRef.current = false; return } setTools({ collapsed: false }) }}
+          className={`no-tap flex h-12 w-12 touch-none cursor-grab items-center justify-center rounded-2xl border border-ink/10 shadow-lg ${t.tool === 'none' ? 'bg-white text-ink' : 'bg-brand text-white'}`}>
           {ICONS[t.tool === 'none' ? 'pen' : t.tool]}
         </button>
       </div>
@@ -103,7 +122,7 @@ export default function AnnotationToolbar() {
   const curSize = t.tool === 'highlighter' ? t.hlSize : t.penSize
 
   return (
-    <div className="fixed right-2 z-[70] flex items-start gap-2 sm:right-3" style={{ top }}>
+    <div className={`fixed z-[70] flex items-start gap-2 ${onLeft ? 'flex-row-reverse' : ''}`} style={onLeft ? { top: openTop, left: Math.max(4, vw - right - 60) } : { top: openTop, right }}>
       {(t.tool === 'pen' || t.tool === 'highlighter') && (
         <div className="rise flex flex-col items-center gap-1.5 rounded-2xl border border-ink/10 bg-white p-1.5 shadow-lg">
           {colors.map((c) => (
@@ -122,7 +141,7 @@ export default function AnnotationToolbar() {
         </div>
       )}
       <div className="flex flex-col items-center gap-1 rounded-2xl border border-ink/10 bg-white p-1.5 shadow-lg" role="toolbar" aria-label="필기 도구">
-        <div onPointerDown={onGrip} onPointerMove={onGripMove} onPointerUp={() => (dragRef.current = null)} title="끌어서 위치 옮기기"
+        <div onPointerDown={onGrip} onPointerMove={onGripMove} onPointerUp={onGripUp} onPointerCancel={onGripUp} title="끌어서 위치 옮기기"
           className="flex h-5 w-11 cursor-grab touch-none items-center justify-center text-ink/30">
           <svg width="20" height="6"><circle cx="4" cy="3" r="1.6" fill="currentColor" /><circle cx="10" cy="3" r="1.6" fill="currentColor" /><circle cx="16" cy="3" r="1.6" fill="currentColor" /></svg>
         </div>
@@ -138,7 +157,7 @@ export default function AnnotationToolbar() {
         <div className="relative">
           <Btn label="더 보기" active={menu} onClick={() => setMenu((v) => !v)}><Icon><circle cx="5" cy="12" r="1.5" fill="currentColor" /><circle cx="12" cy="12" r="1.5" fill="currentColor" /><circle cx="19" cy="12" r="1.5" fill="currentColor" /></Icon></Btn>
           {menu && (
-            <div className="rise absolute right-12 top-0 w-64 rounded-2xl border border-ink/10 bg-white p-2 text-[15px] shadow-xl">
+            <div className={`rise absolute top-0 w-64 rounded-2xl border border-ink/10 bg-white p-2 text-[15px] shadow-xl ${onLeft ? 'left-12' : 'right-12'}`}>
               <label className="flex min-h-11 cursor-pointer items-center justify-between gap-2 rounded-lg px-2 hover:bg-ink/4">
                 <span>손가락으로도 필기<span className="block text-[12px] text-ink/50">켜면 필기 도구 사용 중 손가락 스크롤이 멈춥니다</span></span>
                 <input type="checkbox" checked={t.fingerDraw} onChange={(e) => setTools({ fingerDraw: e.target.checked })} className="h-5 w-5 accent-[#2870ff]" />
