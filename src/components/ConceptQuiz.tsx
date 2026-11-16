@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import type { Quiz } from '../data/types'
 
-export default function ConceptQuiz({ quiz, keyPoints, done, onCorrect, onReview, onNextLesson, isLast }: {
+export default function ConceptQuiz({ quiz, keyPoints, done, onAnswer, onReview, onFinish, finishLabel }: {
   quiz: Quiz; keyPoints: string[]; done: boolean
-  onCorrect: () => void; onReview: () => void; onNextLesson: () => void; isLast: boolean
+  onAnswer: (correct: boolean) => void; onReview: () => void; onFinish: () => void; finishLabel: string
 }) {
   const [picked, setPicked] = useState<number | null>(null)
   const chosen = picked !== null ? quiz.options[picked] : null
@@ -12,14 +12,14 @@ export default function ConceptQuiz({ quiz, keyPoints, done, onCorrect, onReview
   const pick = (i: number) => {
     if (picked !== null && correct) return
     setPicked(i)
-    if (quiz.options[i].correct) onCorrect()
+    onAnswer(!!quiz.options[i].correct)
   }
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-4 overflow-y-auto p-4 sm:p-6 lg:flex-row lg:items-center lg:gap-8 lg:p-10">
       <div className="min-w-0 flex-1">
         <p className="mb-2 inline-flex items-center gap-2 rounded-full bg-violet/10 px-3 py-1 text-[14px] font-bold text-violet">
-          개념 확인 문제 {done && <span className="text-[#00a865]">· 완료</span>}
+          개념 확인 {done && <span className="text-[#00a865]">· 학습 완료</span>}
         </p>
         <h2 className="mb-5 text-[21px] font-extrabold leading-snug sm:text-[24px]">{quiz.question}</h2>
         <div className="flex flex-col gap-2.5" role="radiogroup">
@@ -58,9 +58,9 @@ export default function ConceptQuiz({ quiz, keyPoints, done, onCorrect, onReview
             )}
             <div className="mt-3 flex flex-wrap gap-2">
               {correct ? (
-                <button type="button" onClick={onNextLesson}
+                <button type="button" onClick={onFinish}
                   className="no-tap h-12 rounded-xl bg-ink px-5 text-[16px] font-bold text-white active:scale-95">
-                  {isLast ? '목록으로 돌아가기' : '다음 개념 학습 →'}
+                  {finishLabel}
                 </button>
               ) : (
                 <>

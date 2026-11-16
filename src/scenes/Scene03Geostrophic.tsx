@@ -27,7 +27,17 @@ function buildPath(hemi: 1 | -1) {
   return pts
 }
 
-export default function Scene03Geostrophic({ step, mode, setMode }: SceneProps) {
+const LABELS = {
+  sea: { pgf: '수압경도력', flow: '지형류', N: '북쪽: 해수면 낮음 · 수압 낮음', S: '남쪽: 해수면 높음 · 수압 높음', line: (i: number) => `해수면 높이 +${i}`, legend: '수압경도력(힘)', label: '위에서 본 바다에서 수압경도력, 전향력, 지형류의 방향', bg: ['#5fb6ea', '#e2f5fe'], note: '마찰이 없는 이상적인 경우를 단순화한 모식도입니다. 실제 해수는 진동하면서 평형 상태에 가까워집니다.' },
+  air: { pgf: '기압 경도력', flow: '지균풍', N: '북쪽: 저기압', S: '남쪽: 고기압', line: (i: number) => `${1000 + i * 4} hPa`, legend: '기압 경도력(힘)', label: '상층 대기에서 기압 경도력, 전향력, 지균풍의 방향', bg: ['#cfe3f7', '#f3f8fd'], note: '마찰이 없는 상층(약 1 km 이상) 대기를 단순화한 모식도입니다. 실제 공기는 진동하면서 평형 상태에 가까워집니다.' },
+}
+
+export function Scene03Air(props: SceneProps) {
+  return <Scene03Geostrophic {...props} air />
+}
+
+export default function Scene03Geostrophic({ step, mode, setMode, air }: SceneProps & { air?: boolean }) {
+  const L = LABELS[air ? 'air' : 'sea']
   const hemi: 1 | -1 = mode === 'S' ? -1 : 1
   const path = useMemo(() => buildPath(hemi), [hemi])
   const PLAY = 4.6
@@ -56,8 +66,8 @@ export default function Scene03Geostrophic({ step, mode, setMode }: SceneProps) 
     <>
       <defs>
         <linearGradient id="s3-sea" x1="0" y1="1" x2="0" y2="0">
-          <stop offset="0" stopColor="#5fb6ea" />
-          <stop offset="1" stopColor="#e2f5fe" />
+          <stop offset="0" stopColor={L.bg[0]} />
+          <stop offset="1" stopColor={L.bg[1]} />
         </linearGradient>
       </defs>
       <rect x={0} y={0} width={800} height={480} fill="url(#s3-sea)" />
@@ -65,11 +75,11 @@ export default function Scene03Geostrophic({ step, mode, setMode }: SceneProps) 
       {[80, 160, 240, 320, 400].map((yy, i) => (
         <g key={yy}>
           <line x1={0} x2={800} y1={yy} y2={yy} stroke="white" strokeWidth={1.6} strokeOpacity={0.8} />
-          <text x={12} y={yy - 7} fontSize={12} fill={C.muted} fontWeight={600}>{`해수면 높이 ${['+0', '+1', '+2', '+3', '+4'][4 - i]}`}</text>
+          <text x={12} y={yy - 7} fontSize={12} fill={C.muted} fontWeight={600}>{L.line(air ? i : 4 - i)}</text>
         </g>
       ))}
-      <Tag x={400} y={22} size={15} color={C.muted}>북쪽: 해수면 낮음 · 수압 낮음</Tag>
-      <Tag x={790} y={458} anchor="end" size={15} color={C.ink}>남쪽: 해수면 높음 · 수압 높음</Tag>
+      <Tag x={400} y={22} size={15} color={C.muted}>{L.N}</Tag>
+      <Tag x={790} y={458} anchor="end" size={15} color={C.ink}>{L.S}</Tag>
       <Compass x={44} y={446} size={18} />
 
       {/* 배경 수압경도력 화살표 */}
@@ -84,14 +94,14 @@ export default function Scene03Geostrophic({ step, mode, setMode }: SceneProps) 
       {step === 4 && (
         <g className="fade">
           <PolarArrow x={hemi > 0 ? 70 : 730} y={end.y} angle={hemi > 0 ? 0 : 180} length={660} color={C.motion} width={14} opacity={0.18} />
-          <Tag x={hemi > 0 ? 160 : 640} y={end.y - 30} size={18} color={C.motion}>{hemi > 0 ? '지형류 → 동쪽' : '지형류 → 서쪽'}</Tag>
+          <Tag x={hemi > 0 ? 160 : 640} y={end.y - 30} size={18} color={C.motion}>{`${L.flow} → ${hemi > 0 ? '동쪽' : '서쪽'}`}</Tag>
         </g>
       )}
 
       {/* 해수 덩어리와 힘 */}
       <g>
         <PolarArrow x={cur.x} y={cur.y} angle={90} length={PGF_LEN} color={C.pgf} width={7} halo className={step === 0 ? 'pop' : undefined} />
-        <Tag x={cur.x + (hemi > 0 ? -14 : 14)} y={cur.y - PGF_LEN - 16} size={15} color={C.pgf} anchor={hemi > 0 ? 'end' : 'start'}>수압경도력</Tag>
+        <Tag x={cur.x + (hemi > 0 ? -14 : 14)} y={cur.y - PGF_LEN - 16} size={15} color={C.pgf} anchor={hemi > 0 ? 'end' : 'start'}>{L.pgf}</Tag>
         {showCor && corLen > 4 && (
           <g key={`c${step}${hemi}`} className={step === 2 ? 'pop' : undefined}>
             <PolarArrow x={cur.x} y={cur.y} angle={corAng} length={corLen} color={C.coriolis} width={7} halo />
@@ -111,7 +121,7 @@ export default function Scene03Geostrophic({ step, mode, setMode }: SceneProps) 
 
       {balanced && step >= 3 && (
         <Bubble x={hemi > 0 ? 24 : 536} y={44} w={240} color={C.ink} className="rise"
-          lines={['힘의 평형', '수압경도력 = 전향력 (반대 방향)', '→ 지형류: 수압경도력에 수직']} />
+          lines={['힘의 평형', `${L.pgf} = 전향력 (반대 방향)`, `→ ${L.flow}: ${L.pgf}에 수직`]} />
       )}
       {step === 2 && (
         <Bubble x={hemi > 0 ? 536 : 24} y={44} w={240} color={C.coriolis} className="rise"
@@ -121,7 +131,7 @@ export default function Scene03Geostrophic({ step, mode, setMode }: SceneProps) 
   )
 
   return (
-    <SceneFrame label="위에서 본 바다에서 수압경도력, 전향력, 지형류의 방향" svg={svg}
+    <SceneFrame label={L.label} svg={svg}
       controls={
         <>
           {step >= 2 && (
@@ -135,8 +145,8 @@ export default function Scene03Geostrophic({ step, mode, setMode }: SceneProps) 
           )}
         </>
       }
-      legend={<Legend items={[{ color: C.pgf, label: '수압경도력(힘)' }, { color: C.coriolis, label: '전향력(힘)' }, { color: C.motion, label: '실제 운동 방향' }]} />}
-      note={<ModelNote>마찰이 없는 이상적인 경우를 단순화한 모식도입니다. 실제 해수는 진동하면서 평형 상태에 가까워집니다.</ModelNote>}
+      legend={<Legend items={[{ color: C.pgf, label: L.legend }, { color: C.coriolis, label: '전향력(힘)' }, { color: C.motion, label: '실제 운동 방향' }]} />}
+      note={<ModelNote>{L.note}</ModelNote>}
     />
   )
 }

@@ -1,0 +1,48 @@
+import { useEffect, useState } from 'react'
+
+/**
+ * 해시 라우팅(정적 호스팅·새로고침 대응)
+ *  #/                         처음 화면
+ *  #/ocean                    대단원 교재(연속형)
+ *  #/ocean?focus=<블록ID>&back=<돌아갈 해시>   관련 개념 위치로 이동
+ *  #/ocean/practice | exam | wrong   문제 풀이 영역
+ */
+export type Route =
+  | { name: 'home' }
+  | { name: 'unit'; unitId: string; focus?: string; back?: string; concept?: string }
+  | { name: 'practice' | 'exam' | 'wrong'; unitId: string; q?: string }
+
+export function parseRoute(hash: string): Route {
+  const [path, query = ''] = hash.replace(/^#/, '').split('?')
+  const params = new URLSearchParams(query)
+  const parts = path.split('/').filter(Boolean)
+  if (!parts.length) return { name: 'home' }
+  const [unitId, sub] = parts
+  if (sub === 'practice' || sub === 'exam' || sub === 'wrong') return { name: sub, unitId, q: params.get('q') ?? undefined }
+  return { name: 'unit', unitId, focus: params.get('focus') ?? undefined, back: params.get('back') ?? undefined, concept: params.get('concept') ?? undefined }
+}
+
+export function href(r: Route): string {
+  if (r.name === 'home') return '#/'
+  if (r.name === 'unit') {
+    const p = new URLSearchParams()
+    if (r.focus) p.set('focus', r.focus)
+    if (r.back) p.set('back', r.back)
+    if (r.concept) p.set('concept', r.concept)
+    const q = p.toString()
+    return `#/${r.unitId}${q ? `?${q}` : ''}`
+  }
+  return `#/${r.unitId}/${r.name}${r.q ? `?q=${encodeURIComponent(r.q)}` : ''}`
+}
+
+export const navigate = (r: Route | string) => { window.location.hash = typeof r === 'string' ? r : href(r) }
+
+export function useRoute(): Route {
+  const [route, setRoute] = useState(() => parseRoute(window.location.hash))
+  useEffect(() => {
+    const on = () => setRoute(parseRoute(window.location.hash))
+    window.addEventListener('hashchange', on)
+    return () => window.removeEventListener('hashchange', on)
+  }, [])
+  return route
+}

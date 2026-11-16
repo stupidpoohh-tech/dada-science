@@ -32,6 +32,8 @@ export interface UnitMeta {
   manuscript: string
   /** 문제 자료 상태 */
   questionStatus: ContentStatus
+  /** 원본 노트 사진(public/source/ 기준 파일명) */
+  sourcePages?: string[]
 }
 
 /** 개념: 문제와 원문·팝업을 이어 주는 단위 */

@@ -21,7 +21,7 @@ export const popupById = (id: string) => POPUPS.find((p) => p.id === id)
 function collectLinks(nodes: Inline[], out: Set<string>) {
   for (const n of nodes) {
     if (n.t === 'link') { const t = parseTarget(n.target); if (t.popup) out.add(t.popup) }
-    else if (n.t === 'b' || n.t === 'i' || n.t === 'term') collectLinks(n.v, out)
+    else if (n.t === 'b' || n.t === 'i' || n.t === 'term' || n.t === 'red' || n.t === 'box' || n.t === 'u') collectLinks(n.v, out)
   }
 }
 
@@ -33,10 +33,14 @@ export function popupsOfChapter(unitId: string, chapterId: string): string[] {
 /** 원문에서 참조하는 모든 팝업 ID */
 export function referencedPopups(unitId: string): Set<string> {
   const out = new Set<string>()
-  for (const ch of manuscriptOf(unitId).chapters) for (const b of ch.blocks) {
+  const visit = (b: import('./manuscript').Block) => {
     if (b.kind === 'figure' && b.popup) out.add(b.popup)
+    if (b.kind === 'popups') b.popups.forEach((p) => out.add(p.id))
+    if (b.kind === 'list') b.items.forEach((it) => collectLinks(parseInline(it.text), out))
+    if (b.kind === 'row') b.cols.forEach((c) => c.forEach(visit))
     if ('text' in b) collectLinks(parseInline(b.text), out)
   }
+  for (const ch of manuscriptOf(unitId).chapters) ch.blocks.forEach(visit)
   return out
 }
 

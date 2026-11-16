@@ -8,10 +8,16 @@ export type Block =
   | { kind: 'para'; id: string; text: string }
   | { kind: 'box'; id: string; label?: string; text: string }
   | { kind: 'formula'; id: string; text: string; caption?: string }
-  | { kind: 'figure'; id: string; caption: string; src?: string; thumb?: string; popup?: string; popupStep?: number; alt?: string }
+  | { kind: 'figure'; id: string; caption: string; src?: string; thumb?: string; fig?: string; popup?: string; popupStep?: number; alt?: string; width?: number }
   | { kind: 'table'; id: string; caption?: string; header: string[]; rows: string[][] }
   | { kind: 'placeholder'; id: string; text: string }
   | { kind: 'demo'; id: string; text: string }
+  /** 글머리 목록. depth 0~2 */
+  | { kind: 'list'; id: string; items: { text: string; depth: number; id?: string }[] }
+  /** 좌우 배치(원문 노트의 배치를 따름) */
+  | { kind: 'row'; id: string; cols: Block[][]; widths?: number[] }
+  /** 관련 팝업 바로가기 줄 */
+  | { kind: 'popups'; id: string; popups: { id: string; step?: number }[] }
 
 export interface ParsedChapter { chapterId: string; blocks: Block[] }
 export interface ParsedManuscript { chapters: ParsedChapter[]; warnings: string[]; blockIndex: Map<string, { chapterId: string; block: Block }> }
@@ -39,8 +45,16 @@ export function parseManuscript(src: string): ParsedManuscript {
   let cur: ParsedChapter | null = null
   let auto = 0
 
+  const rowStack: Block[] = []
   const push = (b: Block) => {
     if (!cur) { warnings.push(`@chapter 앞에 있는 블록은 무시됩니다: ${b.id}`); return }
+    const row = rowStack[rowStack.length - 1]
+    if (row && row.kind === 'row' && b !== row) {
+      row.cols[row.cols.length - 1].push(b)
+      if (blockIndex.has(b.id)) warnings.push(`중복 ID: ${b.id}`)
+      blockIndex.set(b.id, { chapterId: cur.chapterId, block: b })
+      return
+    }
     if (blockIndex.has(b.id)) warnings.push(`중복 ID: ${b.id}`)
     cur.blocks.push(b)
     blockIndex.set(b.id, { chapterId: cur.chapterId, block: b })
@@ -76,9 +90,44 @@ export function parseManuscript(src: string): ParsedManuscript {
       const a = parseAttrs(line)
       const cap: string[] = []
       i++
-      while (i < lines.length && lines[i].trim() && !lines[i].trim().startsWith('@')) cap.push(lines[i++].trim())
+      while (i < lines.length && lines[i].trim() && !lines[i].trim().startsWith('@') && !/^\s*- /.test(lines[i])) cap.push(lines[i++].trim())
       const [popup, step] = (a.popup ?? '').split('@')
-      push({ kind: 'figure', id: a.id ?? autoId('fig'), src: a.src, thumb: a.thumb, alt: a.alt, popup: popup || undefined, popupStep: step ? Number(step) : undefined, caption: cap.join(' ') })
+      push({ kind: 'figure', id: a.id ?? autoId('fig'), src: a.src, thumb: a.thumb, fig: a.fig, alt: a.alt, width: a.width ? Number(a.width) : undefined, popup: popup || undefined, popupStep: step ? Number(step) : undefined, caption: cap.join(' ') })
+      continue
+    }
+    if (line.startsWith('@row')) {
+      const a = parseAttrs(line)
+      const row: Block = { kind: 'row', id: a.id ?? autoId('row'), cols: [[]], widths: a.widths ? a.widths.split(',').map(Number) : undefined }
+      rowStack.push(row)
+      i++; continue
+    }
+    if (line === '@col') {
+      const row = rowStack[rowStack.length - 1]
+      if (row && row.kind === 'row') row.cols.push([])
+      i++; continue
+    }
+    if (line === '@end') {
+      const row = rowStack.pop()
+      if (row) push(row)
+      i++; continue
+    }
+    if (line.startsWith('@popups')) {
+      const a = parseAttrs(line)
+      const ids = (a.ids ?? '').split(',').filter(Boolean).map((x) => { const [id, st] = x.split('@'); return { id, step: st ? Number(st) : undefined } })
+      push({ kind: 'popups', id: a.id ?? autoId('pop'), popups: ids })
+      i++; continue
+    }
+    if (/^(\s*)- /.test(raw)) {
+      const items: { text: string; depth: number; id?: string }[] = []
+      let id: string | undefined
+      while (i < lines.length && /^(\s*)- /.test(lines[i])) {
+        const m = lines[i].match(/^(\s*)- (.*)$/)!
+        const [t, bid] = takeId(m[2])
+        if (bid && !id) id = bid
+        items.push({ text: t, depth: Math.min(2, Math.floor(m[1].length / 2)), id: bid && bid !== id ? bid : undefined })
+        i++
+      }
+      push({ kind: 'list', id: id ?? autoId('ul'), items })
       continue
     }
     if (line.startsWith('@table')) {
@@ -124,7 +173,7 @@ export function parseManuscript(src: string): ParsedManuscript {
     }
     // 문단: 빈 줄이나 다른 블록 시작 전까지
     const body: string[] = []
-    while (i < lines.length && lines[i].trim() && !/^(@|#{3,4} |>|\$\$)/.test(lines[i].trim())) body.push(lines[i++].trim())
+    while (i < lines.length && lines[i].trim() && !/^(@|#{3,4} |>|\$\$)/.test(lines[i].trim()) && !/^(\s*)- /.test(lines[i])) body.push(lines[i++].trim())
     const [t, id] = takeId(body.join(' '))
     push({ kind: 'para', id: id ?? autoId('p'), text: t })
   }
@@ -139,8 +188,11 @@ export type Inline =
   | { t: 'term'; v: Inline[] }
   | { t: 'sup' | 'sub'; v: string }
   | { t: 'link'; label: string; target: string }
+  | { t: 'red'; v: Inline[] }
+  | { t: 'u'; v: Inline[] }
+  | { t: 'box'; v: Inline[] }
 
-const INLINE_RE = /\*\*(.+?)\*\*|==(.+?)==|\[\[([^|\]]+)\|([^\]]+)\]\]|\^\{([^}]*)\}|_\{([^}]*)\}|\*([^*\s][^*]*?)\*/g
+const INLINE_RE = /\*\*(.+?)\*\*|==(.+?)==|\[\[([^|\]]+)\|([^\]]+)\]\]|\^\{([^}]*)\}|_\{([^}]*)\}|!!(.+?)!!|::(.+?)::|<u>(.+?)<\/u>/g
 
 export function parseInline(s: string): Inline[] {
   const out: Inline[] = []
@@ -155,7 +207,9 @@ export function parseInline(s: string): Inline[] {
     else if (m[3] !== undefined) out.push({ t: 'link', label: m[3], target: m[4] })
     else if (m[5] !== undefined) out.push({ t: 'sup', v: m[5] })
     else if (m[6] !== undefined) out.push({ t: 'sub', v: m[6] })
-    else if (m[7] !== undefined) out.push({ t: 'i', v: parseInline(m[7]) })
+    else if (m[7] !== undefined) out.push({ t: 'red', v: parseInline(m[7]) })
+    else if (m[8] !== undefined) out.push({ t: 'box', v: parseInline(m[8]) })
+    else if (m[9] !== undefined) out.push({ t: 'u', v: parseInline(m[9]) })
     last = re.lastIndex
   }
   if (last < s.length) out.push({ t: 'text', v: s.slice(last) })

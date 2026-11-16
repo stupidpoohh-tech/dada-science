@@ -1,147 +1,199 @@
 <!--
-  Ⅱ. 해수의 운동과 순환 — 원문 파일
-  ※ 현재 내용은 기능 확인용 데모 원문입니다. 실제 교재 원문으로 교체하세요.
-  ※ {#...} 블록 ID는 필기·문제 연결의 기준입니다. 원문을 교체할 때도 같은 개념에는 같은 ID를 유지하세요.
+  Ⅱ. 해수의 운동과 순환 — 원문
+  출처: 손글씨 노트 원본(source/KakaoTalk_..._04.jpg, _05.jpg)을 기준으로 옮김.
+  정리 이미지(.png)와 Word 텍스트에서 손글씨와 다르게 옮겨진 부분은 손글씨를 따랐고,
+  판독이 불확실한 부분은 docs/REVIEW.md에 정리했습니다.
+  ※ {#...} 블록 ID는 필기·문제 연결의 기준입니다. 문장을 고쳐도 ID는 유지하세요.
+  ※ 형식: src/content/manuscripts/README.md
 -->
 
 @chapter ocean-01
 
-@demo id=ocean-demo-notice
-이 단원의 본문은 화면과 기능을 확인하기 위한 데모 원문입니다. 실제 교재 원문으로 교체될 예정입니다.
+#### [수직] {#ocean-01-vertical}
 
-### 수압 {#ocean-01-pressure}
+@row id=ocean-01-vertical-row widths=3,2
+- **수압**(중력) — 무거워… {#ocean-01-pressure}
+- 깊어질수록 수압↑ ⇒ 큰 압력(아래) · 작은 압력(위)
+- 큰 압력에서 작은 압력으로, 압력 차에 의해 힘이 생김 ⇒ ::수압 경도력::
+- 연직 (아래에서 위로) 작용
+[[수심에 따른 수압 변화|popup:pressure]] {#ocean-01-pressure-link}
+@col
+@figure id=ocean-01-fig-hydrostatic fig=hydrostatic width=260
+연직 수압 경도력(↑)과 중력(↓)이 평형 → !!정역학 평형!!
+@end
 
-물속의 한 지점에는 그 위에 놓인 해수의 무게 때문에 압력이 작용하는데, 이를 ==수압==이라고 합니다. 수압은 수심이 깊을수록, 해수의 밀도가 클수록 커집니다. {#ocean-01-pressure-p1}
+#### [수평] {#ocean-01-horizontal}
 
-$$ id=ocean-01-pressure-eq caption="수압(P), 해수의 밀도(ρ), 중력 가속도(g), 수심(h)"
-P = ρgh
-$$
+~ 해수면의 높이 차 or 해수의 밀도 차 {#ocean-01-horizontal-p1}
 
-해수의 밀도를 약 1.025 g/cm^{3}로 보면 수심이 약 10 m 깊어질 때마다 수압은 약 1기압씩 커집니다. 또한 같은 깊이에서 수압은 위·아래·옆 모든 방향으로 같은 크기로 작용합니다. [[수심과 밀도에 따른 수압 변화|popup:pressure]] {#ocean-01-pressure-p2}
+@row id=ocean-01-horizontal-row widths=1,1
+**① 해수면의 높이 차** {#ocean-01-pgf}
+@figure id=ocean-01-fig-slope fig=slope popup=pgf
+해수면의 경사, 중력 가속도 → !!수평 수압 경도력!!
+@col
+**② 해수의 밀도 차 ← ==온도==** {#ocean-01-density}
+@figure id=ocean-01-fig-density fig=density
+더워서 밀도↓ 압력↓ / 추워서 밀도↑ 압력↑ → !!수평 수압 경도력!!(밀도 큰 쪽 → 작은 쪽)
+@end
 
-@figure id=ocean-01-fig-pressure popup=pressure thumb=pressure
-그림 1. 수심에 따른 수압의 변화(임시 그림)
+#### [전향력] {#ocean-01-coriolis}
 
-### 수압경도력 {#ocean-01-pgf}
+[전향력] = 회전하는 표면 위에서 운동하는 물체에 작용하는, 운동 방향을 휘어지게 하는 가상의 힘 {#ocean-01-coriolis-def}
 
-해수면이 수평이 아니고 기울어져 있으면, 같은 깊이라도 해수면이 높은 쪽의 해수 기둥이 더 높으므로 수압이 더 큽니다. 이렇게 수평 방향으로 수압 차이가 생기면 수압이 높은 곳에서 낮은 곳으로 힘이 작용하는데, 이 힘을 ==수압경도력==이라고 합니다. {#ocean-01-pgf-p1}
-
-> [정의] 수압경도력: 수평 방향의 수압 차이에 의해 수압이 높은 곳에서 낮은 곳으로 작용하는 힘. 해수면의 경사가 클수록 커진다. {#ocean-01-pgf-def}
-
-@figure id=ocean-01-fig-pgf popup=pgf thumb=pgf
-그림 2. 해수면의 기울기와 수압경도력(임시 그림)
-
-### 전향력 {#ocean-01-coriolis}
-
-지구가 자전하기 때문에 지구 위에서 움직이는 물체는 운동 방향이 휘어지는 것처럼 보입니다. 이 겉보기 힘을 ==전향력==이라고 합니다. 전향력은 운동 방향에 수직으로 작용하며, 북반구에서는 운동 방향의 오른쪽, 남반구에서는 왼쪽으로 작용합니다. 전향력의 크기는 물체의 속력이 빠를수록, 위도가 높을수록 커지며 적도에서는 0입니다. [[전향력이 작용하는 방향|popup:geostrophic@2]] {#ocean-01-coriolis-p1}
-
-@table id=ocean-01-tbl-coriolis caption="표 1. 반구에 따른 전향력의 방향"
-| 구분 | 전향력의 방향 | 예: 동쪽으로 움직이는 해수 |
-|---|---|---|
-| 북반구 | 운동 방향의 오른쪽 직각 | 남쪽으로 작용 |
-| 남반구 | 운동 방향의 왼쪽 직각 | 북쪽으로 작용 |
+@row id=ocean-01-coriolis-row widths=1,1
+@figure id=ocean-01-fig-coriolis fig=coriolis popup=geostrophic@2
+지구 자전 → 북반구와 남반구에서 전향력의 방향
+@col
+- (북) 물체 운동 방향의 '오른쪽' 직각 방향으로 전향력 작용 {#ocean-01-coriolis-list}
+- (남) '왼쪽' 직각 방향으로 전향력 작용
+[[북반구·남반구의 전향력 방향|popup:geostrophic@2]] {#ocean-01-coriolis-link}
+@end
 
 @chapter ocean-02
 
-### 지형류 {#ocean-02-geostrophic}
+#### [에크만 수송] {#ocean-02-ekman}
 
-해수면의 경사로 수압경도력이 작용하면 해수는 수압경도력 방향으로 움직이기 시작합니다. 움직이는 해수에는 전향력이 작용하여 운동 방향이 점점 휘어지고, 결국 수압경도력과 전향력이 크기가 같고 방향이 반대가 되어 평형을 이룹니다. 이때 수압경도력과 수직인 방향으로 흐르는 해류를 ==지형류==라고 합니다. {#ocean-02-geostrophic-p1}
+(북) 바람 —전향력→ 해수는 바람의 **오른쪽 45°** 방향 {#ocean-02-ekman-p1}
 
-@figure id=ocean-02-fig-geostrophic popup=geostrophic thumb=geostrophic
-그림 3. 수압경도력과 전향력의 평형으로 형성되는 지형류(임시 그림)
+@row id=ocean-02-ekman-row widths=3,2
+- 심층 해수도 같이 움직이기… {#ocean-02-spiral}
+- 근데 마찰 때문에 유속 느려지기…
+- 방향이 더더더 꺾이기… ⇒ ::에크만 나선!::
+- 에크만층 = 마찰층
+- 표면과 해수 이동 방향이 정반대가 되는 깊이 ⇒ !!::마찰 저항 심도::!!
+@col
+@figure id=ocean-02-fig-ekman thumb=ekman popup=ekman
+에크만 나선과 에크만 수송
+@end
 
-북반구에서 지형류는 해수면이 높은 쪽을 오른쪽에 두고 흐릅니다. 지형류의 속력은 해수면의 경사가 클수록 빠릅니다. {#ocean-02-geostrophic-p2}
+> [에크만 수송] 에크만층에서 해수의 '평균' 이동 방향 — (북) 풍향의 오른쪽 90°, (남) 풍향의 왼쪽 90° {#ocean-02-ekman-transport}
 
-### 에크만 수송 {#ocean-02-ekman}
+@popups id=ocean-02-ekman-popups ids=ekman,upwelling
 
-바다 위에 바람이 계속 불면 표층 해수가 움직이고, 아래층 해수는 위층 해수에 끌려 움직입니다. 각 층의 해수에는 전향력이 작용하므로 깊어질수록 해류의 방향은 북반구에서 점점 오른쪽으로 돌아가고 속력은 느려집니다. 이러한 해류 방향의 변화를 ==에크만 나선==이라고 합니다. {#ocean-02-ekman-p1}
+#### (대기 대순환) {#ocean-02-winds}
 
-마찰층 전체에서 해수가 평균적으로 이동하는 방향은 북반구에서 바람 방향의 오른쪽 90°, 남반구에서는 왼쪽 90°이며, 이를 ==에크만 수송==이라고 합니다. 이상적인 모형에서 표층 해류는 바람 방향에서 약 45° 벗어나 흐르므로, 표층 해류의 방향과 에크만 수송의 방향은 서로 다릅니다. [[에크만 나선과 에크만 수송|popup:ekman]] {#ocean-02-ekman-p2}
+@row id=ocean-02-winds-row widths=3,2
+- 북동 무역풍 … 위도 0~30° → ::서쪽 방향:: {#ocean-02-winds-list}
+- 편서풍 … 위도 30~60° → ::동쪽 방향::
+- → 지형류
+@col
+- !!흑조 강하다!! (쿠로시오 해류) {#ocean-02-kuroshio}
+- 시계 방향 순환 (바람이 서쪽에서 불어야 ~ 편서풍)
+- 표류하면 미국 가!
+@end
 
-@figure id=ocean-02-fig-ekman popup=ekman thumb=ekman
-그림 4. 바람에 의한 에크만 나선과 에크만 수송(임시 그림)
+#### [지형류 형성] {#ocean-02-geostrophic}
 
-### 용승과 침강 {#ocean-02-upwelling}
+에크만 수송 → 해수 이동 → <u>해수면 경사</u> → ::수압 경도력:: 발생 → 해수 움직임 → !!전향력 작용!! (북) 점점 오른쪽으로… ⇒ 등수압선에 <u>나란하게</u> 해수 흐르게 됨 = ==지형류== {#ocean-02-geostrophic-p1}
 
-해안을 따라 바람이 불어 에크만 수송으로 표층 해수가 해안에서 먼바다 쪽으로 이동하면, 부족해진 표층수를 채우기 위해 아래의 차가운 해수가 올라오는데, 이를 ==용승==이라고 합니다. 반대로 표층 해수가 해안 쪽으로 모이면 해수가 아래로 내려가는 ==침강==이 일어납니다. {#ocean-02-upwelling-p1}
-
-용승이 일어나는 해역은 표층 수온이 주변보다 낮고, 심층의 영양염류가 공급되어 좋은 어장이 형성되기도 합니다. [[용승과 침강의 원리|popup:upwelling]] {#ocean-02-upwelling-p2}
-
-@figure id=ocean-02-fig-upwelling popup=upwelling thumb=upwelling
-그림 5. 북반구 해안에서의 용승(임시 그림)
+@row id=ocean-02-geostrophic-row widths=1,1
+@figure id=ocean-02-fig-geo1 fig=geo-balance popup=geostrophic
+수압 경도력 ←, !!전향력!! → 평형 → !!지형류!!
+@col
+@figure id=ocean-02-fig-geo2 fig=geo-isobar popup=geostrophic
+등수압선 ← 방향 같음! (지형류는 등수압선과 나란하게)
+@end
 
 @chapter ocean-03
 
-### 해파의 구조 {#ocean-03-structure}
+해파: 해수면의 파동이 퍼지면서 생기는 물 입자의 !!주기!!적인 ==상하== 운동 {#ocean-03-structure}
 
-바람 등의 영향으로 해수면이 오르내리며 그 형태가 퍼져 나가는 파동을 ==해파==라고 합니다. 해파에서 가장 높은 곳을 마루, 가장 낮은 곳을 골이라 하고, 마루와 골의 높이 차를 파고, 마루에서 다음 마루까지의 수평 거리를 파장이라고 합니다. 한 지점을 마루가 지나간 뒤 다음 마루가 지나갈 때까지 걸리는 시간을 주기라고 합니다. [[마루·골·파고·파장|popup:waves@3]] {#ocean-03-structure-p1}
-
-$$ id=ocean-03-speed-eq caption="파속(v), 파장(L), 주기(T)"
-v = L / T
+@row id=ocean-03-structure-row widths=3,2
+@figure id=ocean-03-fig-structure fig=wave-structure popup=waves@3
+마루, 골, 파고, 파장 / 마루~마루, 골~골 !!시간!! = 주기
+@col
+$$ id=ocean-03-speed-eq caption="속도 = 파장 / 주기"
+속도 = 파장 / 주기
 $$
+- 물 입자는 그대로 제자리! {#ocean-03-particle}
+- 이동 X, E만 전달!
+[[파동의 진행과 물 입자 운동|popup:waves]] {#ocean-03-particle-link}
+@end
 
-### 물 입자의 운동 {#ocean-03-particle}
+#### [모양] {#ocean-03-shape}
 
-해파가 진행할 때 이동하는 것은 파동의 에너지이며, 물 입자는 제자리 부근에서 원 또는 타원 궤도를 그리며 움직입니다. 수심이 파장의 1/2보다 깊은 곳에서 진행하는 ==심해파==의 물 입자는 원운동을 하며, 원의 크기는 깊어질수록 작아집니다. {#ocean-03-particle-p1}
+@row id=ocean-03-shape-row widths=2,3
+@figure id=ocean-03-fig-shapes fig=wave-shapes
+풍랑 · 너울 · 연안 쇄파 (그림으로 기억!)
+@col
+- 풍랑: 마루가 뾰족 (바람 부는 해역 → 풍역대) 방향 일정 {#ocean-03-shape-list}
+- 너울: 마루가 둥글, 긴 파장
+- 연안 쇄파: (수심 얕아져) 느린 속도, 짧은 파장, 높은 파고 → 부서짐.
+[[해안 접근에 따른 파속·파장·파고 변화|popup:shoaling]] {#ocean-03-shoaling}
+@end
 
-@figure id=ocean-03-fig-particle popup=waves thumb=waves
-그림 6. 심해파의 진행과 물 입자의 원운동(임시 그림)
+#### [파장과 수심의 비교] {#ocean-03-types}
 
-@table id=ocean-03-tbl-wavetype caption="표 2. 심해파와 천해파"
-| 구분 | 수심 조건 | 물 입자 운동 | 파속 |
+@figure id=ocean-03-fig-types fig=wave-types popup=waves@4
+심해파 · 천이파 · 천해파: 깊다 ← 수심이 파장의 1/2보다 → 얕다
+
+@table id=ocean-03-tbl-types
+| 구분 | 물 입자 | 깊은 곳 | 속도를 결정하는 것 |
 |---|---|---|---|
-| 심해파 | 수심 > 파장의 1/2 | 원운동 | 파장이 길수록 빠름 |
-| 천해파 | 수심 < 파장의 1/20 | 타원 운동(바닥 근처는 왕복 운동) | 수심이 깊을수록 빠름 |
+| 심해파 | 원운동 | 작아져 무시 | 파장 (파장↑ 속도↑) |
+| 천이파 | 중간 | | |
+| 천해파 | 타원 운동, 수평 왕복 운동 | | 수심 (수심의 제곱근에 비례, 얕을수록 느려짐. 파고는 높아짐) |
 
-### 해안으로 다가오는 해파 {#ocean-03-shoaling}
-
-해파가 해안으로 다가와 수심이 얕아지면 해저면의 영향을 받아 파속이 느려집니다. 주기는 거의 일정하므로 파장은 짧아지고, 에너지가 좁은 구간에 모여 파고는 높아집니다. 결국 마루가 앞으로 기울어지며 부서지는데, 이를 ==쇄파==라고 합니다. [[해안 접근에 따른 파속·파장·파고 변화|popup:shoaling]] {#ocean-03-shoaling-p1}
-
-@figure id=ocean-03-fig-shoaling popup=shoaling thumb=shoaling
-그림 7. 해안으로 다가오는 해파의 변화(임시 그림)
+@row id=ocean-03-refraction-row widths=1,1
+@figure id=ocean-03-fig-refraction fig=refraction
+만: 퇴적(모래사장) · 곶: 침식(절벽)
+@col
+- 수심의 변화가 큼 → 해파 진행 속도 차이가 큼 {#ocean-03-refraction-list}
+- 해파는 곶으로 ::굴절::
+@end
 
 @chapter ocean-04
 
-### 폭풍해일 {#ocean-04-storm}
+#### 폭풍 해일 {#ocean-04-storm}
 
-태풍이나 강한 저기압이 다가오면 기압이 낮아져 해수면이 상승하고, 강한 바람이 해수를 해안으로 밀어 쌓아 해수면이 비정상적으로 높아지는데, 이를 ==폭풍해일==이라고 합니다. 폭풍해일이 만조와 겹치면 해안 저지대에 큰 피해가 발생할 수 있습니다. [[폭풍해일의 발생 과정|popup:storm-surge]] {#ocean-04-storm-p1}
+@row id=ocean-04-storm-row widths=2,3
+@figure id=ocean-04-fig-storm fig=storm-pressure popup=storm-surge
+고기압 ↓ 해수면 낮아짐 / 저기압(태풍) ↑ 해수면 높아짐
+@col
+- ==고기압== → 해수면 낮아짐, ==저기압==(태풍) → 해수면 높아짐 {#ocean-04-storm-list}
+- 해면 기압 1 hPa 낮아지면 해수면 1 cm 높아짐
+[[폭풍 해일의 발생 과정|popup:storm-surge]] {#ocean-04-storm-link}
+@end
 
-@figure id=ocean-04-fig-storm popup=storm-surge thumb=storm-surge
-그림 8. 태풍에 의한 폭풍해일(임시 그림)
+#### 지진 해일 = 쓰나미 {#ocean-04-tsunami}
 
-### 지진해일 {#ocean-04-tsunami}
+- 파장이 100~200 km로 매우 길다 {#ocean-04-tsunami-list}
+- (* 대양 평균 수심은 4 km) ⇒ <u>천해파</u>
+- 매우 빠르다 → 느려지면서 파장 짧아지고 파고 ↑↑
 
-해저 지진, 해저 화산 폭발, 해저 산사태 등으로 해저 지형이 급격히 변하면 그 위의 해수 전체가 움직여 거대한 파동이 생기는데, 이를 ==지진해일==이라고 합니다. 지진해일은 파장이 수백 km에 이를 만큼 길어 깊은 바다에서도 천해파의 성질을 가지며, 속력은 수심이 깊을수록 빠릅니다. {#ocean-04-tsunami-p1}
-
-$$ id=ocean-04-tsunami-eq caption="천해파의 속력(v), 중력 가속도(g), 수심(h)"
-v = √(gh)
-$$
-
-깊은 바다에서 지진해일은 파고가 낮아 배 위에서는 잘 느껴지지 않지만, 해안에 가까워져 수심이 얕아지면 속력이 느려지고 파장이 짧아지면서 파고가 크게 높아집니다. [[지진해일의 발생과 해안 접근|popup:tsunami]] {#ocean-04-tsunami-p2}
-
-@figure id=ocean-04-fig-tsunami popup=tsunami thumb=tsunami
-그림 9. 해저 지진에 의한 지진해일의 발생과 전파(임시 그림)
+@figure id=ocean-04-fig-tsunami thumb=tsunami popup=tsunami
+해저 지진에 의한 지진 해일의 발생과 해안 접근
 
 @chapter ocean-05
 
-### 기조력과 조석 {#ocean-05-force}
+==조석== = 주기적으로 해수면의 높이가 <u>높아졌다</u> <u>낮아지는</u> 현상 {#ocean-05-tide}
 
-해수면이 주기적으로 높아졌다 낮아지는 현상을 ==조석==이라고 합니다. 조석을 일으키는 힘인 ==기조력==은 달과 태양의 인력과 지구-달(또는 지구-태양) 계의 공통 질량 중심 둘레를 도는 운동에 의한 원심력이 합쳐져 나타납니다. 기조력에 의해 지구에서 달을 향한 쪽과 그 반대쪽의 해수면이 부풀어 오릅니다. {#ocean-05-force-p1}
+@row id=ocean-05-tide-row widths=1,1
+- 하루 中 ==만조==(고조) → ==간조==(저조): 썰물 {#ocean-05-day}
+- 간조 → 만조: 밀물
+- ::흐름 → 조류::
+- ::높이 차 → 조차::
+[[하루 동안의 조석과 조류|popup:tide-day]] {#ocean-05-day-link}
+@col
+@figure id=ocean-05-fig-phase fig=moon-phase popup=tides
+조금(소조): 상현·하현 / 사리(대조): 삭·망 → 조차 가장 클 때
+@end
 
-태양은 달보다 질량이 훨씬 크지만 매우 멀리 있어, 태양의 기조력은 달의 기조력의 약 1/2입니다. {#ocean-05-force-p2}
+#### [기조력] {#ocean-05-force}
 
-### 사리와 조금 {#ocean-05-spring}
+[기조력] = 조석을 일으키는 힘 {#ocean-05-force-def}
 
-삭과 망일 때는 태양·지구·달이 일직선에 놓여 달과 태양의 기조력이 같은 방향으로 작용하므로 조차가 커지는 ==사리==가 나타납니다. 상현과 하현일 때는 두 기조력이 직각으로 작용하여 조차가 작은 ==조금==이 나타납니다. [[달의 위치와 사리·조금|popup:tides]] {#ocean-05-spring-p1}
+@row id=ocean-05-force-row widths=3,2
+- <u>'지구 원운동 원심력'</u> + <u>'달이 지구에 작용하는 인력'</u>의 합력 {#ocean-05-force-list}
+- 원심력: 달에서 멀어지는 방향 / 인력: 달을 향한 방향
+- → 달에서 가장 가까운 쪽 + 가장 먼 쪽 모두 가장 높아짐
+- !!* 태양은 멀어서 달 기조력의 1/2!! {#ocean-05-spring}
+[[달의 위치와 사리·조금|popup:tides]] {#ocean-05-spring-link}
+@col
+@figure id=ocean-05-fig-force fig=tide-force popup=tides
+지구 ← 멀어 · 가까워 → 달
+@end
 
-@figure id=ocean-05-fig-spring popup=tides thumb=tides
-그림 10. 달의 위상에 따른 사리와 조금(임시 그림)
-
-### 만조와 간조, 조류 {#ocean-05-day}
-
-조석으로 해수면이 가장 높아진 때를 ==만조==, 가장 낮아진 때를 ==간조==라 하고, 만조와 간조의 해수면 높이 차를 ==조차==라고 합니다. 만조에서 다음 만조까지는 약 12시간 25분이 걸리므로 대부분의 해안에서 만조와 간조는 하루에 약 두 번씩 나타납니다. {#ocean-05-day-p1}
-
-조석에 따라 바닷물이 수평으로 흐르는 것을 ==조류==라고 합니다. 간조에서 만조로 바뀌는 동안 육지 쪽으로 흐르는 조류를 밀물(창조류), 만조에서 간조로 바뀌는 동안 바다 쪽으로 흐르는 조류를 썰물(낙조류)이라고 합니다. [[하루 동안의 조석과 조류|popup:tide-day]] {#ocean-05-day-p2}
-
-@figure id=ocean-05-fig-day popup=tide-day thumb=tide-day
-그림 11. 하루 동안의 해수면 높이 변화(임시 그림)
+- 자전하니까 하루에 만조, 간조 나타남 {#ocean-05-period-list}
+- 그런데! 자전하는 동안 달도 공전(6.5°)해서 이동. !!지구가 더 25분 자전해야!! ⇒ 주기 = 12시간 25분
+- 적도가 기울어져 있어서 실제 조석은 매우 복잡!

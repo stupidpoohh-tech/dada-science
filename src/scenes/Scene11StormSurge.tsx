@@ -58,7 +58,7 @@ export default function Scene11StormSurge({ step }: SceneProps) {
         ))}
         <circle r={14} fill={C.coriolis} />
         <text y={1} fontSize={16} fontWeight={800} textAnchor="middle" dominantBaseline="middle" fill="white">L</text>
-        <Tag y={78} size={14} color={C.coriolis}>태풍(저기압) 중심</Tag>
+        <Tag x={0} y={78} size={14} color={C.coriolis}>태풍(저기압) 중심</Tag>
       </g>
 
       {/* 기압 화살표: 길이 = 해수면을 누르는 공기의 압력 */}

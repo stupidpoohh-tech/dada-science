@@ -151,6 +151,7 @@ let settings: ToolSettings = {
   tool: 'none', penColor: PEN_COLORS[0].value, penSize: PEN_SIZES[1], hlColor: HL_COLORS[0].value, hlSize: HL_SIZES[1],
   visible: true, fingerDraw: false, collapsed: false, barY: 0.3, activeScope: '', activeRegion: null,
 }
+if (typeof window !== 'undefined' && window.innerWidth < 768) settings.collapsed = true
 try {
   const raw = localStorage.getItem(SKEY)
   if (raw) {
