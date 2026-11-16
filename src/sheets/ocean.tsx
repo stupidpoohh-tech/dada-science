@@ -478,12 +478,11 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
             <Txt x={678} y={22} size={13} anchor="middle" weight={700}>조금(소조)</Txt>
             <path d="M610 38 Q678 26 746 38" fill="none" stroke={INK} strokeWidth={1.3} />
             {['삭', '상현', '망', '하현', '삭'].map((t, i) => <Txt key={i} x={moons[i]} y={56} size={12} anchor="middle">{t}</Txt>)}
-            <g stroke={INK} strokeWidth={1.2}>
-              <circle cx={612} cy={74} r={6} fill="none" strokeDasharray="2 2" />
-              <path d="M646 68 a6 6 0 0 1 0 12 z" fill={INK} /><circle cx={646} cy={74} r={6} fill="none" />
-              <circle cx={680} cy={74} r={6} fill="none" />
-              <path d="M712 68 a6 6 0 0 0 0 12 z" fill={INK} /><circle cx={712} cy={74} r={6} fill="none" />
-              <circle cx={744} cy={74} r={6} fill="none" strokeDasharray="2 2" />
+            {/* 지구(북반구)에서 보이는 밝은 부분만: 삭은 보이지 않음, 상현은 오른쪽 반달, 망은 보름달, 하현은 왼쪽 반달 */}
+            <g stroke={INK} strokeWidth={1.2} fill="#ffd84d">
+              <path d="M646 68 a6 6 0 0 1 0 12 z" />
+              <circle cx={680} cy={74} r={6} />
+              <path d="M712 68 a6 6 0 0 0 0 12 z" />
             </g>
             <path d="M610 90 Q678 122 746 90" fill="none" stroke={INK} strokeWidth={1.3} />
             <Arw x1={678} y1={106} x2={678} y2={128} w={1.3} head={6} />
