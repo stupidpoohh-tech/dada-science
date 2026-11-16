@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
+@import "pretendard/dist/web/variable/pretendardvariable.css";
 
 /* 회사 서체 Freesentation (눈누 CDN). 불러오지 못하면 Pretendard로 대체됩니다. */
 @font-face { font-family: 'Freesentation'; font-weight: 400; font-display: swap;

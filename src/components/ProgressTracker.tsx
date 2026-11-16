@@ -1,6 +1,9 @@
+import { useState } from 'react'
+
 /** 전체 학습 진행률 */
 export function OverallProgress({ done, total, onReset }: { done: number; total: number; onReset: () => void }) {
   const pct = Math.round((done / total) * 100)
+  const [ask, setAsk] = useState(false)
   return (
     <div className="flex w-full items-center gap-4 rounded-2xl border border-ink/10 bg-white px-4 py-3 sm:w-auto sm:min-w-80">
       <div className="min-w-0 flex-1">
@@ -13,9 +16,9 @@ export function OverallProgress({ done, total, onReset }: { done: number; total:
         </div>
       </div>
       {done > 0 && (
-        <button type="button" onClick={() => { if (confirm('학습 기록을 모두 지울까요?')) onReset() }}
-          className="shrink-0 text-[13px] font-semibold text-ink/45 underline-offset-2 hover:text-ink hover:underline">
-          초기화
+        <button type="button" onClick={() => { if (ask) { onReset(); setAsk(false) } else setAsk(true) }} onBlur={() => setAsk(false)}
+          className={`shrink-0 text-[13px] font-semibold underline-offset-2 hover:underline ${ask ? 'text-coriolis' : 'text-ink/45 hover:text-ink'}`}>
+          {ask ? '한 번 더 누르면 삭제' : '초기화'}
         </button>
       )}
     </div>
