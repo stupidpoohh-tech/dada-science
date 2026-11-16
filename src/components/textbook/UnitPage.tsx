@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { UnitMeta } from '../../content/types'
 import { conceptById } from '../../content/concepts'
 import { manuscriptOf } from '../../lib/content'
-import { navigate } from '../../lib/router'
+import { href, navigate } from '../../lib/router'
+import { UNITS } from '../../content/units'
 import { openPopup } from '../../lib/popupState'
 import { useActiveScope } from '../../lib/annotations'
 import AnnotationSurface from '../annotation/AnnotationSurface'
@@ -64,8 +65,9 @@ export default function UnitPage({ unit, focus, back, concept }: { unit: UnitMet
     setTocOpen(false)
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
-  const idx = unit.chapters.findIndex((c) => c.id === current)
-  const cur = unit.chapters[idx]
+  const uIdx = UNITS.findIndex((u) => u.id === unit.id)
+  const prevUnit = UNITS[uIdx - 1]
+  const nextUnit = UNITS[uIdx + 1]
   const conceptObj = focusBar?.concept ? conceptById(focusBar.concept) : undefined
 
   return (
@@ -88,15 +90,14 @@ export default function UnitPage({ unit, focus, back, concept }: { unit: UnitMet
             <button type="button" onClick={() => setTocOpen((v) => !v)} aria-expanded={tocOpen}
               className="no-tap flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-xl px-1 text-left">
               <span className="shrink-0 rounded-md bg-ink px-1.5 py-0.5 text-[12px] font-bold text-white">{unit.numeral}</span>
-              <span className="min-w-0 truncate text-[15px] font-bold"><span className="text-brand">{cur?.no}</span> {cur?.title}</span>
+              <span className="min-w-0 truncate text-[15px] font-bold">{unit.title}</span>
               <span className={`text-ink/45 transition ${tocOpen ? 'rotate-180' : ''}`}>▾</span>
             </button>
-            <button type="button" disabled={idx <= 0} onClick={() => jump(unit.chapters[idx - 1].id)} aria-label="이전 소챕터" className="no-tap h-10 w-10 rounded-lg border border-ink/12 bg-white font-bold disabled:opacity-30">↑</button>
-            <button type="button" disabled={idx >= unit.chapters.length - 1} onClick={() => jump(unit.chapters[idx + 1].id)} aria-label="다음 소챕터" className="no-tap h-10 w-10 rounded-lg border border-ink/12 bg-white font-bold disabled:opacity-30">↓</button>
+            <UnitArrow unit={prevUnit} dir="prev" />
+            <UnitArrow unit={nextUnit} dir="next" />
           </div>
           {tocOpen && (
             <div className="rise max-h-[70dvh] overflow-y-auto pb-3 pt-2">
-              <a href="#/" className="mb-3 block text-[14px] font-bold text-ink/55">← 처음 화면</a>
               <ChapterNavigation unit={unit} current={current} onJump={jump} onSource={unit.sourcePages ? () => { setTocOpen(false); setSource(true) } : undefined} />
             </div>
           )}
@@ -131,4 +132,13 @@ export default function UnitPage({ unit, focus, back, concept }: { unit: UnitMet
       {source && unit.sourcePages && <SourceViewer pages={unit.sourcePages} onClose={() => setSource(false)} />}
     </div>
   )
+}
+
+/** 위쪽 바의 대단원 이동 화살표(‹ ›) */
+function UnitArrow({ unit, dir }: { unit?: UnitMeta; dir: 'prev' | 'next' }) {
+  const cls = 'no-tap grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-ink/12 bg-white text-[18px] font-bold'
+  const label = `${dir === 'prev' ? '이전' : '다음'} 대단원${unit ? `: ${unit.numeral}. ${unit.title}` : ''}`
+  const glyph = dir === 'prev' ? '‹' : '›'
+  if (!unit) return <span aria-hidden className={`${cls} opacity-30`}>{glyph}</span>
+  return <a href={href({ name: 'unit', unitId: unit.id })} aria-label={label} title={label} className={cls}>{glyph}</a>
 }

@@ -32,7 +32,7 @@ function ChapterSection({ unit, chapterId, no, title, blocks }: { unit: UnitMeta
   const done = chapterDone(p, unit.id, ch)
   const sheet = blocks[0]?.kind === 'sheet'
   return (
-    <section id={chapterId} data-chapter={chapterId} className={`scroll-mt-20 ${sheet ? 'pt-1' : 'pt-10'}`}>
+    <section id={chapterId} data-chapter={chapterId} className={`scroll-mt-20 ${sheet ? 'pt-7 first-of-type:pt-1' : 'pt-10'}`}>
       {sheet ? (
         <h2 className="sr-only">{no}. {title}</h2>
       ) : (

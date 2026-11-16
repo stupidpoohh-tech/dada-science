@@ -1,6 +1,5 @@
 import type { ComponentType } from 'react'
 import { Arrow, C, PolarArrow } from '../components/svg'
-import Diver from './Diver'
 
 const waveD = (y: number, a: number, l: number, x0 = 0, x1 = 320) => {
   let d = `M${x0} ${y}`
@@ -8,15 +7,6 @@ const waveD = (y: number, a: number, l: number, x0 = 0, x1 = 320) => {
   return d
 }
 
-const T1 = () => (
-  <>
-    <defs><linearGradient id="t1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#cdeefe" /><stop offset="1" stopColor="#145a9e" /></linearGradient></defs>
-    <rect y={30} width={320} height={150} fill="url(#t1)" />
-    <g transform="translate(130 100) scale(.8)"><Diver /></g>
-    {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => { const a = (i * Math.PI) / 4; return <Arrow key={i} x1={130 + Math.cos(a) * 72} y1={96 + Math.sin(a) * 72} x2={130 + Math.cos(a) * 52} y2={96 + Math.sin(a) * 52} color={C.pgf} width={3.5} halo /> })}
-    <rect x={250} y={40} width={30} height={124} rx={6} fill="white" /><rect x={250} y={88} width={30} height={76} rx={6} fill={C.current} />
-  </>
-)
 const T2 = () => (
   <>
     <path d="M40 54 L280 94 L280 160 L40 160 Z" fill="#7ccaf2" /><path d="M40 30 L40 160 L280 160 L280 30" fill="none" stroke="#9aa7b8" strokeWidth={5} />
@@ -69,13 +59,6 @@ const T7 = () => {
     </>
   )
 }
-const T8 = () => (
-  <>
-    <path d="M0 70 Q150 70 210 46 Q240 70 320 66 L320 180 L0 180 Z" fill="#4fb4e8" />
-    <path d="M0 160 L60 160 L66 150 L120 150 L114 160 L200 160 L300 70 L320 60 L320 180 L0 180 Z" fill={C.rock} />
-    <Arrow x1={93} y1={146} x2={93} y2={118} color="white" width={4} /><Arrow x1={170} y1={22} x2={230} y2={22} color={C.coriolis} width={4} />
-  </>
-)
 const T9 = () => (
   <>
     <rect width={320} height={180} fill="#0b1a2b" /><circle cx={-30} cy={90} r={70} fill="#ffb02e" />
@@ -83,35 +66,9 @@ const T9 = () => (
     <circle cx={272} cy={90} r={10} fill="#f2f2e6" /><line x1={60} x2={262} y1={90} y2={90} stroke="#5c6f87" strokeDasharray="3 4" />
   </>
 )
-const T10 = () => {
-  let d = ''
-  for (let x = 20; x <= 300; x += 3) d += `${d ? ' L' : 'M'}${x} ${(120 - 30 * Math.sin(((x - 20) / 140) * 2 * Math.PI)).toFixed(1)}`
-  return (
-    <>
-      <rect width={320} height={180} fill="white" /><line x1={20} x2={300} y1={120} y2={120} stroke={C.line} />
-      <path d="M0 60 L320 60 L320 0 L0 0 Z" fill="#eef7fd" /><path d="M0 30 L320 58 L320 60 L0 60 Z" fill={C.sand} />
-      <path d={d} fill="none" stroke={C.current} strokeWidth={3.5} /><circle cx={55} cy={90} r={5} fill={C.coriolis} /><circle cx={125} cy={150} r={5} fill={C.pgf} />
-      <Arrow x1={240} y1={46} x2={190} y2={46} color={C.motion} width={4} />
-    </>
-  )
-}
-
-const T11 = () => (
-  <>
-    <rect width={320} height={180} fill="#eef3f8" />
-    <path d="M0 110 Q150 104 200 92 Q240 84 250 80 L250 180 L0 180 Z" fill="#4fb4e8" />
-    <line x1={0} x2={250} y1={112} y2={112} stroke={C.ink} strokeDasharray="4 4" strokeOpacity={0.4} />
-    <path d="M0 170 L150 170 L250 80 L320 60 L320 180 Z" fill={C.sand} />
-    <circle cx={110} cy={40} r={26} fill="white" />
-    {[0, 120, 240].map((a) => <path key={a} d="M0 0 Q 14 -18 30 -6" fill="none" stroke={C.wind} strokeWidth={5} strokeLinecap="round" transform={`translate(110 40) rotate(${a})`} />)}
-    <circle cx={110} cy={40} r={7} fill={C.coriolis} />
-    <Arrow x1={130} y1={78} x2={200} y2={70} color={C.wind} width={4} />
-  </>
-)
-
 /** 그림 번호 → 썸네일(원문 임시 그림·문제 그림에 사용) */
-export const THUMBS: Record<number, ComponentType> = { 1: T1, 2: T2, 3: T3, 4: T4, 5: T5, 6: T6, 7: T7, 8: T8, 9: T9, 10: T10, 11: T11 }
+export const THUMBS: Record<number, ComponentType> = { 2: T2, 3: T3, 4: T4, 5: T5, 6: T6, 7: T7, 9: T9 }
 /** 팝업 ID → 썸네일 */
 export const THUMB_BY_POPUP: Record<string, ComponentType> = {
-  pressure: T1, pgf: T2, geostrophic: T3, ekman: T4, upwelling: T5, waves: T6, shoaling: T7, tsunami: T8, 'storm-surge': T11, tides: T9, 'tide-day': T10,
+  pgf: T2, geostrophic: T3, ekman: T4, upwelling: T5, waves: T6, shoaling: T7, tides: T9,
 }

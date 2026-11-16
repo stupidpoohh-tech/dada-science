@@ -39,7 +39,7 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
       <>
         <H x={2} y={26}>01. 해수를 움직이는 힘</H>
         <L x={14} y={70}>[수직]</L>
-        <Hot x={92} y={42} w={430} h={206} popup="pressure" label="수심에 따른 수압 변화">
+        <g>
           <Wave x={110} y={64} w={112} a={3.5} l={24} />
           <Curve x1={222} y1={60} cx={232} cy={46} x2={246} y2={52} />
           <Txt x={252} y={58} size={14}>수압(중력)</Txt>
@@ -67,7 +67,7 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
           <Txt x={428} y={214} size={16}>⇒</Txt>
           <Boxed x={452} y={214} size={14.5}>수압 경도력</Boxed>
           <Txt x={446} y={240} size={13}>연직 (아래에서 위로)</Txt>
-        </Hot>
+        </g>
         {/* 정역학 평형 */}
         <Txt x={622} y={62} size={14} anchor="middle" weight={600}>연직 수압 경도력</Txt>
         <Arw x1={622} y1={112} x2={622} y2={76} w={2} />
@@ -405,16 +405,16 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
       <>
         <H x={2} y={28}>04. 해일</H>
         <Txt x={112} y={28} size={14} weight={700}>- 폭풍해일</Txt>
-        <Hot x={96} y={42} w={210} h={92} popup="storm-surge" label="폭풍 해일의 발생 과정">
+        <g>
           <Circled x={136} y={66} size={12.5}>고기압</Circled>
           <Circled x={218} y={66} size={12.5}>저기압</Circled>
           <Txt x={246} y={66} size={12.5}>(태풍)</Txt>
           <Arw x1={132} y1={80} x2={132} y2={116} w={1.6} />
           <Arw x1={214} y1={80} x2={214} y2={94} w={1.4} head={6} />
           <path d="M110 112 Q132 122 160 112 Q206 90 250 106" fill="none" stroke={INK} strokeWidth={1.6} />
-        </Hot>
+        </g>
         <Txt x={112} y={156} size={13.5}>해면기압 1hPa 낮아지면 해수면 1cm 높아짐</Txt>
-        <Hot x={466} y={8} w={286} h={154} popup="tsunami" label="지진해일의 발생과 해안 접근">
+        <g>
           <Txt x={482} y={30} size={14} weight={700}>- 지진해일 = 쓰나미</Txt>
           <line x1={494} x2={556} y1={36} y2={36} stroke={INK} strokeWidth={1.3} />
           <Txt x={500} y={62} size={13.5}>파장이 100~200km로 매우 길다</Txt>
@@ -422,7 +422,7 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
           <Txt x={700} y={88} size={13.5} weight={700} u="wavy">천해파</Txt>
           <Txt x={490} y={120} size={13.5}>매우 빠르다 → 느려지면서</Txt>
           <Txt x={540} y={144} size={13.5}>파장 짧아지고 파고 ↑↑</Txt>
-        </Hot>
+        </g>
       </>
     ),
   },
@@ -435,7 +435,7 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
       return (
         <>
           <H x={2} y={98}>05. 조석</H>
-          <Hot x={92} y={30} w={418} h={142} popup="tide-day" label="하루 동안의 조석과 조류">
+          <g>
             <Txt x={108} y={98} size={14}>= 주기적으로 해수면의 높이가</Txt>
             <Txt x={302} y={98} size={14} u="wavy">높아졌다</Txt>
             <Txt x={366} y={98} size={14} u="wavy">낮아지는</Txt>
@@ -449,7 +449,7 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
             <Circled x={390} y={128} size={12.5} ring={RED}>저조</Circled>
             <Curve x1={392} y1={146} cx={360} cy={156} x2={328} y2={146} head={5} />
             <Txt x={350} y={168} size={11}>밀물</Txt>
-          </Hot>
+          </g>
           <rect x={466} y={70} width={126} height={30} fill="none" stroke={INK} strokeWidth={1.3} />
           <Circled x={496} y={91} size={12.5}>흐름</Circled>
           <Txt x={518} y={91} size={13.5} weight={700}>→ 조류</Txt>
@@ -504,13 +504,13 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
         <Txt x={56} y={174} size={13.5}>적도가 기울어져 있어서</Txt>
         <Txt x={56} y={198} size={13.5} weight={600}>실제 조석은 매우 복잡!</Txt>
         <Curve x1={330} y1={160} cx={280} cy={154} x2={230} y2={176} />
-        <Hot x={290} y={142} w={462} h={70} popup="tide-day" label="조석의 주기">
+        <g>
           <Txt x={340} y={164} size={13.5}>자전하니까 하루에 만조, 간조 나타남</Txt>
           <Txt x={562} y={180} size={10.5} color={RED} weight={700}>지구가 더 25분 자전해야</Txt>
           <Txt x={300} y={198} size={13.5}>그런데! 자전하는 동안 달도 공전(6.5°)해서 이동.</Txt>
           <Txt x={680} y={186} size={12.5}>⇒ 주기 =</Txt>
           <Txt x={680} y={204} size={12.5} weight={700}>12시간 25분</Txt>
-        </Hot>
+        </g>
       </>
     ),
   },

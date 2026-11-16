@@ -6,7 +6,7 @@ import type { Concept } from './types'
  */
 export const CONCEPTS: Concept[] = [
   // Ⅱ. 해수의 운동과 순환
-  { id: 'ocean.pressure', unitId: 'ocean', chapterId: 'ocean-01', title: '수압과 정역학 평형', blockId: 'ocean-01-vertical', popupId: 'pressure' },
+  { id: 'ocean.pressure', unitId: 'ocean', chapterId: 'ocean-01', title: '수압과 정역학 평형', blockId: 'ocean-01-vertical' },
   { id: 'ocean.pgf', unitId: 'ocean', chapterId: 'ocean-01', title: '수평 수압 경도력', blockId: 'ocean-01-horizontal', popupId: 'pgf' },
   { id: 'ocean.coriolis', unitId: 'ocean', chapterId: 'ocean-01', title: '전향력', blockId: 'ocean-01-coriolis', popupId: 'geostrophic', popupStep: 2 },
   { id: 'ocean.ekman', unitId: 'ocean', chapterId: 'ocean-02', title: '에크만 나선과 에크만 수송', blockId: 'ocean-02-ekman', popupId: 'ekman' },
@@ -16,10 +16,10 @@ export const CONCEPTS: Concept[] = [
   { id: 'ocean.wave-particle', unitId: 'ocean', chapterId: 'ocean-03', title: '물 입자의 운동', blockId: 'ocean-03-structure', popupId: 'waves' },
   { id: 'ocean.wave-types', unitId: 'ocean', chapterId: 'ocean-03', title: '심해파와 천해파', blockId: 'ocean-03-types', popupId: 'waves', popupStep: 4 },
   { id: 'ocean.shoaling', unitId: 'ocean', chapterId: 'ocean-03', title: '연안 쇄파', blockId: 'ocean-03-shape', popupId: 'shoaling' },
-  { id: 'ocean.storm-surge', unitId: 'ocean', chapterId: 'ocean-04', title: '폭풍 해일', blockId: 'ocean-04-surge', popupId: 'storm-surge' },
-  { id: 'ocean.tsunami', unitId: 'ocean', chapterId: 'ocean-04', title: '지진 해일', blockId: 'ocean-04-surge', popupId: 'tsunami' },
+  { id: 'ocean.storm-surge', unitId: 'ocean', chapterId: 'ocean-04', title: '폭풍 해일', blockId: 'ocean-04-surge' },
+  { id: 'ocean.tsunami', unitId: 'ocean', chapterId: 'ocean-04', title: '지진 해일', blockId: 'ocean-04-surge' },
   { id: 'ocean.tide-force', unitId: 'ocean', chapterId: 'ocean-05', title: '기조력과 사리·조금', blockId: 'ocean-05-force', popupId: 'tides' },
-  { id: 'ocean.tide-day', unitId: 'ocean', chapterId: 'ocean-05', title: '만조·간조·조차·조류', blockId: 'ocean-05-tide', popupId: 'tide-day' },
+  { id: 'ocean.tide-day', unitId: 'ocean', chapterId: 'ocean-05', title: '만조·간조·조차·조류', blockId: 'ocean-05-tide' },
   // Ⅲ. 강수 과정과 대기의 운동
   { id: 'atm.absorption', unitId: 'atmosphere', chapterId: 'atmosphere-01', title: '선택적 흡수와 온실 효과', blockId: 'atmosphere-01-composition' },
   { id: 'atm.budget', unitId: 'atmosphere', chapterId: 'atmosphere-02', title: '지구 열수지', blockId: 'atmosphere-02-budget' },

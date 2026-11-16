@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import type { AnswerKey, BankQuestion } from '../../content/bank/types'
 import { conceptById } from '../../content/concepts'
-import { topicOf } from '../../content/bank'
 import { FIGURES } from '../../figures'
-import { blankCount, typeLabel, type BankAnswer, type ItemResult } from '../../lib/bankGrading'
+import { blankCount, type BankAnswer, type ItemResult } from '../../lib/bankGrading'
 import { href, type Route } from '../../lib/router'
 import { openPopup } from '../../lib/popupState'
 import type { BankSetState } from '../../lib/store'
@@ -58,18 +57,15 @@ export default function BankQuestionCard({ q, value, onChange, revealed, result,
 
   return (
     <article id={`q-${q.id}`} className="scroll-mt-28 rounded-2xl border border-ink/10 bg-white p-4 sm:p-5">
-      <header className="mb-2 flex flex-wrap items-center gap-1.5 text-[13px] font-bold">
-        <span className="mr-1 text-[18px] font-extrabold tabular-nums">{q.number}.</span>
-        <span className="rounded-md bg-ink px-1.5 py-0.5 text-white">{q.code}</span>
-        {q.title && <span className="text-[15px] font-extrabold text-ink/80">{q.title}</span>}
-        <span className="rounded-full bg-ink/6 px-2 py-0.5 text-ink/60">{typeLabel(q)}</span>
-        <span className="rounded-full bg-ink/6 px-2 py-0.5 text-ink/60">난이도 {q.difficulty}</span>
-        {q.points > 0 && <span className="text-ink/45">[{q.points}점]</span>}
-        <span className="text-ink/45">· {topicOf(q.unitId, q.topic)?.label}</span>
-        <span className={`ml-auto rounded-full px-2.5 py-0.5 ${STATUS_STYLE[status]}`}>{STATUS_LABEL[status]}{revealed && result && result.status !== 'unanswered' && q.points > 0 ? ` ${result.score}/${q.points}` : ''}</span>
-      </header>
-
-      <p className="whitespace-pre-line text-[17px] font-semibold leading-relaxed">{q.question}</p>
+      {/* 번호와 문제만 표시. 채점 후에만 결과(정답·오답·점수)를 붙입니다. */}
+      <div className="flex items-start gap-2">
+        <p className="min-w-0 flex-1 whitespace-pre-line text-[17px] font-semibold leading-relaxed">
+          <span className="mr-1.5 font-extrabold tabular-nums">{q.number}.</span>{q.question}
+        </p>
+        {revealed && result && (
+          <span className={`mt-0.5 shrink-0 rounded-full px-2.5 py-0.5 text-[13px] font-bold ${STATUS_STYLE[status]}`}>{STATUS_LABEL[status]}{result.status !== 'unanswered' && q.points > 0 ? ` ${result.score}/${q.points}` : ''}</span>
+        )}
+      </div>
       {q.material && (
         <div className="mt-3 rounded-xl border border-ink/15 bg-[#f7f9fc] px-4 py-2.5 text-[15.5px] leading-relaxed">
           <p className="mb-0.5 font-bold">[자료]</p>

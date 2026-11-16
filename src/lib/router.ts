@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 /**
  * 해시 라우팅(정적 호스팅·새로고침 대응)
- *  #/                         처음 화면
+ *  #/                         첫 대단원 교재
  *  #/ocean                    대단원 교재(연속형)
  *  #/ocean?focus=<블록ID>&back=<돌아갈 해시>   관련 개념 위치로 이동
  *  #/ocean/concept | exam | wrong   개념 확인 문제 · 내신 대비 · 오답 노트 (?topic=소주제 필터, ?q=문항)

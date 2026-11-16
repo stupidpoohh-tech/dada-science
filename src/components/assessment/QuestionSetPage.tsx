@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import type { UnitMeta } from '../../content/types'
 import type { BankQuestion, BankSet } from '../../content/bank/types'
-import { answerKeyOf, bankOf, TOPICS } from '../../content/bank'
+import { answerKeyOf, bankOf } from '../../content/bank'
 import { gradeItem, isAnswered, type BankAnswer, type ItemResult } from '../../lib/bankGrading'
 import { askConfirm } from '../../lib/dialog'
 import { emptyBankSet, recordRetry, recordWrong, updateProgress, useProgress, type BankSetState } from '../../lib/store'
@@ -9,24 +9,21 @@ import AssessmentLayout from './AssessmentLayout'
 import { summarize, type SetSummary } from '../../lib/bankSummary'
 import BankQuestionCard from './BankQuestionCard'
 
-const DOT: Record<string, string> = {
-  unanswered: 'border-ink/15 bg-white text-ink/45', answered: 'border-brand/50 bg-brand/10 text-brand',
-  correct: 'border-[#00a865] bg-[#00a865] text-white', wrong: 'border-coriolis bg-coriolis text-white', pending: 'border-[#f5b400] bg-[#ffe7a3] text-ink',
-}
-
 /** 개념 확인(문항별 정답 확인 + 전체 채점) / 내신 대비(시험 모드: 제출 후 일괄 채점) */
 export default function QuestionSetPage({ unit, set, topic, q: focusQ }: { unit: UnitMeta; set: BankSet; topic?: string; q?: string }) {
   const p = useProgress()
   const all = useMemo(() => bankOf(unit.id, set), [unit.id, set])
-  const topics = TOPICS[unit.id] ?? []
   const skey = `${unit.id}:${set}`
   const st: BankSetState = p.bank[skey] ?? emptyBankSet()
-  const [filter, setFilter] = useState(topic ?? 'all')
   const exam = set === 'exam'
   const retry = st.retry ?? []
   const inRetry = retry.length > 0
 
-  useEffect(() => { if (focusQ) setTimeout(() => document.getElementById(`q-${focusQ}`)?.scrollIntoView({ block: 'start' }), 80) }, [focusQ])
+  // 특정 문항(q) 또는 소주제(topic)의 첫 문항으로 이동
+  useEffect(() => {
+    const target = focusQ ?? (topic ? all.find((x) => x.topic === topic)?.id : undefined)
+    if (target) setTimeout(() => document.getElementById(`q-${target}`)?.scrollIntoView({ block: 'start' }), 80)
+  }, [focusQ, topic, all])
 
   const save = (fn: (s: BankSetState) => void) => updateProgress((ps) => { const s = ps.bank[skey] ?? emptyBankSet(); fn(s); ps.bank[skey] = s })
 
@@ -36,9 +33,8 @@ export default function QuestionSetPage({ unit, set, topic, q: focusQ }: { unit:
     if (!st.revealed[q.code]) continue
     results.set(q.code, gradeItem(q, answerKeyOf(q)!, st.answers[q.code] as BankAnswer, { override: st.overrides[q.code], manual: st.manual[q.code] }))
   }
-  const statusOf = (q: BankQuestion) => results.get(q.code)?.status ?? (isAnswered(q, st.answers[q.code] as BankAnswer) ? 'answered' : 'unanswered')
 
-  const visible = all.filter((q) => (filter === 'all' || q.topic === filter) && (!inRetry || retry.includes(q.code)))
+  const visible = all.filter((q) => !inRetry || retry.includes(q.code))
   const answeredCount = all.filter((q) => isAnswered(q, st.answers[q.code] as BankAnswer)).length
 
   const onWrongOrRetry = (q: BankQuestion, r: ItemResult) => {
@@ -85,7 +81,6 @@ export default function QuestionSetPage({ unit, set, topic, q: focusQ }: { unit:
       s.retry = codes
       codes.forEach((c) => { delete s.answers[c]; delete s.revealed[c]; delete s.overrides[c]; delete s.manual[c] })
     })
-    setFilter('all')
     window.scrollTo({ top: 0 })
   }
   const resetAll = async () => {
@@ -108,32 +103,7 @@ export default function QuestionSetPage({ unit, set, topic, q: focusQ }: { unit:
 
       {anyRevealed && <ResultSummary unit={unit} set={set} sum={sum} allRevealed={allRevealed} />}
 
-      {/* 진행률·응답 상태 */}
-      <section className="mb-4 rounded-2xl border border-ink/10 bg-white p-4" aria-label="풀이 진행">
-        <div className="mb-1.5 flex justify-between text-[14px] font-bold"><span className="text-ink/60">응답</span><span>{answeredCount} / {all.length}</span></div>
-        <div className="h-2.5 overflow-hidden rounded-full bg-ink/8"><div className="h-full rounded-full bg-brand transition-all" style={{ width: `${(answeredCount / all.length) * 100}%` }} /></div>
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {all.map((q) => {
-            const s = statusOf(q)
-            return (
-              <button key={q.code} type="button" title={`${q.code} ${s}`} onClick={() => { if (filter !== 'all' && q.topic !== filter) setFilter('all'); setTimeout(() => document.getElementById(`q-${q.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 30) }}
-                className={`no-tap h-10 min-w-10 rounded-lg border px-1.5 text-[13px] font-extrabold tabular-nums ${DOT[s]} ${inRetry && !retry.includes(q.code) ? 'opacity-30' : ''}`}>{q.number}</button>
-            )
-          })}
-        </div>
-        <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[12.5px] font-semibold text-ink/55">
-          <span>□ 미응답</span><span className="text-brand">■ 응답함</span><span className="text-[#00875a]">■ 정답</span><span className="text-coriolis">■ 오답</span>{exam && <span className="text-[#a37800]">■ 채점 대기(서술형)</span>}
-        </p>
-        <div className="mt-3 flex flex-wrap gap-1.5" role="tablist" aria-label="개념 분류">
-          {[{ id: 'all', label: '전체' }, ...topics].map((t) => (
-            <button key={t.id} type="button" role="tab" aria-selected={filter === t.id} onClick={() => setFilter(t.id)}
-              className={`no-tap h-9 rounded-full px-3 text-[13.5px] font-bold ${filter === t.id ? 'bg-ink text-white' : 'border border-ink/12 bg-white text-ink/65'}`}>
-              {t.label}{t.id !== 'all' && <span className="ml-1 opacity-60">{all.filter((q) => q.topic === t.id).length}</span>}
-            </button>
-          ))}
-        </div>
-        {inRetry && <p className="mt-3 rounded-lg bg-coriolis/[.07] px-3 py-2 text-[14px] font-bold text-coriolis">오답 다시 풀기: {retry.length}문항만 표시합니다. 다 풀면 아래 ‘다시 푼 문항 채점’을 누르세요.</p>}
-      </section>
+      {inRetry && <p className="mb-4 rounded-lg bg-coriolis/[.07] px-3 py-2 text-[14px] font-bold text-coriolis">오답 다시 풀기: {retry.length}문항만 표시합니다. 다 풀면 아래 ‘다시 푼 문항 채점’을 누르세요.</p>}
 
       <div className="flex flex-col gap-4">
         {visible.map((q) => {
