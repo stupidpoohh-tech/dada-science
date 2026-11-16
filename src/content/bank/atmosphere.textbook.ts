@@ -3,7 +3,6 @@ import type { AnswerKey, BankQuestion } from './types'
 /**
  * Ⅲ. 강수 과정과 대기의 운동 — 교과서 문제
  * 교과서의 번호·순서·보기를 그대로 옮겼습니다. 그림은 교과서 사진에서 잘라 public/textbook/atmosphere/에 두었습니다.
- * 정답은 아직 입력 전입니다(ATMOSPHERE_TEXTBOOK_ANSWERS의 pending 항목을 정답으로 바꾸면 채점됩니다).
  */
 type Q = Omit<BankQuestion, 'id' | 'unitId' | 'set' | 'number' | 'points' | 'difficulty'> & { difficulty?: BankQuestion['difficulty'] }
 
@@ -72,6 +71,29 @@ const LIST: Q[] = [
 
 export const ATMOSPHERE_TEXTBOOK: BankQuestion[] = LIST.map((q, i) => ({ difficulty: '중', ...q, id: `atmosphere-${q.code}`, unitId: 'atmosphere', set: 'textbook', number: i + 1, points: 0 }))
 
-/** 정답 입력 전: 모든 문항을 채점 보류(pending)로 둠. 정답이 정해지면 문항별로 바꿔 넣습니다. */
-const PENDING: AnswerKey = { pending: true, answer: '', display: '정답 입력 전' }
-export const ATMOSPHERE_TEXTBOOK_ANSWERS: Record<string, AnswerKey> = Object.fromEntries(LIST.map((q) => [q.code, PENDING]))
+const ox = (a: 'O' | 'X'): AnswerKey => ({ answer: a, display: a })
+const mc = (n: number, explanation?: string): AnswerKey => ({ answer: n, display: '①②③④⑤⑥⑦'[n - 1], explanation })
+const self = (modelAnswer: string): AnswerKey => ({ manual: true, answer: '', display: '모범답안 참고', modelAnswer })
+
+/** 정답: 교과서 '스스로 평가하기'·'대단원 마무리' 정답. 서술형 중 교과서 해설이 없는 문항의 모범답안은 개념을 바탕으로 작성 */
+export const ATMOSPHERE_TEXTBOOK_ANSWERS: Record<string, AnswerKey> = {
+  TB01: self('· 선택적 흡수체: 특정 파장의 복사 에너지는 흡수하고 다른 파장은 투과시키는 물질(지구 대기)\n· 지구 복사 에너지: 지구가 방출하는 주로 적외선 영역의 복사 에너지\n· 절대 불안정: 기온 감률이 건조 단열 감률보다 커서 공기의 포화 여부와 관계없이 불안정한 상태\n· 기압 경도력: 두 지점의 기압 차이로 기압이 높은 곳에서 낮은 곳으로 작용하는 힘\n· 지균풍: 상층에서 기압 경도력과 전향력이 평형을 이루며 등압선에 나란하게 부는 바람\n· 행성파: 중위도 상층에서 파장이 긴 파동 형태로 지구를 감싸며 부는 편서풍 파동'),
+  TB02a: ox('O'), TB02b: ox('X'), TB02c: ox('O'), TB02d: ox('X'), TB02e: ox('O'), TB02f: ox('O'),
+  TB03a: self('산란, 반사, 흡수, 굴절 등'),
+  TB03b: self('단열 팽창하는 과정에서 내부 에너지가 감소하기 때문이다.'),
+  TB03c: self('기압 경도력과 전향력이 평형을 이룬다.'),
+  TB03d: self('기압골의 동쪽 지상에는 저기압이, 서쪽 지상에는 고기압이 발달한다.'),
+  TB04: mc(3), TB05: mc(2), TB06: mc(1), TB07: mc(4), TB08: mc(3), TB09: mc(4), TB10: mc(4), TB11: mc(5),
+  TS01: { answer: [['생명 가능 지대', '생명가능지대']], display: '① 생명 가능 지대' },
+  TS02: { answer: [['산란']], display: '② 산란' },
+  TS03: { answer: [['건조 단열 감률'], ['습윤 단열 감률'], ['층운형'], ['적운형'], ['과냉각 물방울']], display: '③ 건조 단열 감률 ④ 습윤 단열 감률 ⑤ 층운형 ⑥ 적운형 ⑦ 과냉각 물방울' },
+  TS04: { answer: [['중력'], ['기압 경도력']], display: '⑧ 중력 ⑨ 기압 경도력' },
+  TS05: { answer: [['지균풍'], ['마찰력']], display: '⑩ 지균풍 ⑪ 마찰력' },
+  TS06: { answer: [['제트류'], ['고기압'], ['저기압']], display: '⑫ 제트류 ⑬ 고기압 ⑭ 저기압' },
+  TM01: mc(2), TM02: mc(6), TM03: mc(4), TM04: mc(3), TM05: mc(6), TM06: mc(1), TM07: mc(5), TM08: mc(4),
+  TM09a: self('지표면에서 두 공기 덩어리의 온도가 같을 때 상승 응결 고도는 기온과 이슬점의 차이가 작을수록 낮다. 구름이 더 낮은 높이(h₁)에서 생성되기 시작한 B의 이슬점이 A보다 높다.'),
+  TM09b: self('지표면에서 h₁까지는 불포화 상태로 건조 단열 변화를 하며 기온이 약 10 ℃/km(이슬점은 약 2 ℃/km)씩 낮아진다. h₁(상승 응결 고도)에서 포화되어 구름이 생기기 시작하고, h₁에서 h₂까지는 응결열이 방출되어 습윤 단열 변화를 하며 기온이 약 5 ℃/km씩 낮아진다.'),
+  TM10: self('(가)의 P는 기압 경도력이 중심 쪽을 향하는 저기압성 경도풍, (나)의 Q는 기압 경도력이 바깥쪽을 향하는 고기압성 경도풍이다. 저기압에서는 기압 경도력 = 전향력 + 구심력이므로 전향력이 기압 경도력보다 작고, 고기압에서는 전향력 = 기압 경도력 + 구심력이므로 전향력이 기압 경도력보다 크다. 따라서 전향력은 Q가 P보다 크고, 위도가 같으므로 풍속도 Q가 P보다 빠르다.'),
+  TM11a: self('적도에서 가열되어 상승한 공기가 상층에서 고위도로 이동하다 위도 30° 부근에서 하강한다(해들리 순환). 하강하는 공기는 단열 압축되어 기온이 높아지고 상대 습도가 낮아지므로 구름이 생기기 어려워 날씨가 맑고 건조하며, 아열대 고압대가 형성되어 바람도 약하다.'),
+  TM11b: self('태양의 남중 고도가 가장 높은 곳(가장 강하게 가열되는 위도)이 여름에는 북쪽으로, 겨울에는 남쪽으로 이동한다. 이에 따라 적도 저압대의 상승 기류와 해들리 순환 전체가 계절에 따라 남북으로 이동하므로, 해들리 순환의 하강 기류가 나타나는 말 위도대도 여름에 북상하고 겨울에 남하한다.'),
+}
