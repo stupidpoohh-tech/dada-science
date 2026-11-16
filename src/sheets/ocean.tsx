@@ -205,8 +205,8 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
         <Txt x={340} y={316} size={12} color={GRAY}>(대기대순환)</Txt>
         <Txt x={622} y={284} size={12}>지형류</Txt>
         {/* 쿠로시오 메모: 북태평양 시계방향 순환. 순환 중심이 서쪽으로 치우쳐 서쪽 해수면이 높고(高) 경사가 커서 서쪽 경계의 쿠로시오(흑조)가 강하다 */}
-        <Txt x={600} y={226} size={13} color={RED} weight={700}>高 흑조 강하다</Txt>
-        <Txt x={694} y={226} size={11}>(쿠로시오 해류)</Txt>
+        <Txt x={676} y={226} size={12} color={RED} weight={700} anchor="middle">쿠로시오 해류</Txt>
+        <Txt x={676} y={242} size={11} color={RED} anchor="middle">빠르고 강하다</Txt>
         <g fill="none" strokeLinecap="round">
           {/* 위: 편서풍 → 동쪽 */}
           <path d="M680 250 Q712 238 742 252" stroke={INK} strokeWidth={1.4} />
