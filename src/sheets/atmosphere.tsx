@@ -147,7 +147,7 @@ export const ATMOSPHERE_ROWS: Record<string, { h: number; label: string; render:
         <Txt x={42} y={54} size={10}>구름</Txt>
         <Txt x={72} y={58} size={13.5}>이 생성되기 시작하는 높이 =</Txt>
         <Boxed x={272} y={58} size={14.5}>상승 응결고도</Boxed>
-        <Hot x={420} y={10} w={332} h={150} popup="adiabatic" step={3} label="푄 현상">
+        <g>
           <path d="M490 140 Q540 132 556 92 Q566 66 580 66 Q594 66 604 96 Q616 132 650 140" fill="none" stroke={INK} strokeWidth={1.5} />
           <Txt x={576} y={118} size={12.5} anchor="middle">산</Txt>
           <Arw x1={438} y1={134} x2={462} y2={122} w={1.3} head={5} />
@@ -161,7 +161,7 @@ export const ATMOSPHERE_ROWS: Record<string, { h: number; label: string; render:
           <Boxed x={668} y={56} size={13.5}>푄 현상</Boxed>
           <Txt x={668} y={140} size={13}>고온건조한 공기</Txt>
           <Txt x={680} y={158} size={13}>'높새바람'</Txt>
-        </Hot>
+        </g>
       </>
     ),
   },
@@ -337,13 +337,13 @@ export const ATMOSPHERE_ROWS: Record<string, { h: number; label: string; render:
       <>
         <L x={14} y={24}>[지상]</L>
         <Txt x={8} y={44} size={11}>마찰력有</Txt>
-        <Hot x={84} y={6} w={668} h={30} popup="gradient-wind" step={3} label="지상풍과 경각">
+        <g>
           <Txt x={90} y={24} size={13.5}>- 지상풍 ← 기압경도력, 전향력,</Txt>
           <Txt x={288} y={24} size={13.5} u="wavy">마찰력</Txt>
           <Txt x={404} y={24} size={13}>*</Txt>
           <Boxed x={418} y={24} size={13}>경각</Boxed>
           <Txt x={454} y={24} size={12.5}>: 지상풍이 등압선과 이루는 각 (마찰력 클수록 경각도↑)</Txt>
-        </Hot>
+        </g>
         <L x={14} y={70}>[일기도]</L>
         <Txt x={90} y={70} size={13}>- 지상일기도: 등압선 (해면기압이 같은 점 연결)</Txt>
         <Txt x={90} y={94} size={13}>- 상층 등압면일기도: 등고선 (같은 기압면의 높이 연결) 고도 높으면</Txt>

@@ -131,7 +131,7 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
         <Curve x1={136} y1={98} cx={150} cy={90} x2={164} y2={100} head={5} />
         <Curve x1={84} y1={130} cx={78} cy={112} x2={88} y2={104} head={6} />
         <Curve x1={214} y1={112} cx={222} cy={132} x2={206} y2={142} head={6} />
-        <Hot x={244} y={62} w={360} h={142} popup="geostrophic" step={2} label="북반구·남반구의 전향력 방향">
+        <g>
           <circle cx={342} cy={130} r={42} fill="none" stroke={INK} strokeWidth={1.6} />
           {/* 자전: 북극 위에서 본 회전(시계 반대 방향) — '자전' 글자를 감싸는 고리 화살표 */}
           <path d="M334.5 67 A19 8.5 0 1 0 357.5 70.8" fill="none" stroke={INK} strokeWidth={1.4} strokeLinecap="round" />
@@ -152,7 +152,7 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
           <Arw x1={356} y1={162} x2={386} y2={162} w={1.3} head={6} />
           <Txt x={392} y={166} size={13}>'왼쪽' 직각방향으로</Txt>
           <Txt x={412} y={190} size={13.5} weight={600} u="wavy">전향력 작용</Txt>
-        </Hot>
+        </g>
         {/* 02. 지형류의 에크만 수송으로 이어지는 화살표 */}
         <path d="M440 196 Q438 202 436 206" fill="none" stroke={INK} strokeWidth={1.4} />
       </>
@@ -301,7 +301,7 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
           </Hot>
           <Txt x={672} y={62} size={13} weight={600}>그대로 제자리!</Txt>
           <Txt x={680} y={142} size={13} weight={600} anchor="middle">이동X E만 전달!</Txt>
-          <Hot x={14} y={66} w={300} h={184} popup="waves" step={3} label="마루·골·파고·파장">
+          <g>
             <polyline points={pts} fill="none" stroke={INK} strokeWidth={1.7} />
             <line x1={60} x2={226} y1={110} y2={110} stroke={GRAY} strokeDasharray="2 4" />
             <line x1={140} x2={300} y1={200} y2={200} stroke={GRAY} strokeDasharray="2 4" />
@@ -311,7 +311,7 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
             <Arw x1={46} y1={114} x2={46} y2={198} both w={1.3} head={6} />
             <Boxed x={20} y={162} size={13} anchor="end" pad={3}>파고</Boxed>
             <Txt x={140} y={226} size={13} anchor="middle" weight={600}>골</Txt>
-          </Hot>
+          </g>
           <Txt x={334} y={92} size={12.5}>마루~마루</Txt>
           <Txt x={334} y={112} size={12.5}>골~골</Txt>
           <Txt x={404} y={104} size={17} color={RED} weight={700}>시간</Txt>
@@ -356,7 +356,7 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
     render: () => (
       <>
         <L x={14} y={24}>[파장과 수심의 비교]</L>
-        <Hot x={22} y={34} w={316} h={200} popup="waves" step={4} label="심해파와 천해파의 물 입자 운동">
+        <g>
           <Txt x={74} y={54} size={13.5} anchor="middle" weight={600}>심해파</Txt>
           <Txt x={184} y={46} size={13} anchor="middle" weight={600}>천이파</Txt>
           <Txt x={184} y={62} size={12} anchor="middle" color={GRAY}>전이파</Txt>
@@ -373,7 +373,7 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
           <Txt x={60} y={206} size={13.5} anchor="middle" weight={600}>깊다</Txt>
           <Circled x={190} y={204} size={13}>수심이 파장의 1/2보다</Circled>
           <Txt x={318} y={206} size={13.5} anchor="middle" weight={600}>얕다</Txt>
-        </Hot>
+        </g>
         <Txt x={482} y={42} size={12} anchor="middle" color={GRAY}>물입자</Txt>
         <Txt x={572} y={42} size={12} anchor="middle" color={GRAY}>깊은곳</Txt>
         <Txt x={690} y={42} size={12} anchor="middle" color={GRAY}>속도를 결정하는 것</Txt>
@@ -498,7 +498,7 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
       <>
         <L x={14} y={24}>[기조력]</L>
         <Txt x={90} y={24} size={14}>= 조석을 일으키는 힘</Txt>
-        <Hot x={30} y={36} w={470} h={102} popup="tides" label="기조력과 해수면의 부풀어 오름">
+        <g>
           <Txt x={46} y={64} size={14} weight={600} u="line">'지구 원운동 원심력'</Txt>
           <Txt x={200} y={64} size={14}>+</Txt>
           <Txt x={216} y={64} size={14} weight={600} u="line">'달이 지구에 작용하는 인력'</Txt>
@@ -506,7 +506,7 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
           <Txt x={60} y={94} size={13}>달에서 멀어지는 방향</Txt>
           <Txt x={258} y={94} size={13}>달을 향한 방향</Txt>
           <Txt x={190} y={126} size={13.5}>→ 달에서 가장 가까운 쪽 + 가장 먼 쪽 모두 가장 높아짐</Txt>
-        </Hot>
+        </g>
         <Txt x={508} y={64} size={13} color={RED} weight={700}>* 태양은 멀어서 달 기조력의 1/2</Txt>
         <circle cx={640} cy={110} r={20} fill="none" stroke={INK} strokeWidth={1.4} />
         <Txt x={640} y={114} size={12} anchor="middle">지구</Txt>
