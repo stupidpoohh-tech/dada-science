@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { openPopup } from '../lib/popupState'
 import { useProgress } from '../lib/store'
+import { useSheetMode } from '../lib/sheetMode'
 
 /**
  * 학습지(원본 노트) 재현용 SVG 부품.
@@ -24,6 +25,68 @@ export function textWidth(s: string, size: number) {
   return w
 }
 
+/**
+ * 빈칸 표시: 글자 안의 {{…}} 부분은 '빈칸' 모드에서 가려지고, 누르면 보입니다. 교재 모드에서는 괄호만 빠집니다.
+ */
+const BLANK_RE = /\{\{(.+?)\}\}/g
+export const stripBlank = (s: string) => s.replace(BLANK_RE, '$1')
+function parseBlank(s: string): { text: string; blank: boolean }[] {
+  const out: { text: string; blank: boolean }[] = []
+  let last = 0
+  for (const m of s.matchAll(BLANK_RE)) {
+    if (m.index! > last) out.push({ text: s.slice(last, m.index), blank: false })
+    out.push({ text: m[1], blank: true })
+    last = m.index! + m[0].length
+  }
+  if (last < s.length) out.push({ text: s.slice(last), blank: false })
+  return out
+}
+
+/** 글자(빈칸 포함). 빈칸 모드에서는 가린 부분의 글자를 투명하게 두어 배치가 그대로 유지됩니다. */
+function SheetText({ textRef, x, y, raw, size, fill, weight, anchor }: { textRef: React.RefObject<SVGTextElement | null>; x: number; y: number; raw: string; size: number; fill: string; weight: number; anchor: Anchor }) {
+  const mode = useSheetMode()
+  const segs = parseBlank(raw)
+  const hasBlank = segs.some((g) => g.blank)
+  const blankMode = mode === 'blank' && hasBlank
+  const [shown, setShown] = useState<Set<number>>(() => new Set())
+  const [boxes, setBoxes] = useState<{ i: number; x: number; w: number }[]>([])
+  useLayoutEffect(() => { setShown(new Set()) }, [mode])
+  useLayoutEffect(() => {
+    if (!blankMode) { setBoxes([]); return }
+    const m = () => {
+      const el = textRef.current
+      if (!el) return
+      try {
+        const out: { i: number; x: number; w: number }[] = []
+        let pos = 0
+        segs.forEach((g, i) => {
+          if (g.blank && g.text.length) out.push({ i, x: el.getStartPositionOfChar(pos).x, w: el.getSubStringLength(pos, g.text.length) })
+          pos += g.text.length
+        })
+        setBoxes(out)
+      } catch { /* 숨김 상태 등 */ }
+    }
+    m()
+    document.fonts?.ready.then(m)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [blankMode, raw, size, x, y, anchor])
+  const toggle = (i: number) => setShown((s) => { const n = new Set(s); if (n.has(i)) n.delete(i); else n.add(i); return n })
+  return (
+    <>
+      <text ref={textRef} x={x} y={y} fontSize={size} fill={fill} fontWeight={weight} textAnchor={anchor} dominantBaseline="alphabetic">
+        {blankMode ? segs.map((g, i) => (
+          <tspan key={i} fill={g.blank ? (shown.has(i) ? BLUE : 'transparent') : undefined}>{g.text}</tspan>
+        )) : stripBlank(raw)}
+      </text>
+      {blankMode && boxes.map((b) => (
+        <rect key={b.i} x={b.x - 2} y={y - size * 0.92} width={b.w + 4} height={size * 1.22} rx={3}
+          className={`sheet-blank${shown.has(b.i) ? ' is-shown' : ''}`} role="button" aria-label={shown.has(b.i) ? '빈칸 다시 가리기' : '빈칸 보기'}
+          onClick={(e) => { e.stopPropagation(); toggle(b.i) }} />
+      ))}
+    </>
+  )
+}
+
 type Anchor = 'start' | 'middle' | 'end'
 interface TxtProps {
   x: number; y: number; children: string; size?: number; color?: string; weight?: number; anchor?: Anchor
@@ -45,7 +108,7 @@ function useMeasured(text: string, size: number) {
 }
 
 export function Txt({ x, y, children, size = 14, color = INK, weight = 500, anchor = 'start', u, uColor }: TxtProps) {
-  const [ref, w] = useMeasured(children, size)
+  const [ref, w] = useMeasured(stripBlank(children), size)
   const x0 = left(x, w, anchor)
   const uy = y + size * 0.32
   const uc = uColor ?? color
@@ -59,7 +122,7 @@ export function Txt({ x, y, children, size = 14, color = INK, weight = 500, anch
   }
   return (
     <>
-      <text ref={ref} x={x} y={y} fontSize={size} fill={color} fontWeight={weight} textAnchor={anchor} dominantBaseline="alphabetic">{children}</text>
+      <SheetText textRef={ref} x={x} y={y} raw={children} size={size} fill={color} weight={weight} anchor={anchor} />
       {under}
     </>
   )
@@ -67,23 +130,23 @@ export function Txt({ x, y, children, size = 14, color = INK, weight = 500, anch
 
 /** 네모 상자 안 글자 */
 export function Boxed({ x, y, children, size = 14, color = INK, border, anchor = 'start', weight = 600, pad = 4 }: { x: number; y: number; children: string; size?: number; color?: string; border?: string; anchor?: Anchor; weight?: number; pad?: number }) {
-  const [ref, w] = useMeasured(children, size)
+  const [ref, w] = useMeasured(stripBlank(children), size)
   const x0 = left(x, w, anchor)
   return (
     <>
       <rect x={x0 - pad} y={y - size * 0.95} width={w + pad * 2} height={size * 1.32} fill="none" stroke={border ?? color} strokeWidth={1.4} />
-      <text ref={ref} x={x0} y={y} fontSize={size} fill={color} fontWeight={weight}>{children}</text>
+      <SheetText textRef={ref} x={x0} y={y} raw={children} size={size} fill={color} weight={weight} anchor="start" />
     </>
   )
 }
 
 /** 동그라미 친 글자 */
 export function Circled({ x, y, children, size = 14, color = INK, ring, weight = 600 }: { x: number; y: number; children: string; size?: number; color?: string; ring?: string; weight?: number }) {
-  const [ref, w] = useMeasured(children, size)
+  const [ref, w] = useMeasured(stripBlank(children), size)
   return (
     <>
       <ellipse cx={x} cy={y - size * 0.33} rx={w / 2 + 5} ry={size * 0.78} fill="none" stroke={ring ?? color} strokeWidth={1.3} />
-      <text ref={ref} x={x} y={y} fontSize={size} fill={color} fontWeight={weight} textAnchor="middle">{children}</text>
+      <SheetText textRef={ref} x={x} y={y} raw={children} size={size} fill={color} weight={weight} anchor="middle" />
     </>
   )
 }

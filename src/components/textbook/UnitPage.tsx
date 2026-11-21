@@ -11,6 +11,8 @@ import ChapterNavigation from './ChapterNavigation'
 import ContinuousTextbook from './ContinuousTextbook'
 import PageScaler from './PageScaler'
 import SourceViewer from './SourceViewer'
+import ModeToggle from './ModeToggle'
+import { useSheetMode } from '../../lib/sheetMode'
 import type { Block } from '../../lib/manuscript'
 
 /** AppShell: 왼쪽 목차(가로 화면) / 위쪽 접이식 목차(세로·휴대폰) + 연속형 교재 본문 */
@@ -19,6 +21,7 @@ export default function UnitPage({ unit, focus, back, concept }: { unit: UnitMet
   const [tocOpen, setTocOpen] = useState(false)
   const [sideOpen, setSideOpen] = useState(true)
   const [source, setSource] = useState(false)
+  const mode = useSheetMode()
   const [focusBar, setFocusBar] = useState<{ blockId: string; back?: string; concept?: string } | null>(null)
   const currentRef = useRef(current)
   currentRef.current = current
@@ -101,6 +104,7 @@ export default function UnitPage({ unit, focus, back, concept }: { unit: UnitMet
               <span className="min-w-0 truncate text-[15px] font-bold">{unit.title}</span>
               <span className={`text-ink/45 transition ${tocOpen ? 'rotate-180' : ''}`}>▾</span>
             </button>
+            <ModeToggle />
             <UnitArrow unit={prevUnit} dir="prev" />
             <UnitArrow unit={nextUnit} dir="next" />
           </div>
@@ -111,7 +115,11 @@ export default function UnitPage({ unit, focus, back, concept }: { unit: UnitMet
           )}
         </div>
 
-        <div className="py-4">
+        {/* 가로형(목차 펼침): 교재 오른쪽 위 보기 전환 */}
+        {sideOpen && <div className="sticky top-0 z-30 hidden justify-end py-2 lg:flex"><ModeToggle /></div>}
+        <div className="py-4 lg:pt-1">
+          {mode === 'blank' && <p className="mb-2 text-center text-[13px] font-semibold text-ink/50">파란 빈칸을 누르면 답이 보이고, 다시 누르면 가려집니다.</p>}
+          {mode === 'key' && <p className="mb-2 text-center text-[13px] font-semibold text-ink/50">핵심 보기는 준비 중입니다. 지금은 교재와 같은 화면이 보입니다.</p>}
           {unit.status !== 'original' && (
             <p className="mb-4 rounded-xl bg-[#fff6db] px-4 py-2.5 text-[14px] font-semibold text-[#7a5b00]">
               {unit.status === 'demo' ? '이 단원의 본문은 데모 원문입니다.' : '이 단원의 원문은 아직 입력되지 않았습니다.'}

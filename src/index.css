@@ -74,5 +74,10 @@ svg text { font-family: var(--font-sans); }
 /* 학습지 */
 .sheet-hot .sheet-hot-bg { fill: transparent; stroke: transparent; transition: fill .15s, stroke .15s; }
 .sheet-hot:hover .sheet-hot-bg, .sheet-hot:focus-visible .sheet-hot-bg { fill: rgba(31, 95, 214, .05); stroke: rgba(31, 95, 214, .45); stroke-dasharray: 4 3; }
+/* 빈칸 모드: 가린 핵심어(누르면 보임) */
+.sheet-blank { fill: #dfe9fb; stroke: #9db8ea; stroke-width: 1; cursor: pointer; }
+.sheet-blank:hover { fill: #cfdffa; }
+.sheet-blank.is-shown { fill: rgba(255, 216, 77, .28); stroke: rgba(245, 180, 0, .6); }
+@media print { .sheet-blank { fill: white; stroke: #111418; } }
 .sheet-hot:focus { outline: none; }
 .sheet-row text { user-select: text; -webkit-user-select: text; }
