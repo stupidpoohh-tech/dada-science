@@ -91,11 +91,11 @@ function SheetText({ textRef, x, y, raw, size, fill, weight, anchor, k }: { text
   const toggle = (i: number) => setShown((s) => { const n = new Set(s); if (n.has(i)) n.delete(i); else n.add(i); return n })
   return (
     <>
-      <text ref={textRef} x={x} y={y} fontSize={size} fill={fill} fontWeight={weight} textAnchor={anchor} dominantBaseline="alphabetic" className={kc(k)}>
+      <text ref={textRef} x={x} y={y} fontSize={size} fill={fill} fontWeight={weight} textAnchor={anchor} dominantBaseline="alphabetic" className={k ? 'k' : undefined}>
         {blankMode ? segs.map((g, i) => (
           <tspan key={i} fill={g.blank && !shown.has(i) ? 'transparent' : undefined}>{g.text}</tspan>
         )) : mode === 'key' && k && k !== true ? keepSegs(stripBlank(raw), k).map((g, i) => (
-          <tspan key={i} className={g.keep ? 'k' : undefined}>{g.text}</tspan>
+          <tspan key={i} fill={g.keep ? undefined : 'transparent'}>{g.text}</tspan>
         )) : stripBlank(raw)}
       </text>
       {blankMode && boxes.map((b) => (

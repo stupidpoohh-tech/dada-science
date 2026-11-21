@@ -79,7 +79,8 @@ svg text { font-family: var(--font-sans); }
 .sheet-blank:hover { fill: #cfdffa; }
 .sheet-blank.is-shown { fill: transparent; stroke: rgba(157, 184, 234, .7); stroke-dasharray: 3 2; }
 /* 핵심 보기: 표시(k)한 제목·핵심어·뼈대 그림만 남기고 나머지는 지움(자리는 그대로) */
-.sheet-row.sheet-key { visibility: hidden; }
+/* iOS Safari는 바깥 svg를 숨기면 안쪽도 그리지 않으므로, svg의 자식부터 숨김 */
+.sheet-row.sheet-key > * { visibility: hidden; }
 .sheet-row.sheet-key .k { visibility: visible; }
 @media print { .sheet-blank { fill: white; stroke: #111418; } }
 .sheet-hot:focus { outline: none; }
