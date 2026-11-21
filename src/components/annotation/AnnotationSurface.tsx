@@ -210,6 +210,18 @@ export default function AnnotationSurface({ scopeId, children, className = '', s
         return
       }
       if (d.tool !== 'pen' && d.tool !== 'highlighter') return
+      // 빈칸을 펜으로 톡 누르면(거의 움직이지 않은 짧은 획) 필기 대신 빈칸 열기
+      if (d.pts.length <= 3 * 6) {
+        let mx = 0
+        for (let i = 3; i < d.pts.length; i += 3) mx = Math.max(mx, Math.hypot(d.pts[i] - d.pts[0], d.pts[i + 1] - d.pts[1]))
+        const hit = mx < 4 ? (document.elementFromPoint(e.clientX, e.clientY) as Element | null)?.closest('.sheet-blank') : null
+        if (hit) {
+          suppressUntil = 0
+          hit.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+          suppressUntil = performance.now() + 350
+          return
+        }
+      }
       // 획이 시작된 위치의 블록에 연결(블록 사이 여백이면 가장 가까운 블록)
       const sx = d.pts[0], sy = d.pts[1]
       let best: [string, Box] | null = null, bestDist = Infinity

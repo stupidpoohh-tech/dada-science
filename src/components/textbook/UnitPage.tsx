@@ -34,7 +34,9 @@ export default function UnitPage({ unit, focus, back, concept }: { unit: UnitMet
     ms.chapters.find((c) => c.chapterId === chapterId)?.blocks.forEach(visit)
     return out
   }, [ms])
-  useActiveScope(unit.id, true, {
+  // 빈칸 보기의 필기는 교재 필기와 따로 저장(빈칸 위에 쓴 답이 교재 화면에 겹치지 않도록)
+  const scope = mode === 'blank' ? `${unit.id}:blank` : unit.id
+  useActiveScope(scope, true, {
     get label() { const c = unit.chapters.find((x) => x.id === currentRef.current); return c ? `${c.no}. ${c.title}` : '이 단원' },
     blockIds: () => blockIdsOf(currentRef.current),
   })
@@ -74,11 +76,11 @@ export default function UnitPage({ unit, focus, back, concept }: { unit: UnitMet
   // 본문은 소챕터 강조가 바뀔 때마다 다시 그리지 않음(스크롤 중 끊김 방지)
   const page = useMemo(() => (
     <PageScaler>
-      <AnnotationSurface scopeId={unit.id}>
+      <AnnotationSurface key={scope} scopeId={scope}>
         <ContinuousTextbook unit={unit} />
       </AnnotationSurface>
     </PageScaler>
-  ), [unit])
+  ), [unit, scope])
   const conceptObj = focusBar?.concept ? conceptById(focusBar.concept) : undefined
 
   return (

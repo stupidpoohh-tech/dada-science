@@ -75,7 +75,7 @@ function SheetText({ textRef, x, y, raw, size, fill, weight, anchor }: { textRef
     <>
       <text ref={textRef} x={x} y={y} fontSize={size} fill={fill} fontWeight={weight} textAnchor={anchor} dominantBaseline="alphabetic">
         {blankMode ? segs.map((g, i) => (
-          <tspan key={i} fill={g.blank ? (shown.has(i) ? BLUE : 'transparent') : undefined}>{g.text}</tspan>
+          <tspan key={i} fill={g.blank && !shown.has(i) ? 'transparent' : undefined}>{g.text}</tspan>
         )) : stripBlank(raw)}
       </text>
       {blankMode && boxes.map((b) => (
