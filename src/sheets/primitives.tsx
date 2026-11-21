@@ -43,7 +43,25 @@ function parseBlank(s: string): { text: string; blank: boolean }[] {
 }
 
 /** 글자(빈칸 포함). 빈칸 모드에서는 가린 부분의 글자를 투명하게 두어 배치가 그대로 유지됩니다. */
-function SheetText({ textRef, x, y, raw, size, fill, weight, anchor }: { textRef: React.RefObject<SVGTextElement | null>; x: number; y: number; raw: string; size: number; fill: string; weight: number; anchor: Anchor }) {
+/** 핵심 보기에서 남길 부분: true(전체) 또는 남길 글자(첫 등장 위치부터 차례로) */
+export type Keep = boolean | string | string[]
+function keepSegs(text: string, k: string | string[]) {
+  const parts = Array.isArray(k) ? k : [k]
+  const out: { text: string; keep: boolean }[] = []
+  let pos = 0
+  for (const part of parts) {
+    const i = text.indexOf(part, pos)
+    if (i < 0) continue
+    if (i > pos) out.push({ text: text.slice(pos, i), keep: false })
+    out.push({ text: part, keep: true })
+    pos = i + part.length
+  }
+  if (pos < text.length) out.push({ text: text.slice(pos), keep: false })
+  return out
+}
+const kc = (k?: Keep) => (k === true ? 'k' : undefined)
+
+function SheetText({ textRef, x, y, raw, size, fill, weight, anchor, k }: { textRef: React.RefObject<SVGTextElement | null>; x: number; y: number; raw: string; size: number; fill: string; weight: number; anchor: Anchor; k?: Keep }) {
   const mode = useSheetMode()
   const segs = parseBlank(raw)
   const hasBlank = segs.some((g) => g.blank)
@@ -73,9 +91,11 @@ function SheetText({ textRef, x, y, raw, size, fill, weight, anchor }: { textRef
   const toggle = (i: number) => setShown((s) => { const n = new Set(s); if (n.has(i)) n.delete(i); else n.add(i); return n })
   return (
     <>
-      <text ref={textRef} x={x} y={y} fontSize={size} fill={fill} fontWeight={weight} textAnchor={anchor} dominantBaseline="alphabetic">
+      <text ref={textRef} x={x} y={y} fontSize={size} fill={fill} fontWeight={weight} textAnchor={anchor} dominantBaseline="alphabetic" className={kc(k)}>
         {blankMode ? segs.map((g, i) => (
           <tspan key={i} fill={g.blank && !shown.has(i) ? 'transparent' : undefined}>{g.text}</tspan>
+        )) : mode === 'key' && k && k !== true ? keepSegs(stripBlank(raw), k).map((g, i) => (
+          <tspan key={i} className={g.keep ? 'k' : undefined}>{g.text}</tspan>
         )) : stripBlank(raw)}
       </text>
       {blankMode && boxes.map((b) => (
@@ -92,6 +112,8 @@ interface TxtProps {
   x: number; y: number; children: string; size?: number; color?: string; weight?: number; anchor?: Anchor
   /** 밑줄: line(실선), double(이중), wavy(물결) */
   u?: 'line' | 'double' | 'wavy'; uColor?: string
+  /** 핵심 보기에서 남길 부분 */
+  k?: Keep
 }
 const left = (x: number, w: number, a: Anchor) => (a === 'start' ? x : a === 'middle' ? x - w / 2 : x - w)
 
@@ -107,56 +129,56 @@ function useMeasured(text: string, size: number) {
   return [ref, w] as const
 }
 
-export function Txt({ x, y, children, size = 14, color = INK, weight = 500, anchor = 'start', u, uColor }: TxtProps) {
+export function Txt({ x, y, children, size = 14, color = INK, weight = 500, anchor = 'start', u, uColor, k }: TxtProps) {
   const [ref, w] = useMeasured(stripBlank(children), size)
   const x0 = left(x, w, anchor)
   const uy = y + size * 0.32
   const uc = uColor ?? color
   let under: ReactNode = null
-  if (u === 'line') under = <line x1={x0} x2={x0 + w} y1={uy} y2={uy} stroke={uc} strokeWidth={1.3} />
-  if (u === 'double') under = <g stroke={uc} strokeWidth={1.2}><line x1={x0} x2={x0 + w} y1={uy} y2={uy} /><line x1={x0} x2={x0 + w} y1={uy + 3} y2={uy + 3} /></g>
+  if (u === 'line') under = <line className={kc(k)} x1={x0} x2={x0 + w} y1={uy} y2={uy} stroke={uc} strokeWidth={1.3} />
+  if (u === 'double') under = <g className={kc(k)} stroke={uc} strokeWidth={1.2}><line x1={x0} x2={x0 + w} y1={uy} y2={uy} /><line x1={x0} x2={x0 + w} y1={uy + 3} y2={uy + 3} /></g>
   if (u === 'wavy') {
     let d = `M${x0} ${uy + 1}`
     for (let xx = x0; xx < x0 + w; xx += 6) d += ` q1.5 -2.6 3 0 t3 0`
-    under = <path d={d} fill="none" stroke={uc} strokeWidth={1.1} />
+    under = <path className={kc(k)} d={d} fill="none" stroke={uc} strokeWidth={1.1} />
   }
   return (
     <>
-      <SheetText textRef={ref} x={x} y={y} raw={children} size={size} fill={color} weight={weight} anchor={anchor} />
+      <SheetText textRef={ref} x={x} y={y} raw={children} size={size} fill={color} weight={weight} anchor={anchor} k={k} />
       {under}
     </>
   )
 }
 
 /** 네모 상자 안 글자 */
-export function Boxed({ x, y, children, size = 14, color = INK, border, anchor = 'start', weight = 600, pad = 4 }: { x: number; y: number; children: string; size?: number; color?: string; border?: string; anchor?: Anchor; weight?: number; pad?: number }) {
+export function Boxed({ x, y, children, size = 14, color = INK, border, anchor = 'start', weight = 600, pad = 4, k }: { x: number; y: number; children: string; size?: number; color?: string; border?: string; anchor?: Anchor; weight?: number; pad?: number; k?: boolean }) {
   const [ref, w] = useMeasured(stripBlank(children), size)
   const x0 = left(x, w, anchor)
   return (
     <>
-      <rect x={x0 - pad} y={y - size * 0.95} width={w + pad * 2} height={size * 1.32} fill="none" stroke={border ?? color} strokeWidth={1.4} />
-      <SheetText textRef={ref} x={x0} y={y} raw={children} size={size} fill={color} weight={weight} anchor="start" />
+      <rect className={kc(k)} x={x0 - pad} y={y - size * 0.95} width={w + pad * 2} height={size * 1.32} fill="none" stroke={border ?? color} strokeWidth={1.4} />
+      <SheetText textRef={ref} x={x0} y={y} raw={children} size={size} fill={color} weight={weight} anchor="start" k={k} />
     </>
   )
 }
 
 /** 동그라미 친 글자 */
-export function Circled({ x, y, children, size = 14, color = INK, ring, weight = 600 }: { x: number; y: number; children: string; size?: number; color?: string; ring?: string; weight?: number }) {
+export function Circled({ x, y, children, size = 14, color = INK, ring, weight = 600, k }: { x: number; y: number; children: string; size?: number; color?: string; ring?: string; weight?: number; k?: boolean }) {
   const [ref, w] = useMeasured(stripBlank(children), size)
   return (
     <>
-      <ellipse cx={x} cy={y - size * 0.33} rx={w / 2 + 5} ry={size * 0.78} fill="none" stroke={ring ?? color} strokeWidth={1.3} />
-      <SheetText textRef={ref} x={x} y={y} raw={children} size={size} fill={color} weight={weight} anchor="middle" />
+      <ellipse className={kc(k)} cx={x} cy={y - size * 0.33} rx={w / 2 + 5} ry={size * 0.78} fill="none" stroke={ring ?? color} strokeWidth={1.3} />
+      <SheetText textRef={ref} x={x} y={y} raw={children} size={size} fill={color} weight={weight} anchor="middle" k={k} />
     </>
   )
 }
 
 /** 직선 화살표 */
-export function Arw({ x1, y1, x2, y2, color = INK, w = 1.5, head = 7, both }: { x1: number; y1: number; x2: number; y2: number; color?: string; w?: number; head?: number; both?: boolean }) {
+export function Arw({ x1, y1, x2, y2, color = INK, w = 1.5, head = 7, both, k }: { x1: number; y1: number; x2: number; y2: number; color?: string; w?: number; head?: number; both?: boolean; k?: boolean }) {
   const a = Math.atan2(y2 - y1, x2 - x1)
   const hd = (x: number, y: number, ang: number) => `${x},${y} ${x - head * Math.cos(ang - 0.42)},${y - head * Math.sin(ang - 0.42)} ${x - head * Math.cos(ang + 0.42)},${y - head * Math.sin(ang + 0.42)}`
   return (
-    <g>
+    <g className={kc(k)}>
       <line x1={x1} y1={y1} x2={x2 - Math.cos(a) * head * 0.6} y2={y2 - Math.sin(a) * head * 0.6} stroke={color} strokeWidth={w} strokeLinecap="round" />
       <polygon points={hd(x2, y2, a)} fill={color} />
       {both && <polygon points={hd(x1, y1, a + Math.PI)} fill={color} />}
@@ -165,11 +187,11 @@ export function Arw({ x1, y1, x2, y2, color = INK, w = 1.5, head = 7, both }: { 
 }
 
 /** 곡선 화살표(이차 베지어) */
-export function Curve({ x1, y1, cx, cy, x2, y2, color = INK, w = 1.4, head = 7 }: { x1: number; y1: number; cx: number; cy: number; x2: number; y2: number; color?: string; w?: number; head?: number }) {
+export function Curve({ x1, y1, cx, cy, x2, y2, color = INK, w = 1.4, head = 7, k }: { x1: number; y1: number; cx: number; cy: number; x2: number; y2: number; color?: string; w?: number; head?: number; k?: boolean }) {
   const a = Math.atan2(y2 - cy, x2 - cx)
   const pts = `${x2},${y2} ${x2 - head * Math.cos(a - 0.42)},${y2 - head * Math.sin(a - 0.42)} ${x2 - head * Math.cos(a + 0.42)},${y2 - head * Math.sin(a + 0.42)}`
   return (
-    <g>
+    <g className={kc(k)}>
       <path d={`M${x1} ${y1} Q${cx} ${cy} ${x2} ${y2}`} fill="none" stroke={color} strokeWidth={w} strokeLinecap="round" />
       <polygon points={pts} fill={color} />
     </g>
@@ -177,10 +199,10 @@ export function Curve({ x1, y1, cx, cy, x2, y2, color = INK, w = 1.4, head = 7 }
 }
 
 /** 물결선(해수면) */
-export function Wave({ x, y, w, a = 4, l = 22, color = INK, sw = 1.5 }: { x: number; y: number; w: number; a?: number; l?: number; color?: string; sw?: number }) {
+export function Wave({ x, y, w, a = 4, l = 22, color = INK, sw = 1.5, k }: { x: number; y: number; w: number; a?: number; l?: number; color?: string; sw?: number; k?: boolean }) {
   let d = `M${x} ${y}`
   for (let xx = 0; xx <= w; xx += 2) d += ` L${x + xx} ${(y - a * Math.sin((xx / l) * 2 * Math.PI)).toFixed(1)}`
-  return <path d={d} fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round" />
+  return <path className={kc(k)} d={d} fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round" />
 }
 
 /** 구름 말풍선 테두리 */
@@ -216,8 +238,9 @@ export function Hot({ x, y, w, h, popup, step, label, children, marker }: { x: n
 
 /** 학습지 한 줄(가로 영역). 필기 연결 단위(data-block-id)이기도 합니다. */
 export function Row({ id, h, children, label }: { id: string; h: number; children: ReactNode; label?: string }) {
+  const mode = useSheetMode()
   return (
-    <svg id={id} data-block-id={id} viewBox={`0 0 ${SHEET_W} ${h}`} className="sheet-row block w-full overflow-visible" role="group" aria-label={label}>
+    <svg id={id} data-block-id={id} viewBox={`0 0 ${SHEET_W} ${h}`} className={`sheet-row block w-full overflow-visible${mode === 'key' ? ' sheet-key' : ''}`} role="group" aria-label={label}>
       {children}
     </svg>
   )

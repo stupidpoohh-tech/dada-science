@@ -34,8 +34,8 @@ export default function UnitPage({ unit, focus, back, concept }: { unit: UnitMet
     ms.chapters.find((c) => c.chapterId === chapterId)?.blocks.forEach(visit)
     return out
   }, [ms])
-  // 빈칸 보기의 필기는 교재 필기와 따로 저장(빈칸 위에 쓴 답이 교재 화면에 겹치지 않도록)
-  const scope = mode === 'blank' ? `${unit.id}:blank` : unit.id
+  // 빈칸·핵심 보기의 필기는 교재 필기와 따로 저장(보기마다 쓴 답이 다른 화면에 겹치지 않도록)
+  const scope = mode === 'text' ? unit.id : `${unit.id}:${mode}`
   useActiveScope(scope, true, {
     get label() { const c = unit.chapters.find((x) => x.id === currentRef.current); return c ? `${c.no}. ${c.title}` : '이 단원' },
     blockIds: () => blockIdsOf(currentRef.current),
@@ -121,7 +121,7 @@ export default function UnitPage({ unit, focus, back, concept }: { unit: UnitMet
         {sideOpen && <div className="sticky top-0 z-30 hidden justify-end py-2 lg:flex"><ModeToggle /></div>}
         <div className="py-4 lg:pt-1">
           {mode === 'blank' && <p className="mb-2 text-center text-[13px] font-semibold text-ink/50">파란 빈칸을 누르면 답이 보이고, 다시 누르면 가려집니다.</p>}
-          {mode === 'key' && <p className="mb-2 text-center text-[13px] font-semibold text-ink/50">핵심 보기는 준비 중입니다. 지금은 교재와 같은 화면이 보입니다.</p>}
+          {mode === 'key' && <p className="mb-2 text-center text-[13px] font-semibold text-ink/50">제목과 핵심어·뼈대만 남긴 화면입니다. 빈 곳에 내용을 직접 써 보세요.</p>}
           {unit.status !== 'original' && (
             <p className="mb-4 rounded-xl bg-[#fff6db] px-4 py-2.5 text-[14px] font-semibold text-[#7a5b00]">
               {unit.status === 'demo' ? '이 단원의 본문은 데모 원문입니다.' : '이 단원의 원문은 아직 입력되지 않았습니다.'}
