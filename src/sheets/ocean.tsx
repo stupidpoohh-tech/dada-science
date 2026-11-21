@@ -172,7 +172,7 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
         <Arw x1={184} y1={76} x2={300} y2={76} w={1.6} />
         <Txt x={242} y={66} size={13} anchor="middle" weight={600}>전향력</Txt>
         <Txt x={242} y={94} size={12} anchor="middle">바람</Txt>
-        <Txt x={308} y={80} size={14}>해수는 바람의 오른쪽 45° 방향</Txt>
+        <Txt x={308} y={80} size={14}>표층해수는 바람의 오른쪽 45° 방향</Txt>
         <line x1={450} y1={88} x2={450} y2={110} stroke={GRAY} strokeDasharray="2 3" />
         <Hot x={8} y={100} w={276} h={160} popup="ekman" label="에크만 나선과 에크만 수송">
           <Arw x1={92} y1={112} x2={92} y2={254} both w={1.4} />
