@@ -200,10 +200,10 @@ export const OCEAN_ROWS: Record<string, { h: number; label: string; render: () =
         <Txt x={124} y={308} size={15}>⇒</Txt>
         <Boxed x={150} y={308} size={14.5} border={RED}>마찰 저항심도</Boxed>
         {/* (대기대순환) */}
-        <Txt x={416} y={268} size={12}>북동무역풍 … 위도 0~30</Txt>
-        <Boxed x={560} y={268} size={11.5}>서쪽방향</Boxed>
-        <Txt x={416} y={292} size={12}>편서풍 … 위도 30~60</Txt>
-        <Boxed x={560} y={292} size={11.5}>동쪽방향</Boxed>
+        <Txt x={416} y={268} size={12}>편서풍 … 위도 30~60</Txt>
+        <Boxed x={560} y={268} size={11.5}>동쪽방향</Boxed>
+        <Txt x={416} y={292} size={12}>북동무역풍 … 위도 0~30</Txt>
+        <Boxed x={560} y={292} size={11.5}>서쪽방향</Boxed>
         <Txt x={340} y={316} size={12} color={GRAY}>(대기대순환)</Txt>
         <Txt x={622} y={284} size={12}>지형류</Txt>
         {/* 쿠로시오 메모: 북태평양 시계방향 순환. 순환 중심이 서쪽으로 치우쳐 서쪽 해수면이 높고(高) 경사가 커서 서쪽 경계의 쿠로시오(흑조)가 강하다 */}
