@@ -3,11 +3,16 @@ import type { UnitMeta } from '../../content/types'
 import { href } from '../../lib/router'
 import { unitStats } from '../../lib/content'
 import { useProgress } from '../../lib/store'
+import { useActiveScope } from '../../lib/annotations'
+import AnnotationSurface from '../annotation/AnnotationSurface'
 
 /** 문제 풀이 영역 공통 틀(개념 확인 → 기본 예제 → 내신 대비 → 오답 복습) */
 export default function AssessmentLayout({ unit, tab, children }: { unit: UnitMeta; tab: 'concept' | 'exam' | 'textbook' | 'wrong'; children: ReactNode }) {
   const p = useProgress()
   const st = unitStats(p, unit)
+  // 문제 풀이 필기: 탭(개념 확인·내신 대비·교과서 문제·오답 노트)마다 따로 저장
+  const scope = `${unit.id}:solve-${tab}`
+  useActiveScope(scope, true, { label: '이 문제 화면', blockIds: () => [] })
   const tabs = [
     { key: 'concept', label: '개념 확인' },
     { key: 'exam', label: '내신 대비' },
@@ -33,7 +38,7 @@ export default function AssessmentLayout({ unit, tab, children }: { unit: UnitMe
           권장 학습 순서: 원문을 읽고 움직이는 그림으로 원리를 확인한 뒤 문제를 푸세요. 현재 움직이는 그림 개념 확인 {st.conceptsDone} / {st.concepts} 완료.
         </p>
       )}
-      <div className="mt-4">{children}</div>
+      <AnnotationSurface key={scope} scopeId={scope} className="mt-4">{children}</AnnotationSurface>
     </div>
   )
 }

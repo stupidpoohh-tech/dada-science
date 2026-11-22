@@ -57,7 +57,7 @@ export default function BankQuestionCard({ q, value, onChange, revealed, result,
   }
 
   return (
-    <article id={`q-${q.id}`} className="scroll-mt-28 rounded-2xl border border-ink/10 bg-white p-4 sm:p-5">
+    <article id={`q-${q.id}`} data-block-id={`q-${q.id}`} className="scroll-mt-28 rounded-2xl border border-ink/10 bg-white p-4 sm:p-5">
       {/* 번호와 문제만 표시. 채점 후에만 결과(정답·오답·점수)를 붙입니다. */}
       <div className="flex items-start gap-2">
         <p className="min-w-0 flex-1 whitespace-pre-line text-[17px] font-semibold leading-relaxed">
